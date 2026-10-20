@@ -15,7 +15,8 @@ GitHub Pages sites are public, even when the repository is private. Publishing f
 
 - Plans, settings, snapshots and textures are saved in the browser you use. Use **⋯ → Export plan (.json)** and **Import plan** to move a plan to another device or browser.
 - Blocks use built-in look-alike textures. To use real textures, open **Blocks → Textures** and load your own resource pack (.zip). It stays in that browser.
+- Mod blocks: **Settings → Blocks → Add mod (.jar)** reads a mod's blocks and textures into the plan. They're kept in that browser and travel inside exported plan files.
 - Don't commit Minecraft's textures or other game files to this repository. The Minecraft EULA doesn't allow redistributing them.
-- Three.js, JSZip and the fonts load from cdnjs and Google Fonts, so the first visit needs an internet connection.
+- Three.js (for 3D) and the fonts load from cdnjs and Google Fonts, so the first visit needs an internet connection. Packs, mods and exports work offline.
 
 Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft.
