@@ -2045,20 +2045,46 @@ function texCv(h) {
 }
 /* a block's picture for the pickers, made the first time one is shown */
 const SWC = new Map(); let swcVer = -1;
-const SWATCH = new Proxy({}, { get(_, id) { if (typeof id !== 'string') return undefined; if (swcVer !== ATL.ver) { SWC.clear(); swcVer = ATL.ver; } if (SWC.has(id)) return SWC.get(id); const v = makeSwatch(id); SWC.set(id, v); return v; }, set() { return true; }, has(_, id) { return !!TEXF[id]; } });
+/* the pictures are slow to make on a phone, so they're kept in this browser between visits, for the textures they were made from */
+const SWD = { disk: null, diskSig: null, ver: -1, cur: '', timer: 0, loaded: null, warm: 0 };
+const swHash = (() => { let h = 0; for (const ch of String(makeSwatch) + String(isoBox) + String(shapeSwatchInto)) h = Math.imul(h, 31) + ch.charCodeAt(0) | 0; return (h >>> 0).toString(36); })();
+const swSig = () => { if (SWD.ver !== ATL.ver) { SWD.ver = ATL.ver; SWD.cur = ['sw1', swHash, ATL.S, BLOCKS.length, ...pack.list.filter(P => P.on && P.d).map(P => P.id + '@' + P.at)].join('|'); } return SWD.cur; };
+const swKeep = id => { const B = BY_ID[id]; return !!B && !B.mod; };
+const swLoad = () => SWD.loaded || (SWD.loaded = idbGet('swatches').then(v => { if (v && typeof v.sig === 'string' && v.map && typeof v.map === 'object') { SWD.diskSig = v.sig; SWD.disk = new Map(Object.entries(v.map)); } }).catch(() => {}));
+function swPut(id, url) {
+  const sig = swSig(); if (SWD.diskSig !== sig) { SWD.diskSig = sig; SWD.disk = new Map(); }
+  SWD.disk.set(id, url); clearTimeout(SWD.timer);
+  SWD.timer = setTimeout(() => { if (SWD.diskSig === swSig()) idbPut('swatches', { sig: SWD.diskSig, map: Object.fromEntries(SWD.disk) }).catch(() => {}); }, 2500);
+}
+/* after start-up and after a pack changes, the pictures not made yet are made a few at a time while nothing else is going on */
+function swWarm() {
+  const ver = ATL.ver, ids = BLOCKS.filter(b => !b.mod && !SWC.has(b.id)).map(b => b.id); let i = 0;
+  const idle = window.requestIdleCallback || (f => setTimeout(() => f({ timeRemaining: () => 8 }), 60));
+  const step = dl => { if (ATL.ver !== ver) return; const end = performance.now() + Math.min(12, Math.max(4, dl.timeRemaining())); while (i < ids.length && performance.now() < end) void SWATCH[ids[i++]]; if (i < ids.length) idle(step, { timeout: 2000 }); };
+  clearTimeout(SWD.warm); SWD.warm = setTimeout(() => idle(step, { timeout: 2000 }), 1500);
+}
+const SWATCH = new Proxy({}, { get(_, id) { if (typeof id !== 'string') return undefined; if (swcVer !== ATL.ver) { SWC.clear(); swcVer = ATL.ver; } if (SWC.has(id)) return SWC.get(id);
+  if (SWD.disk && SWD.diskSig === swSig() && SWD.disk.has(id)) { const d = SWD.disk.get(id); SWC.set(id, d); return d; }
+  const v = makeSwatch(id); SWC.set(id, v); if (v && swKeep(id)) swPut(id, v); return v; }, set() { return true; }, has(_, id) { return !!TEXF[id]; } });
 /* a block's picture: a little isometric block, three faces showing, the way Minecraft draws blocks in your inventory. Stairs and slabs
    are drawn as their shape; fences, walls, bars and ladders keep a flat side-on picture */
 const ISO_W = 128;
+let SWCV = null;
+function swCanvases() {
+  if (SWCV) return SWCV; const mk = n => { const c = document.createElement('canvas'); c.width = c.height = n; return c; };
+  const out = mk(ISO_W), big = mk(ISO_W * 2), tile = mk(16);
+  return (SWCV = { out, og: out.getContext('2d'), big, bg: big.getContext('2d'), tile, tg: tile.getContext('2d') });
+}
 function makeSwatch(id) {
   const F = TEXF[id], B = BY_ID[id]; if (!F) return undefined;
-  const cv = document.createElement('canvas'), g = cv.getContext('2d');
+  const C = swCanvases(), cv = C.out, g = C.og; g.clearRect(0, 0, ISO_W, ISO_W);
   // drawn at twice the size and scaled down smoothly, so the edges are clean; '#iso' tells the CSS not to show them pixelated
-  const done = src => { cv.width = cv.height = ISO_W; g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high'; g.drawImage(src, 0, 0, ISO_W, ISO_W); return cv.toDataURL() + '#iso'; };
+  const done = src => { g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high'; g.drawImage(src, 0, 0, ISO_W, ISO_W); return cv.toDataURL() + '#iso'; };
   if (B && B.shape && B.shape !== 'stairs' && B.shape !== 'slab') {   // flat pictures: blown up square, pixels kept sharp
-    const S = ATL.S, t = document.createElement('canvas'), tg = t.getContext('2d'); t.width = t.height = S; tg.imageSmoothingEnabled = false; shapeSwatchInto(tg, B, F.n, S);
-    cv.width = cv.height = ISO_W; g.imageSmoothingEnabled = false; g.drawImage(t, 0, 0, ISO_W, ISO_W); return cv.toDataURL() + '#iso';
+    const S = ATL.S; if (C.tile.width !== S) C.tile.width = C.tile.height = S; const tg = C.tg; tg.clearRect(0, 0, S, S); tg.imageSmoothingEnabled = false; shapeSwatchInto(tg, B, F.n, S);
+    g.imageSmoothingEnabled = false; g.drawImage(C.tile, 0, 0, ISO_W, ISO_W); return cv.toDataURL() + '#iso';
   }
-  const big = document.createElement('canvas'), bg = big.getContext('2d'); big.width = big.height = ISO_W * 2; bg.imageSmoothingEnabled = false;
+  const big = C.big, bg = C.bg; bg.setTransform(1, 0, 0, 1, 0, 0); bg.globalAlpha = 1; bg.globalCompositeOperation = 'source-over'; bg.clearRect(0, 0, ISO_W * 2, ISO_W * 2); bg.imageSmoothingEnabled = false;
   const boxes = B && B.h ? [[0, 0, 0, 1, B.h, 1]] : !B || !B.shape ? [[0, 0, 0, 1, 1, 1]] : B.shape === 'slab' ? [B.top ? [0, 0.5, 0, 1, 1, 1] : [0, 0, 0, 1, 0.5, 1]]
     : B.top ? [[0, 0.5, 0, 1, 1, 1], [0, 0, 0, 1, 0.5, 0.5]] : [[0, 0, 0, 1, 0.5, 1], [0, 0.5, 0, 1, 1, 0.5]];
   // the built-in grass block has one picture for every face; give it dirt sides with a grass edge, as in the game
@@ -2279,7 +2305,7 @@ function applyLayers() {
   for (const P of [...pack.list].reverse()) { const L = P.on && P.d; if (L) for (const [n, fr] of L.entries) { entries.set(n, fr); if (L.anim && L.anim[n]) anim[n] = L.anim[n]; else delete anim[n]; } }
   setPackTextures(entries, anim);
   pack.used = rebuildTextures();
-  texturesChanged(); if (settingsOpen()) renderSettings(); return pack.used;
+  texturesChanged(); if (SWD.warm) swWarm(); if (settingsOpen()) renderSettings(); return pack.used;
 }
 async function savePackRec(id, rec) { try { await idbPut(packRecKey(id), rec); return true; } catch { return lsSet('chunkwise.packrec.' + id, rec); } }
 async function loadPackRec(id) { try { const v = await idbGet(packRecKey(id)); if (v) return v; } catch {} return lsGet('chunkwise.packrec.' + id); }
@@ -14459,8 +14485,13 @@ function openNewPassword() {
 }
 
 async function boot() {
-  applyTheme(); rebuildTextures(); readTheme(); buildRail(); wire(); applyUiMode(); resize();
+  applyTheme();
+  const packsOn = (() => { const x = lsGet(LS_PACKS); return Array.isArray(x) && x.some(q => q && q.on !== false); })();
   pack.localDone = loadPacksLocal().catch(() => {});
+  if (packsOn) await Promise.race([pack.localDone, new Promise(r => setTimeout(r, 5000))]);
+  if (!pack.list.some(P => P.on && P.d) || !texVer) rebuildTextures();
+  await Promise.race([swLoad(), new Promise(r => setTimeout(r, 1500))]);
+  readTheme(); buildRail(); wire(); applyUiMode(); resize();
   if (view.blockCat && !CATS.includes(view.blockCat)) view.blockCat = '';
   view.favs = view.favs.filter(id => BY_ID[id]); view.recents = view.recents.filter(id => BY_ID[id]);
   showOverlay('Loading your plans…');
@@ -14480,7 +14511,7 @@ async function boot() {
     store.mode = 'local'; hideOverlay(); loadLocal();
   }
   renderRail(); setTool(view.tool);
-  setTimeout(maybeTour, 900);
+  setTimeout(maybeTour, 900); swWarm();
 }
 boot();
 })();
