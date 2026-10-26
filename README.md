@@ -1,6 +1,6 @@
 # Chunkwise
 
-Plan Minecraft bases floor by floor on a block grid, check them in 3D, and export them for WorldEdit or Create. The whole app is one file, `index.html`, with no build step.
+Plan Minecraft bases floor by floor on a block grid, check them in 3D, and export them for Litematica or WorldEdit. The whole app is one file, `index.html`, with no build step.
 
 ## Put it on GitHub Pages
 
