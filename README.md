@@ -13,7 +13,8 @@ GitHub Pages sites are public, even when the repository is private. Publishing f
 
 ## How this version stores things
 
-- Plans, settings, snapshots and textures are saved in the browser you use. Use **⋯ → Export plan (.json)** and **Import plan** to move a plan to another device or browser.
+- Signed out, plans, settings, snapshots and textures are saved in the browser you use. Use **⋯ → Import plan (.json)** and Export to move a plan by hand.
+- Signed in (**⋯ → Sign in to sync**, email and password), they're kept in the Chunkwise Supabase project and sync live between your devices. Each floor saves on its own, so edits to different floors on two devices both survive. Texture packs and mod pictures go in a private storage bucket; every row and file is readable only by its owner. Plans already in a browser move into the account the first time you sign in there.
 - Blocks use built-in look-alike textures. To use real textures, open **Blocks → Textures** and load your own resource pack (.zip). It stays in that browser.
 - Mod blocks: **Settings → Blocks → Add mod (.jar)** reads a mod's blocks and textures into the plan. They're kept in that browser and travel inside exported plan files.
 - Don't commit Minecraft's textures or other game files to this repository. The Minecraft EULA doesn't allow redistributing them.
