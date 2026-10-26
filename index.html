@@ -5502,7 +5502,8 @@ function subscribeLevels(pid, fresh) {
       if (ch.type === 'removed') continue;
       const x = ch.doc.data() || {}; const lid = ch.doc.id;
       store.savedLevels.add(lid);
-      if (x.client === store.client || ch.doc.metadata.hasPendingWrites || store.dirtyLevels.has(lid)) continue;
+      // the first load takes every floor, even ones this tab saved earlier (switching back to a plan); after that, its own changes are already here
+      if ((store.levelsReady && (x.client === store.client || ch.doc.metadata.hasPendingWrites)) || store.dirtyLevels.has(lid)) continue;
       if (store.levelsReady && (tx || G)) continue;
       plan.levels.set(lid, deLevel(lid, x)); changed = true;
     }
