@@ -734,6 +734,7 @@ h4{margin:0 0 8px;font-size:12px;color:var(--ink-2);font-weight:700}
 .msep{height:1px;background:var(--line);margin:5px 4px}
 .mnote{margin:6px 10px 4px;max-width:250px;font-size:11.5px;line-height:1.4;color:var(--ink-2)}
 .sbbox{display:grid;gap:10px;width:min(360px,calc(100vw - 64px))}.sbbox p{margin:0;font-size:13px;line-height:1.45}.sbmsg{min-height:1em;color:var(--ink-2)}.sbmsg.bad{color:var(--danger)}.sblinks{display:flex;justify-content:space-between;gap:8px}
+.topbar{position:relative}.texbar{position:absolute;left:0;right:0;bottom:-2px;z-index:95;height:3px;background:color-mix(in srgb,var(--accent) 18%,transparent);pointer-events:none}.texbar i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s linear}.texbar span{position:absolute;right:8px;top:6px;padding:1px 7px;opacity:.92;border-radius:999px;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);font:600 10.5px var(--f-mono);color:var(--ink-2);white-space:nowrap}
 .mlabel{padding:6px 10px 3px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
 .mrow{display:flex;gap:6px;padding:4px 6px}
 .chk{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:6px;font-weight:700;font-size:13px;cursor:pointer}
@@ -1942,7 +1943,11 @@ function shapeBoxes(B, shape) {
   return out;
 }
 const CAT_COUNT = {}; BLOCKS.forEach(b => CAT_COUNT[b.cat] = (CAT_COUNT[b.cat] || 0) + 1);
-const TEX = {}, TEXF = {}, AVG = {};
+const TEX_ = {}, TEXF_ = {}, AVG_ = {};
+/* a block's tiles are made the first time anything asks for them (the plan being drawn, a picker, 3D), so what's in the plan comes first;
+   the rest are made in the background with a bar at the top (texFill) */
+const lazyTex = t => new Proxy(t, { get(o, id) { if (typeof id === 'string' && !(id in o) && BY_ID[id]) ensureTex(id); return o[id]; } });
+const TEX = lazyTex(TEX_), TEXF = lazyTex(TEXF_), AVG = lazyTex(AVG_);
 const FACE_KEYS = ['u', 'd', 'n', 's', 'e', 'w'];
 
 /* drawn look-alikes, used until a resource pack is loaded: 16 × 16 pixels per block, painted straight onto the atlas */
@@ -2022,7 +2027,7 @@ function atlasSlot(key, group, paint, direct) {
   const S = ATL.S;
   if (direct) {
     const p = atlasPage(group), i = p.used++, x = (i % p.per) * S, y = Math.floor(i / p.per) * S;
-    p.g.drawImage(direct.src, direct.sx, direct.sy, MOD_S, MOD_S, x, y, S, S);
+    p.g.drawImage(direct.src, direct.sx, direct.sy, MOD_S, MOD_S, x, y, S, S); if (p.tex) p.tex.needsUpdate = true;
     h = { p: p.idx, x, y, key: k, rgb: direct.rgb || null }; ATL.slots.set(k, h); return h;
   }
   if (!SCR || SCR.canvas.width !== S) { const c = document.createElement('canvas'); c.width = c.height = S; SCR = c.getContext('2d', { willReadFrequently: true }); }
@@ -2030,7 +2035,7 @@ function atlasSlot(key, group, paint, direct) {
   const d = SCR.getImageData(0, 0, S, S).data; let r = 0, g2 = 0, bl = 0, a = 0;
   for (let i = 0; i < d.length; i += 4) { const w = d[i + 3] / 255; r += d[i] * w; g2 += d[i + 1] * w; bl += d[i + 2] * w; a += w; }
   const p = atlasPage(group), i = p.used++, x = (i % p.per) * S, y = Math.floor(i / p.per) * S;
-  p.g.drawImage(SCR.canvas, x, y);
+  p.g.drawImage(SCR.canvas, x, y); if (p.tex) p.tex.needsUpdate = true;
   h = { p: p.idx, x, y, key: k, rgb: a ? [r / a | 0, g2 / a | 0, bl / a | 0] : null };
   ATL.slots.set(k, h); return h;
 }
@@ -2143,16 +2148,57 @@ function assignFaces(b, F) {
 /* every block's faces, from scratch: the pack's textures where it has all six, the mod's where it's a mod block, the look-alikes otherwise */
 function rebuildTextures() {
   const S = clamp(Math.max(16, ...pack.list.map(P => (P.on && P.d && P.d.S) || 0)), 16, 32);
-  atlasReset(S); ANIMS = []; ANIM_BLOCKS.clear(); let used = 0;
-  const hidden = () => { const h = atlasSlot('b:#hidden', 'o', g => { g.fillStyle = '#888'; g.fillRect(0, 0, ATL.S, ATL.S); }); return { u: h, d: h, n: h, s: h, e: h, w: h }; };
-  for (const b of BLOCKS) {
-    let F = null;
-    if (b.mod) F = b.hidden ? hidden() : b.shape ? TEXF[b.mat] || null : modFaces(b);
-    else if (PACKTEX.size) { F = packFaces(b); if (F) used++; }
-    assignFaces(b, F || builtinFaceSet(b));
-  }
-  texVer++;
-  return used;
+  atlasReset(S); ANIMS = []; ANIM_BLOCKS.clear(); TEXDONE.clear(); TEXN.used = 0;
+  for (const o of [TEX_, TEXF_, AVG_]) for (const k of Object.keys(o)) delete o[k];
+  texVer++; texFill();
+  return TEXN.used;
+}
+const TEXDONE = new Set(), TEXN = { used: 0 };
+/* the block a variant (a turned stair, an axis, a pane) takes its faces from */
+let VAR_BASE = null;
+function varBase(id) {
+  if (!VAR_BASE || VAR_BASE.n !== BLOCKS.length) { VAR_BASE = new Map(); VAR_BASE.n = BLOCKS.length; for (const b of BLOCKS) { for (const v of b.variants || []) VAR_BASE.set(v, b); for (const v of b.axisVars || []) VAR_BASE.set(v, b); if (b.id === 'glass') for (const v of ['glass_pane~x', 'glass_pane~z']) VAR_BASE.set(v, b); } }
+  return VAR_BASE.get(id) || BY_ID[id];
+}
+function ensureTex(id) {
+  const b = varBase(id); if (!b || TEXDONE.has(b.id)) return; TEXDONE.add(b.id);
+  let F = null;
+  if (b.mod) F = b.hidden ? (h => ({ u: h, d: h, n: h, s: h, e: h, w: h }))(atlasSlot('b:#hidden', 'o', g => { g.fillStyle = '#888'; g.fillRect(0, 0, ATL.S, ATL.S); })) : b.shape ? TEXF[b.mat] || null : modFaces(b);
+  else if (PACKTEX.size) { F = packFaces(b); if (F) TEXN.used++; }
+  assignFaces(b, F || builtinFaceSet(b));
+}
+/* the rest of the blocks, a few at a time while nothing else is going on: the open plan's first, then everything, pictures too */
+const TEXF_STATE = { ver: -1, timer: 0 };
+function texFill() {
+  const ver = ATL.ver; TEXF_STATE.ver = ver; clearTimeout(TEXF_STATE.timer);
+  const idle = window.requestIdleCallback || (f => setTimeout(() => f({ timeRemaining: () => 8 }), 40));
+  let list = null, i = 0, shown = false;
+  const order = () => {
+    const first = new Set([view.block, view.altBlock, ...(view.recents || [])].filter(Boolean).map(id => varBase(id)?.id).filter(Boolean));
+    if (plan) for (const L of plan.levels.values()) for (const b of L.blocks.values()) { const B = varBase(b); if (B) first.add(B.id); }
+    return [...first, ...BLOCKS.map(b => b.id).filter(id => !first.has(id))];
+  };
+  const step = dl => {
+    if (ATL.ver !== ver) return;
+    if (!list) list = order();
+    const end = performance.now() + Math.min(14, Math.max(5, dl.timeRemaining()));
+    while (i < list.length && performance.now() < end) { const id = list[i++]; ensureTex(id); const B = BY_ID[id]; if (B && !B.mod && !B.hidden) void SWATCH[id]; }
+    const left = list.length - i;
+    if (left && (shown || i < list.length * 0.9)) { shown = true; texBar(i, list.length); }
+    if (left) { idle(step, { timeout: 1500 }); return; }
+    texBar(0, 0); pack.used = TEXN.used; if (settingsOpen()) renderSettings();
+    for (const p of ATL.pages) if (p.tex) p.tex.needsUpdate = true;
+    if (three && view.is3D) render3D();
+  };
+  TEXF_STATE.timer = setTimeout(() => idle(step, { timeout: 1500 }), 400);
+}
+/* the bar under the top bar while textures load */
+function texBar(n, total) {
+  let bar = document.getElementById('texBar');
+  if (!total) { if (bar) bar.hidden = true; return; }
+  if (!bar) { bar = el('div', { class: 'texbar', id: 'texBar', role: 'progressbar', 'aria-label': 'Loading textures' }, el('i'), el('span')); (document.querySelector('.topbar') || document.body).appendChild(bar); }
+  bar.hidden = false; bar.setAttribute('aria-valuemax', String(total)); bar.setAttribute('aria-valuenow', String(n));
+  bar.firstChild.style.width = (100 * n / total).toFixed(1) + '%'; bar.lastChild.textContent = `Loading textures ${n.toLocaleString()} of ${total.toLocaleString()}`;
 }
 
 /* textures from the viewer's own resource packs: never part of the page, kept in their private storage.
@@ -2305,7 +2351,7 @@ function applyLayers() {
   for (const P of [...pack.list].reverse()) { const L = P.on && P.d; if (L) for (const [n, fr] of L.entries) { entries.set(n, fr); if (L.anim && L.anim[n]) anim[n] = L.anim[n]; else delete anim[n]; } }
   setPackTextures(entries, anim);
   pack.used = rebuildTextures();
-  texturesChanged(); if (SWD.warm) swWarm(); if (settingsOpen()) renderSettings(); return pack.used;
+  texturesChanged(); if (settingsOpen()) renderSettings(); return pack.used;
 }
 async function savePackRec(id, rec) { try { await idbPut(packRecKey(id), rec); return true; } catch { return lsSet('chunkwise.packrec.' + id, rec); } }
 async function loadPackRec(id) { try { const v = await idbGet(packRecKey(id)); if (v) return v; } catch {} return lsGet('chunkwise.packrec.' + id); }
@@ -14511,7 +14557,7 @@ async function boot() {
     store.mode = 'local'; hideOverlay(); loadLocal();
   }
   renderRail(); setTool(view.tool);
-  setTimeout(maybeTour, 900); swWarm();
+  setTimeout(maybeTour, 900);
 }
 boot();
 })();
