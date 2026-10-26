@@ -1,0 +1,35 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "Chunkwise",
+  "version": "0.1.0",
+  "identifier": "app.chunkwise.desktop",
+  "build": { "frontendDist": "../web" },
+  "app": {
+    "withGlobalTauri": true,
+    "windows": [],
+    "security": { "csp": null }
+  },
+  "bundle": {
+    "active": true,
+    "targets": ["nsis"],
+    "createUpdaterArtifacts": true,
+    "publisher": "Chunkwise",
+    "shortDescription": "Plan Minecraft builds floor by floor",
+    "longDescription": "Plan Minecraft builds floor by floor on a block grid, check them in 3D and export them for WorldEdit or Litematica.",
+    "copyright": "Not an official Minecraft product. Not approved by or associated with Mojang or Microsoft.",
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.ico"],
+    "fileAssociations": [
+      { "ext": ["chunkwise"], "name": "Chunkwise plan", "description": "Chunkwise plan", "mimeType": "application/json" }
+    ],
+    "windows": {
+      "nsis": { "installMode": "currentUser" }
+    }
+  },
+  "plugins": {
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDNBNDZBQTc3Q0NGNEZFNTAKUldSUS92VE1kNnBHT24rOU1XVXo4bUpxT3l3Nk5TeG1SRHNta1BaSVJRMUFvYmxwWXNGQzg0dzgK",
+      "endpoints": ["https://github.com/Porkie778/chunkwise/releases/latest/download/latest.json"],
+      "windows": { "installMode": "passive" }
+    }
+  }
+}
