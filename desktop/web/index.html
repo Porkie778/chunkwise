@@ -877,7 +877,8 @@ img[src$="#iso"]{image-rendering:auto!important}
 .bldcard strong{font-size:13px;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .bldcard small{font-size:11.5px;color:var(--ink-2)}
 .packlist{display:grid;gap:4px;margin:4px 0 10px}
-.packrow{display:grid;grid-template-columns:28px 18px minmax(0,1fr) auto 28px;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
+.pk-info.warn{color:var(--accent)}
+.packrow{display:grid;grid-template-columns:28px 18px minmax(0,1fr) auto 28px 28px;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
 .packrow input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px;margin:0}
 .packrow.off .pk-t{opacity:.55}
 .packrow.base{border-style:dashed;background:transparent}
@@ -2395,8 +2396,8 @@ function animTick() {
   if (show3D()) { let any = false; for (const p of pages) if (p.tex) { p.tex.needsUpdate = true; any = true; } if (any) render3D(); if (view.is3D) return; }
   const L = curLevel(); if (L && levelUsesAnim(L)) requestDraw();
 }
-async function importPack(file) {
-  toast('Reading resource pack…');
+async function importPack(file, into) {
+  const old = into && pack.list.find(q => q.id === into); toast(old ? `Updating “${old.name}”…` : 'Reading resource pack…');
   let u8, files; try { u8 = new Uint8Array(await file.arrayBuffer()); files = zipIndex(u8); } catch { toast('That file is not a .zip resource pack.'); return; }
   deskReady().then(async () => DESK.inv('write_bytes', { path: deskJoin(DESK.cfg.packsDir, file.name.replace(/[<>:"/\\|?*]+/g, '')), b64: await deskB64(new Blob([u8])), replace: true })).catch(() => {});
   const found = new Map(), metas = new Map(), td = new TextDecoder();
@@ -2427,6 +2428,12 @@ async function importPack(file) {
   tiles.forEach(([c, sy, w], i) => g.drawImage(c, 0, sy, w, w, (i % cols) * S, Math.floor(i / cols) * S, S, S));
   const atlasUrl = atlas.toDataURL('image/png');
   const meta = { v: 2, name: file.name.replace(/\.zip$/i, '').slice(0, 80) || 'Resource pack', at: Date.now(), client: store.client, S, cols, map, anim };
+  if (old) {
+    meta.name = old.name; const d = await decodeRecord({ meta, atlas: atlasUrl }); if (!d) { toast('Those textures could not be read.'); return; }
+    if (!await savePackRec(old.id, { meta, atlas: atlasUrl })) toast('This browser is out of storage space, so the update lasts this session only.');
+    Object.assign(old, { at: meta.at, d }); packsChanged(old.id); renderSettings();
+    toast(`“${old.name}” updated: ${d.entries.size} textures${pack.db ? ', on all your devices' : ' in this browser'}.`); return;
+  }
   const P = await addPack(meta, atlasUrl); if (!P) { toast('Those textures could not be read.'); return; }
   toast(`“${P.name}” is on top of your packs: ${P.d.entries.size} textures${pack.db ? ', on all your devices' : ' in this browser'}.`);
 }
@@ -2536,13 +2543,16 @@ function startPackSync(db, id) {
     pack.list = next; lsSet(LS_PACKS, packIndex()); applyLayers();
   }, () => {});
 }
-function pickPack() { closePopover(); $('#packFile').click(); }
+let PACK_INTO = null;
+function pickPack(into) { closePopover(); PACK_INTO = typeof into === 'string' ? into : null; $('#packFile').click(); }
+/* packs installed before Chunkwise drew torches, lanterns and chains in 3D were saved without those textures */
+const PACK_LIGHTS_AT = Date.UTC(2026, 9, 31, 19, 0), packMissesLights = P => !!P.d && P.at < PACK_LIGHTS_AT && !['torch', 'lantern', 'chain', 'iron_chain'].some(n => P.d.entries.has(n));
 /* Settings › Texture packs: the list */
 function packRows() {
   const rows = [], again = () => renderSettings();
   const list = el('div', { class: 'packlist', role: 'list' });
   pack.list.forEach((P, i) => {
-    const name = el('span', { class: 'pk-name', text: P.name }), info = el('span', { class: 'pk-info', text: P.d ? `${P.d.entries.size} textures` : 'Not in this browser yet' });
+    const name = el('span', { class: 'pk-name', text: P.name }), info = el('span', { class: 'pk-info' + (packMissesLights(P) ? ' warn' : ''), text: !P.d ? 'Not in this browser yet' : packMissesLights(P) ? `${P.d.entries.size} textures · no torch, lantern or chain yet: update it from its .zip` : `${P.d.entries.size} textures` });
     const edit = () => {
       const inp = el('input', { class: 'field pk-in', value: P.name, maxlength: '80', 'aria-label': 'Pack name' }); let done = false;
       const end = keep => { if (done) return; done = true; if (keep) renamePack(P.id, inp.value); again(); };
@@ -2555,6 +2565,7 @@ function packRows() {
       el('div', { class: 'pk-t' }, name, info),
       el('div', { class: 'pk-ord' }, el('button', { class: 'ib sm', title: 'Higher: wins over the packs below', 'aria-label': `Move ${P.name} up`, disabled: i === 0 ? true : null, onclick: () => movePack(P.id, -1) }, icon('up')),
         el('button', { class: 'ib sm', title: 'Lower', 'aria-label': `Move ${P.name} down`, disabled: i === pack.list.length - 1 ? true : null, onclick: () => movePack(P.id, 1) }, icon('down'))),
+      el('button', { class: 'ib sm' + (packMissesLights(P) ? ' tg' : ''), 'aria-pressed': packMissesLights(P) ? 'true' : null, title: 'Update from its .zip: reloads its textures, keeping its place and tick', 'aria-label': `Update ${P.name} from its .zip`, onclick: () => pickPack(P.id) }, icon('upload')),
       el('button', { class: 'ib sm', title: 'Uninstall', 'aria-label': `Uninstall ${P.name}`, onclick: () => removePack(P.id) }, icon('x'))));
   });
   list.append(el('div', { class: 'packrow base', role: 'listitem' }, el('span', { class: 'pk-sp' }), el('span', { class: 'pk-sp' }), el('div', { class: 'pk-t' }, el('span', { class: 'pk-name', text: 'Built-in look-alikes' }), el('span', { class: 'pk-info', text: 'Used for anything the packs above leave out' }))));
@@ -13771,7 +13782,7 @@ function exportPNG() {
   }, 'image/png');
 }
 $('#modFile').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) importMod(f); });
-$('#packFile').addEventListener('change', e => { const f = e.target.files && e.target.files[0]; e.target.value = ''; if (f) importPack(f); });
+$('#packFile').addEventListener('change', e => { const f = e.target.files && e.target.files[0], into = PACK_INTO; PACK_INTO = null; e.target.value = ''; if (f) importPack(f, into); });
 $('#importFile').addEventListener('change', async e => {
   const f = e.target.files && e.target.files[0]; e.target.value = ''; if (!f) return;
   try {
