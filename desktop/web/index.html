@@ -1387,7 +1387,7 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 .dk-tile small{font:600 9.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin-top:2px}
 .dk-tile b{max-width:100%;font-size:12.5px;font-weight:600;line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
 .dk-swapc{display:grid;justify-items:center;gap:4px}.dk-swap{display:grid;place-items:center;width:32px;height:32px;border:1px solid var(--line);border-radius:50%;background:var(--panel);color:var(--ink)}.dk-swap:hover{background:var(--panel-2)}.dk-swap svg.i{width:16px;height:16px}
-.dk-swapc kbd{font:600 10px var(--f-mono);color:var(--ink-2);padding:1px 5px;border:1px solid var(--line);border-radius:4px}
+.dk-swapc .dk-def{margin-top:6px}.dk-swapc kbd{font:600 10px var(--f-mono);color:var(--ink-2);padding:1px 5px;border:1px solid var(--line);border-radius:4px}
 .dk-tiles + .dk-pair{margin-top:8px}
 .dk-fold{display:flex;align-items:center;gap:6px;width:100%;min-height:28px;padding:0;border:0;background:none;color:var(--ink-2);text-align:left}
 .dk-fold h3{margin:0;font:600 11px var(--f-ui);letter-spacing:.08em;text-transform:uppercase}.dk-fold svg.i{width:14px;height:14px;transform:rotate(-90deg);transition:transform .12s}.dk-fold[aria-expanded="true"] svg.i{transform:none}
@@ -1539,7 +1539,9 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 .dk-prb img{width:28px;height:28px;image-rendering:pixelated;border-radius:4px;flex:none}
 .dk-prb span{font-size:12px;font-weight:600;line-height:1.15;overflow:hidden;text-overflow:ellipsis;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
 .dk-prx{position:absolute;top:-6px;right:-6px;width:18px;height:18px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--panel);color:var(--ink-2);display:none;place-items:center}
-.dk-prc:hover .dk-prx,.dk-prx:focus-visible{display:grid}.dk-prx svg.i{width:10px;height:10px}
+.dk-prc:hover .dk-prx,.dk-prx:focus-visible{display:grid}.dk-prx.dk-pre{right:16px}.dk-prx.dk-pre svg.i{width:11px;height:11px}
+.dk-newpre{display:flex;align-items:center;justify-content:center;gap:6px;height:42px;border:1.5px dashed var(--line);border-radius:8px;background:transparent;color:var(--ink-2);font-weight:600;font-size:12.5px}.dk-newpre:hover{border-color:var(--accent);color:var(--accent)}.dk-newpre svg.i{width:16px;height:16px}
+.preded{display:grid;gap:12px;width:min(460px,calc(100vw - 64px))}.preded .prrows{display:grid;grid-template-columns:max-content minmax(0,1fr) auto;gap:6px 10px;align-items:center}.preded .prrows label{font-size:13px;font-weight:600}.preded .prrows .ddrop{width:100%}.preded .prnote{font-size:12px;color:var(--ink-2);margin:0}.dk-prx svg.i{width:10px;height:10px}
 .dk-sub{font:600 10.5px var(--f-mono);letter-spacing:.07em;text-transform:uppercase;color:var(--ink-2);margin:12px 0 6px}
 .dk-presave{display:flex;gap:6px;margin-top:10px}.dk-in{flex:1;min-width:0;height:28px}
 /* wall mode: a border round the plan, a lit button in the strip, and a badge in the status bar */
@@ -10272,9 +10274,8 @@ function dockBlocks() {
     rk ? dkSec('Roof', null, el('div', { class: 'dk-chips' }, ...rk)) : null,
     dkSec('Primary and Secondary', el('button', { class: 'dk-btn', title: 'Search every block and choose Primary', onclick: () => toggleWin('blocks') }, icon('search'), 'All blocks'),
       el('div', { class: 'dk-tiles' + (onR ? ' dimmed' : ''), title: onR ? 'The Roof tool uses the roof blocks above. Primary and Secondary are for drawing floors and walls' : null },
-        tile(A, true), el('div', { class: 'dk-swapc' }, el('button', { class: 'dk-swap', title: 'Swap Primary and Secondary', 'aria-label': 'Swap Primary and Secondary', onclick: swapSlots }, icon('swap')), kb('swapBlocks')), tile(B, false)),
-      el('div', { class: 'dk-pair dk-wrap' },
-        el('button', { class: 'dk-btn', title: `Defaults: ${BY_ID[view.cfg.nf.fb].name} as Primary, ${BY_ID[view.cfg.nf.wb].name} as Secondary`, onclick: resetBlocks }, icon('defblocks'), 'Defaults', kb('resetBlocks'))),
+        tile(A, true), el('div', { class: 'dk-swapc' }, el('button', { class: 'dk-swap', title: 'Swap Primary and Secondary', 'aria-label': 'Swap Primary and Secondary', onclick: swapSlots }, icon('swap')), kb('swapBlocks'),
+          el('button', { class: 'dk-swap dk-def', title: `Defaults: ${BY_ID[view.cfg.nf.fb].name} as Primary, ${BY_ID[view.cfg.nf.wb].name} as Secondary`, 'aria-label': 'Back to the default blocks', onclick: resetBlocks }, icon('defblocks')), kb('resetBlocks')), tile(B, false)),
       el('div', { class: 'dk-rechead' },
         rec.length ? el('button', { class: 'dk-recbtn', 'aria-expanded': String(dockRecOpen), title: dockRecOpen ? 'Hide recent blocks' : 'Show recent blocks', onclick: () => { dockRecOpen = !dockRecOpen; renderDock(); } }, icon('chev'), 'Recent blocks', el('i', { text: String(rec.length) })) : el('span', { class: 'dk-empty', text: 'No recent blocks yet' })),
       rec.length && dockRecOpen ? el('div', { class: 'dk-rec' }, ...rec.map(id => el('button', { class: 'dk-sw', title: BY_ID[id].name, 'aria-label': BY_ID[id].name, onclick: () => setBlockChoice(id) }, el('img', { src: SWATCH[id], alt: '' })))) : null),
@@ -10305,6 +10306,7 @@ function dockPresets() {
   const tip = P => PRESET_SLOTS.filter(([k]) => P[k]).map(([k, n]) => `${n}: ${(q => q ? (typeof P[k] === 'object' ? P[k].m + ' mix' : BY_ID[q] ? BY_ID[q].name : q) : '')(presetMain(P[k]))}`).join('\n');
   const card = (P, own) => el('div', { class: 'dk-prc' + (own ? ' own' : '') },
     el('button', { class: 'dk-prb', title: tip(P), onclick: () => applyPreset(P) }, el('img', { src: presetImg(P), alt: '' }), el('span', { text: P.name })),
+    own && !ro ? el('button', { class: 'dk-prx dk-pre', title: `Change ${P.name}`, 'aria-label': `Change the ${P.name} preset`, onclick: () => openPresetEditor(P) }, icon('pencil')) : null,
     own && !ro ? el('button', { class: 'dk-prx', title: `Delete ${P.name}`, 'aria-label': `Delete the ${P.name} preset`, onclick: () => { view.presets = view.presets.filter(x => x !== P); savePrefs(); dockSig = ''; renderDock(); } }, icon('x')) : null);
   const nm = el('input', { class: 'field dk-in', maxlength: '32', placeholder: 'Name, e.g. Castle walls', 'aria-label': 'New preset name' });
   const save = () => { const name = nm.value.trim(); if (!name) { nm.focus(); return; } const P = presetFromNow(name); if (!P) return; view.presets = [...view.presets.filter(x => x.name.toLowerCase() !== name.toLowerCase()), P].slice(-40); savePrefs(); dockSig = ''; renderDock(); toast(`Saved the ${name} preset.`); };
@@ -10312,7 +10314,8 @@ function dockPresets() {
   return dkFold('presets', 'Presets', 0,
     el('div', { class: 'dk-prgrid' }, ...BUILTIN_PRESETS.map(P => card(P, false))),
     el('div', { class: 'dk-sub', text: 'Yours' }),
-    view.presets.length ? el('div', { class: 'dk-prgrid' }, ...view.presets.map(P => card(P, true))) : el('p', { class: 'dk-empty', text: 'Save the blocks you’re using now as a preset of your own. It follows you to every plan.' }),
+    el('div', { class: 'dk-prgrid' }, ...view.presets.map(P => card(P, true)), ro ? null : el('button', { class: 'dk-newpre', title: 'Make a preset, choosing each of its blocks', onclick: () => openPresetEditor(null) }, icon('plus'), 'New preset')),
+    view.presets.length ? null : el('p', { class: 'dk-empty', text: 'Make a preset of your own, or save the blocks you’re using now. Presets follow you to every plan.' }),
     ro ? null : el('div', { class: 'dk-presave' }, nm, el('button', { class: 'dk-btn', onclick: save }, icon('plus'), 'Save current')),
     el('p', { class: 'dk-empty', text: 'A preset sets Primary, Secondary, the roof and its trim, stairs, door and window trims, posts, patterns and paths. What’s built stays as it is.' }));
 }
@@ -11117,9 +11120,7 @@ function renderCornerSwatches() {
   box.replaceChildren(
     sw('back', Bk, !view.wall, `${slotName(!view.wall)} ${Bk.mix ? 'mix' : 'block'}: ${Bk.name}. Click to swap (X)`, swapSlots),
     sw('front', A, view.wall, `${slotName(view.wall)} ${A.mix ? 'mix' : 'block'}: ${A.name}. Click to choose another`, () => toggleWin('blocks')),
-    el('button', { class: 'cswap', title: 'Swap Primary and Secondary (X)', 'aria-label': 'Swap the Primary and Secondary blocks', onclick: swapSlots }, icon('swap')),
-    el('button', { class: 'creset', title: `Defaults (D): ${BY_ID[view.cfg.nf.fb].name} as Primary, ${BY_ID[view.cfg.nf.wb].name} as Secondary`, 'aria-label': 'Back to the default blocks', onclick: resetBlocks }, icon('defblocks')),
-    el('button', { class: 'cpreset', title: 'Block presets', 'aria-label': 'Block presets', 'aria-haspopup': 'true', onclick: ev => openPresets(ev.currentTarget) }, icon('presets')));
+    el('button', { class: 'cswap', title: 'Swap Primary and Secondary (X)', 'aria-label': 'Swap the Primary and Secondary blocks', onclick: swapSlots }, icon('swap')));
 }
 /* ================= block presets =================
    A preset sets the blocks you draw with in one go: floor and walls, the roof and its gable ends, stairs, doorway and window trims, posts,
@@ -11162,16 +11163,51 @@ function applyPreset(P) {
   if (!plan) return; txBegin(`Used the ${P.name} preset`);
   const U = k => presetUse(P[k]), full = v => { const id = presetMain(typeof v === 'string' && v.startsWith('mix:') ? mainOfV(v) : v); return id && fullBlock(BY_ID[id]); };
   setSlotV(false, U('f')); setSlotV(true, U('w'));
-  const r = presetMain(P.r), rt = presetMain(P.rt);
-  if (r && ROOF_MATS.includes(r)) view.lastRoof = deRoofPart({ ...(view.lastRoof || { style: 'gable' }), mat: r, trim: rt && BY_ID[rt] && !BY_ID[rt].shape ? rt : null });
+  const r = presetMain(P.r), rt = presetMain(P.rt), own = !String(P.id || '').startsWith('p-');   // your own presets leave anything not set as it is
+  if (r && ROOF_MATS.includes(r)) view.lastRoof = deRoofPart({ ...(view.lastRoof || { style: 'gable' }), mat: r, trim: rt && BY_ID[rt] && !BY_ID[rt].shape ? rt : own && view.lastRoof ? view.lastRoof.trim || null : null });
+  else if (own && rt && BY_ID[rt] && !BY_ID[rt].shape) view.lastRoof = deRoofPart({ ...(view.lastRoof || { style: 'gable', mat: defaultRoofMat() }), trim: rt });
   const s2 = presetMain(P.s); if (s2 && flightBlockOK(BY_ID[s2])) view.flight = { ...(view.flight || {}), mat: s2 };
-  const d = presetMain(P.d); view.doorTrim = d && BY_ID[d] && !BY_ID[d].shape ? d : null;
-  const wi = presetMain(P.wi); view.winTrim = wi && BY_ID[wi] && !BY_ID[wi].shape ? wi : null;
+  const d = presetMain(P.d); if (d || !own) view.doorTrim = d && BY_ID[d] && !BY_ID[d].shape ? d : null;
+  const wi = presetMain(P.wi); if (wi || !own) view.winTrim = wi && BY_ID[wi] && !BY_ID[wi].shape ? wi : null;
   const po = U('po'); if (po && full(po)) view.postBlock = po;
   const pa = U('pa'); if (pa && full(pa)) { view.patBlock = pa; view.penPatBlock = pa; }
   const pt = U('pt'); if (pt) view.pathOpt = { ...pathOpt(), block: pt };
   txCommit(); savePrefs(); renderAll(); renderTopTools(); if (ribbonOn()) renderRibbon();
   toast(`${P.name}: Primary is ${slotShow(true).name}, Secondary is ${slotShow(false).name}.`);
+}
+/* a preset made (or changed) slot by slot: a name, then any of its blocks. An empty slot leaves that block alone when the preset is used */
+const PRESET_PICK = {
+  f: { mixes: true, filter: null }, w: { mixes: true, filter: null }, r: { filter: b => ROOF_MATS.includes(b.id), hint: 'Only blocks with stairs and slabs, which make the slopes.' },
+  rt: { mixes: true, filter: fullBlock }, s: { filter: flightBlockOK, hint: 'Blocks with both stairs and a slab.' }, d: { filter: fullBlock }, wi: { filter: fullBlock },
+  po: { mixes: true, filter: null }, pa: { mixes: true, filter: null }, pt: { mixes: true, filter: b => fullBlock(b) || (b.shape === 'slab' && !b.top) } };
+const PRESET_INFO = { f: 'What you draw with', w: 'Swapped in with X', r: 'Roof slopes', rt: 'Gable ends or a flat roof’s rim', s: 'Stair flights', d: 'Trim round doorways', wi: 'Trim round windows', po: 'Wall posts', pa: 'Pattern’s second block', pt: 'Path tool' };
+function openPresetEditor(P) {
+  const vals = {}; for (const [k] of PRESET_SLOTS) vals[k] = P ? P[k] : null;
+  const name = el('input', { class: 'field', id: 'presetName', maxlength: '32', value: P ? P.name : '', placeholder: 'Castle walls', 'aria-label': 'Preset name' }), msg = el('p', { class: 'sbmsg', role: 'status' });
+  const rows = el('div', { class: 'prrows' });
+  // a stored value as the picker shows it: a block, or this plan's mix of the same name
+  const shown = v => { if (!v) return null; if (typeof v === 'string') return v; const m = plan && (plan.mixes || []).find(x => x.name === v.m); return m ? 'mix:' + m.id : presetMain(v); };
+  const draw = () => {
+    rows.replaceChildren(...PRESET_SLOTS.flatMap(([k, label]) => {
+      const v = vals[k], o = PRESET_PICK[k], other = v && typeof v === 'object' && !(plan && (plan.mixes || []).some(x => x.name === v.m));
+      return [el('label', { title: PRESET_INFO[k], text: label }),
+        blockBtn({ value: shown(v), aria: label, mixes: !!o.mixes && !!plan, filter: o.filter || undefined, hint: o.hint, title: other ? `${v.m} mix (${PRESET_INFO[k]})` : PRESET_INFO[k], short: n => other ? v.m + ' mix' : v ? n : 'Not set', onPick: x => { vals[k] = x ? (x.startsWith('mix:') ? presetKeep(x) : x) : null; draw(); } }),
+        el('button', { class: 'ib sm', title: v ? `Clear ${label}` : `${label} isn’t set`, 'aria-label': `Clear ${label}`, disabled: v ? null : true, onclick: () => { vals[k] = null; draw(); } }, icon('x'))];
+    }));
+  };
+  const save = () => {
+    const nm = name.value.trim(); if (!nm) { msg.textContent = 'Give the preset a name.'; msg.classList.add('bad'); name.focus(); return; }
+    if (!PRESET_SLOTS.some(([k]) => vals[k])) { msg.textContent = 'Choose at least one block.'; msg.classList.add('bad'); return; }
+    const Q = dePreset({ ...vals, id: P ? P.id : uid('q'), name: nm }); if (!Q) return;
+    view.presets = P ? view.presets.map(x => x === P || x.id === P.id ? Q : x) : [...view.presets.filter(x => x.name.toLowerCase() !== nm.toLowerCase()), Q].slice(-40);
+    savePrefs(); dockSig = ''; renderDock(); closeModal(); toast(P ? `Changed the ${nm} preset.` : `Made the ${nm} preset. Click it to use it.`);
+  };
+  name.addEventListener('keydown', ev => { if (ev.key === 'Enter') save(); });
+  draw();
+  openModal(P ? `Change ${P.name}` : 'New preset', [el('div', { class: 'preded' }, name, rows,
+    el('p', { class: 'prnote', text: 'Anything left as Not set stays as it is when you use the preset.' }), msg,
+    el('div', { class: 'exact' }, P ? null : el('button', { class: 'btn', title: 'Fill every slot from the blocks you’re using now', onclick: () => { const N = presetFromNow(name.value.trim() || 'x'); if (N) for (const [k] of PRESET_SLOTS) vals[k] = N[k]; draw(); } }, icon('history'), 'Start from current'), el('button', { class: 'btn', onclick: closeModal }, 'Cancel'), el('button', { class: 'btn primary', onclick: save }, P ? 'Save changes' : 'Make preset')))]);
+  setTimeout(() => name.focus(), 40);
 }
 function presetFromNow(name) {
   const L = view.lastRoof, o = { id: uid('q'), name: name.slice(0, 32) || 'My preset', f: presetKeep(slotV(false)), w: presetKeep(slotV(true)), r: L && L.mat || defaultRoofMat(), rt: L && L.trim || null,
