@@ -8768,7 +8768,7 @@ function paintScene(c, P) {
         if (dz) c.fillRect(px, py + h, w, sh); else c.fillRect(px + w, py, sh, h); }
       return;
     }
-    if (wlook !== 'bevel') { flatWall(c, wlook, px, py, w, h); return; }
+    if (wlook !== 'bevel') { flatWall(c, wlook, px, py, w, h, Z); return; }
     c.fillStyle = 'rgba(255,255,255,.26)'; c.fillRect(px, py, w, t); c.fillRect(px, py, t, h);
     c.fillStyle = 'rgba(0,0,0,.36)'; c.fillRect(px, py + h - t, w, t); c.fillRect(px + w - t, py, t, h);
   });
@@ -10108,13 +10108,14 @@ function segSelect(items, value, onChange, label) {
   return sel;
 }
 /* flat colour: how a wall stands out from a floor */
-function flatWall(c, look, px, py, w, h) {
+function flatWall(c, look, px, py, w, h, Z) {
   if (look === 'dark') { c.fillStyle = 'rgba(0,0,0,.34)'; c.fillRect(px, py, w, h); return; }
   if (look === 'outline') { const lw = Math.max(1, Math.round(w * 0.12)); c.strokeStyle = 'rgba(0,0,0,.62)'; c.lineWidth = lw; c.strokeRect(px + lw / 2, py + lw / 2, w - lw, h - lw); return; }
   if (look === 'hatch') {
-    c.save(); c.beginPath(); c.rect(px, py, w, h); c.clip(); c.strokeStyle = 'rgba(0,0,0,.5)'; c.lineWidth = Math.max(1, w * 0.09); c.beginPath();
+    c.save(); c.beginPath(); c.rect(px, py, w, h); c.clip(); c.strokeStyle = 'rgba(0,0,0,.5)'; const bz = Z || w; c.lineWidth = Math.max(1, bz * 0.09); c.beginPath();
     // the lines sit on one diagonal grid across the whole plan (x + y a multiple of the step), so they run on unbroken from one wall block into the next
-    const st = Math.max(3, w / 3), base = px + py + h; for (let k = Math.ceil((base - h - st) / st) * st - base; k < w + st; k += st) { c.moveTo(px + k - 1, py + h + 1); c.lineTo(px + k + h + 1, py - 1); }
+    const st = Math.max(3, bz / 3), base = px + py + h;   // the step comes from the zoom, not this block's width, which can be a pixel off its neighbour's
+    for (let k = Math.ceil((base - h - st) / st) * st - base; k < w + st; k += st) { c.moveTo(px + k - 1, py + h + 1); c.lineTo(px + k + h + 1, py - 1); }
     c.stroke(); c.restore();
   }
 }
