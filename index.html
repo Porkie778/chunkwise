@@ -10115,7 +10115,8 @@ function flatWall(c, look, px, py, w, h, Z) {
     c.save(); c.beginPath(); c.rect(px, py, w, h); c.clip(); c.strokeStyle = 'rgba(0,0,0,.5)'; const bz = Z || w; c.lineWidth = Math.max(1, bz * 0.09); c.beginPath();
     // the lines sit on one diagonal grid across the whole plan (x + y a multiple of the step), so they run on unbroken from one wall block into the next
     const st = Math.max(3, bz / 3), base = px + py + h;   // the step comes from the zoom, not this block's width, which can be a pixel off its neighbour's
-    for (let k = Math.ceil((base - h - st) / st) * st - base; k < w + st; k += st) { c.moveTo(px + k - 1, py + h + 1); c.lineTo(px + k + h + 1, py - 1); }
+    const ex = c.lineWidth * 2 + 2;   // each line runs well past the block and the clip trims it, so no squared-off ends show at the edges
+    for (let k = Math.ceil((base - h - st * 2) / st) * st - base; k < w + st * 2; k += st) { c.moveTo(px + k - ex, py + h + ex); c.lineTo(px + k + h + ex, py - ex); }
     c.stroke(); c.restore();
   }
 }
