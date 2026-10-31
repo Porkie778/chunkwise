@@ -878,6 +878,7 @@ img[src$="#iso"]{image-rendering:auto!important}
 .bldcard small{font-size:11.5px;color:var(--ink-2)}
 .packlist{display:grid;gap:4px;margin:4px 0 10px}
 .pk-info.warn{color:var(--accent)}
+.dk-lt .ogrp{gap:4px}.dk-lt .orow2{display:flex;align-items:center;gap:8px}.dk-lt .olbl2{min-width:52px;font-size:12px;font-weight:700;color:var(--ink-2)}
 .orow2.sugrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0}.orow2.sugrow .olbl2{min-width:52px}.orow2.sugrow select.pick{flex:1;min-width:0}
 .packrow{display:grid;grid-template-columns:28px 18px minmax(0,1fr) auto 28px 28px;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
 .packrow input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px;margin:0}
@@ -10676,7 +10677,7 @@ function renderRibbon() {
   renderRail(); dockSoon();
 }
 /* ---- the dock on the right: tabs (Plan / Blocks / Posts, or 3D / Roof / Plan), which can be dragged apart into a top and a bottom panel ---- */
-let dockSig = '', dockT = 0, dockTab = '', dockTabB = '', dockRatio = 0.5, dockBot = [];
+let dockSig = '', dockT = 0, dockTab = '', dockTabB = '', dockRatio = 0.5, dockBot = [], dockLightWas = false;
 let dockOrd2 = [], dockOrd3 = [], propsFloat = false, propsPos = null, propsSeen = '', dockBefore = '', dockBeforeB = '', inspHome = null;
 try {
   const j = JSON.parse(localStorage.getItem('cw.dock') || 'null'), ids = a => Array.isArray(a) ? a.filter(x => typeof x === 'string').slice(0, 8) : [];
@@ -10703,7 +10704,7 @@ function dockTabList() {
   if (!plan) return [];
   const ro = store.readOnly;
   if (view.is3D) return dockSort([['3d', '3D'], ...(roofHost() != null ? [['roof', 'Roof']] : []), ['plan', 'Plan']]);
-  return dockSort([['plan', 'Plan'], ...(ro ? [] : [['blocks', 'Blocks']]), ...(postsTab() ? [['posts', 'Posts']] : []), ...(propsTab() ? [['props', 'Properties']] : [])]);
+  return dockSort([['plan', 'Plan'], ...(ro ? [] : [['blocks', view.tool === 'light' ? 'Lights' : 'Blocks']]), ...(postsTab() ? [['posts', 'Posts']] : []), ...(propsTab() ? [['props', 'Properties']] : [])]);
 }
 /* the tabs in the order you dragged them to; tabs you haven't moved keep their own order after those. Each view (2D, 3D) keeps its own */
 const dockOrd = () => view.is3D ? dockOrd3 : dockOrd2;
@@ -10720,6 +10721,7 @@ let dockWas3 = false, dockPostsWas = false, dockRecOpen = false;
 function dockNorm() {
   if (!plan) return null;
   if (dockWas3 !== !!view.is3D) { dockWas3 = !!view.is3D; dockTab = ''; dockTabB = ''; }   // each view opens on its own first tab
+  const la = view.tool === 'light' && !view.is3D && !store.readOnly; if (la && !dockLightWas) { if (dockBot.includes('blocks')) dockTabB = 'blocks'; else dockTab = 'blocks'; } dockLightWas = la;   // the Light tool brings its panel forward
   const pa = postsTab(); if (pa && !dockPostsWas) { if (dockBot.includes('posts')) dockTabB = 'posts'; else dockTab = 'posts'; } dockPostsWas = pa;   // posts were just switched on
   const P = dockPanes();
   if (!P.top.some(x => x[0] === dockTab)) dockTab = dockBefore && P.top.some(x => x[0] === dockBefore) ? dockBefore : !view.is3D && P.top.some(x => x[0] === 'blocks') ? 'blocks' : P.top[0][0];
@@ -10986,12 +10988,15 @@ function dockLayers() {
 }
 function dockBody(id) {
   if (id === '3d') { const p = $('#v3panel'); if (p) { p.classList.add('dk-3d'); p.hidden = false; } return [el('section', { class: 'dk-sec dk-3dsec' }, p)]; }
-  if (id === 'blocks') return dockBlocks();
+  if (id === 'blocks') return view.tool === 'light' ? dockLights() : dockBlocks();
   if (id === 'posts') return [dockPosts()];
   if (id === 'roof') return [dockRoof()];
   if (id === 'props') return dockProps();
   return [dockFloors(), dockObjects(), dockLayers()];
 }
+/* the Lights panel: everything the Light tool can do, in the dock where the blocks usually are */
+function dockLights() { return lightSideGroups().map(g => g.classList && g.classList.contains('ohint') ? el('section', { class: 'dk-sec' }, g) : el('section', { class: 'dk-sec dk-lt' }, g)); }
+const lightsDocked = () => !isMobile() && !store.readOnly && !view.is3D && !!$('#dock') && $('#dock').offsetParent !== null;
 function renderDock() {
   const box = $('#dock'); if (!box || isMobile() || !plan) return;
   const P = dockNorm(), split = P.bot.length > 0, keep = [...box.querySelectorAll('.dk-body')].map(b => b.scrollTop);
@@ -11230,7 +11235,7 @@ function ribbonGroupsFrom(rows, acts) {
   if (!real.length && hints.length) out.push(el('div', { class: 'rb-g rb-note' }, el('div', { class: 'rb-gi' }, el('p', { text: hints[0], title: hints[0] })), el('div', { class: 'rb-gc', text: '' })));
   return out;
 }
-function renderOptbar() { renderWhBar();
+function renderOptbar() { renderWhBar(); if (view.tool === 'light' && lightsDocked()) { dockSig = ''; dockSoon(); }
   renderTopTools(); renderPickbar(); renderBHbar();
   if (ribbonOn()) { renderRibbon(); return; }
   if (!isMobile()) { renderSide(); return; }
@@ -11444,8 +11449,9 @@ function renderOptbarH(target) {
     floating.move ? el('button', { class: 'btn sm', onclick: () => endFloat(true) }, 'Cancel move') : el('button', { class: 'btn sm primary', onclick: () => endFloat(false) }, 'Done'),
     hint('Drag to position, lift to drop. Change floor to drop it on another one.'));
   const info = text => flat(el('span', { class: 'hint wrap', text }));
-  const hasOpts = t === 'measure' || (BLOCK_TOOLS.has(t) && !ro) || (t === 'zone' && !ro) || t === 'stamp' || (t === 'route' && !ro && plan) || (t === 'roof' && !ro) || ((t === 'door' || t === 'window' || t === 'extend' || t === 'stair' || t === 'path' || t === 'light') && !ro);
+  const hasOpts = t === 'measure' || (BLOCK_TOOLS.has(t) && !ro) || (t === 'zone' && !ro) || t === 'stamp' || (t === 'route' && !ro && plan) || (t === 'roof' && !ro) || ((t === 'door' || t === 'window' || t === 'extend' || t === 'stair' || t === 'path' || (t === 'light' && !lightsDocked())) && !ro);
   if (!hasOpts) {
+    if (t === 'light') return flat(hint(`${LIGHT_BY[lightOpt().t].n}: click to place, click a light to take it out. Its options are in the Lights panel on the right.`));
     if (t === 'note') return info('Tap anywhere to add a note. Use Pick to move or edit notes.');
     if (t === 'anchor') return info('Tap a block to pin an anchor, or drag to pin an area. Pins show on every floor. Tap a pin again to remove it.');
     if (t === 'measure') return info('Drag between two blocks to add a dimension along X and Z. Drag a number to move it. Pick one to divide it, read it as a diameter or radius, or delete it.');
