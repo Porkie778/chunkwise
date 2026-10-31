@@ -9314,7 +9314,7 @@ function paintScene(c, P) {
   const { Z, OX, OY, Wpx, Hpx, s, live, L } = P;
   const X = x => Math.round(OX + x * Z), Y = z => Math.round(OY + z * Z);
   const x0 = Math.floor(-OX / Z) - 1, x1 = Math.ceil((Wpx - OX) / Z) + 1, z0 = Math.floor(-OY / Z) - 1, z1 = Math.ceil((Hpx - OY) / Z) + 1;
-  const zcss = Z / s, useTex = zcss >= 7 && !view.flat2d, layers = view.layers;
+  const zcss = Z / s, useTex = zcss >= 7 && !flat2dOn(), layers = view.layers;
   c.setTransform(1, 0, 0, 1, 0, 0); c.globalAlpha = 1;
   c.fillStyle = T.paper; c.fillRect(0, 0, Wpx, Hpx);
   c.imageSmoothingEnabled = false;
@@ -9332,8 +9332,8 @@ function paintScene(c, P) {
     const bb = o.L._bb; if (bb) bldPills.push(() => pill(c, `${o.b.name} · ${withBld(o.b, () => floorTag(o.j))}`, (X(bb.x0) + X(bb.x1 + 1)) / 2, Y(bb.z0), T.ink2, s, { above: true, center: true }));
   }
   if (layers.blocks) forEachVisible(L.blocks, true, x0, x1, z0, z1, lifted ? (x, z, b) => { if (!lifted.has(K(x, z))) drawCell(x, z, b, L.blocks); } : (x, z, b) => drawCell(x, z, b, L.blocks));
-  const wlook = view.flat2d ? (view.wallLook || 'same') : view.texWall === 'shadow' ? 'shadow' : 'bevel';
-  if (layers.blocks && L.walls.size && wlook !== 'same' && zcss >= (view.flat2d ? 1.5 : 5)) forEachVisible(L.walls, false, x0, x1, z0, z1, (x, z) => {
+  const wlook = flat2dOn() ? (view.wallLook || 'same') : view.texWall === 'shadow' ? 'shadow' : 'bevel';
+  if (layers.blocks && L.walls.size && wlook !== 'same' && zcss >= (flat2dOn() ? 1.5 : 5)) forEachVisible(L.walls, false, x0, x1, z0, z1, (x, z) => {
     if (!L.blocks.has(K(x, z)) || (lifted && lifted.has(K(x, z)))) return;
     const px = X(x), py = Y(z), w = X(x + 1) - px, h = Y(z + 1) - py, t = Math.max(1, Math.round(w * 0.17));
     if (wlook === 'shadow') {   // a shade darker, and a soft shadow on the floor to the south and east, as if lit from the top left
@@ -10699,7 +10699,10 @@ function setTheme(t) { view.theme = t; applyTheme(); savePrefs(); }
 /* the look of the whole app: Studio as it is, Blueprint (dark blue drafting) or Minecraft (the game's grey bevelled menus) */
 const SKINS = [['studio', 'Studio', 'Clean and neutral, light or dark'], ['blueprint', 'Blueprint', 'Dark blue drafting paper with cyan lines'], ['mc', 'Minecraft', 'The game’s grey bevelled menus and pixel type']];
 function applySkin() { const k = SKINS.some(q => q[0] === view.skin) ? view.skin : 'studio', d = document.documentElement; if (k === 'studio') d.removeAttribute('data-skin'); else d.setAttribute('data-skin', k); }
-function setSkin(k) { view.skin = k; applySkin(); savePrefs(); }
+function setSkin(k) { view.skin = k; applySkin(); savePrefs(); requestDraw(); if (three) { applyLighting(); if (show3D()) build3D(false); } }
+/* Blueprint draws the plan in flat colour, and 3D as flat blue solids with cyan edges, unlit, on its own navy */
+const bpSkin = () => document.documentElement.getAttribute('data-skin') === 'blueprint';
+const flat2dOn = () => !!view.flat2d || bpSkin();
 /* the 2D / 3D button says which view you're in; it sits in the top bar, or floats at the bottom left of the view */
 function syncViewToggle() {
   studioSyncSeg(); dockSoon();
@@ -13490,9 +13493,9 @@ function settingsRows(cat) {
     rows.push(el('h4', { class: 'setsub', text: 'Look' }));
     if (view.layers.ghost) rows.push(setRow('Ghost strength', 'How strongly the floor below shows through.', setRange('ghostAlpha', 0.1, 0.8, 0.05, view.ghostAlpha, v => { view.ghostAlpha = v; requestDraw(); savePrefs(); }, v => Math.round(v * 100) + '%', 'Ghost strength')));
     rows.push(setRow('Grid strength', 'How strong the block grid looks.', setRange('set-grida', 0.2, 3, 0.1, C.gridA, v => { C.gridA = v; requestDraw(); savePrefs(); }, v => Math.round(v * 100) + '%', 'Grid strength')));
-    rows.push(setRow('Block look', 'Textured draws every block as it looks in Minecraft. Flat colour draws one solid colour per block type, for a cleaner plan. It applies to the 2D plan and to floor images you export, not to 3D.', seg([['tex', 'Textured'], ['flat', 'Flat colour']], view.flat2d ? 'flat' : 'tex', v => { view.flat2d = v === 'flat'; requestDraw(); savePrefs(); again(); }, 'Block look')));
-    if (!view.flat2d) rows.push(setRow('Walls in textures', 'How walls stand out from floors when blocks are drawn with their textures. Raised edge lights each wall block from the top left; Shadow darkens walls and casts a soft shadow onto the floor.', seg([['bevel', 'Raised edge'], ['shadow', 'Shadow']], view.texWall === 'shadow' ? 'shadow' : 'bevel', v => { view.texWall = v; requestDraw(); savePrefs(); again(); }, 'Walls in textures')));
-    if (view.flat2d) rows.push(setRow('Walls in flat colour', 'How walls stand out from floors when blocks are drawn as flat colours. Walls are the blocks you draw in wall mode. It applies to the 2D plan and to floor images you export.', seg(WALL_LOOKS, view.wallLook || 'same', v => { view.wallLook = v; requestDraw(); savePrefs(); again(); }, 'Walls in flat colour')));
+    rows.push(setRow('Block look', 'Textured draws every block as it looks in Minecraft. Flat colour draws one solid colour per block type, for a cleaner plan. It applies to the 2D plan and to floor images you export, not to 3D.', seg([['tex', 'Textured', null, null, bpSkin() ? 'The Blueprint look always draws flat colour' : null], ['flat', 'Flat colour']], flat2dOn() ? 'flat' : 'tex', v => { view.flat2d = v === 'flat'; requestDraw(); savePrefs(); again(); }, 'Block look')));
+    if (!flat2dOn()) rows.push(setRow('Walls in textures', 'How walls stand out from floors when blocks are drawn with their textures. Raised edge lights each wall block from the top left; Shadow darkens walls and casts a soft shadow onto the floor.', seg([['bevel', 'Raised edge'], ['shadow', 'Shadow']], view.texWall === 'shadow' ? 'shadow' : 'bevel', v => { view.texWall = v; requestDraw(); savePrefs(); again(); }, 'Walls in textures')));
+    if (flat2dOn()) rows.push(setRow('Walls in flat colour', 'How walls stand out from floors when blocks are drawn as flat colours. Walls are the blocks you draw in wall mode. It applies to the 2D plan and to floor images you export.', seg(WALL_LOOKS, view.wallLook || 'same', v => { view.wallLook = v; requestDraw(); savePrefs(); again(); }, 'Walls in flat colour')));
     rows.push(setRow('Centre marker style', 'How X 0, Z 0 is marked: a thin line on the grid edge, or block 0, 0 highlighted with its row and column.', setSelect('set-ostyle', [['block', 'Full block'], ['line', 'Thin line']], view.originStyle, v => { view.originStyle = v; requestDraw(); savePrefs(); if (ribbonOn()) renderRibbon(); }, 'Centre marker style')));
     rows.push(setRow('Zone style', 'Border draws an outline round each zone. Shading fills it with its colour.', seg([['border', 'Border'], ['shade', 'Shading']], view.zoneStyle, v => { view.zoneStyle = v; requestDraw(); savePrefs(); again(); }, 'Zone style')));
     if (view.zoneStyle === 'shade') rows.push(setRow('Shading strength', 'How strong the colour fill is. Lighter lets the blocks show through.', setRange('zoneAlpha', 0.08, 0.7, 0.02, view.zoneAlpha, v => { view.zoneAlpha = v; requestDraw(); savePrefs(); }, v => Math.round(v * 100) + '%', 'Shading strength')));
@@ -14419,7 +14422,7 @@ function cloudMesh(i0, j0) {
   return g;
 }
 function updateClouds(camera) {
-  const on = v3.clouds !== false && !!three.scene;
+  const on = v3.clouds !== false && !bpSkin() && !!three.scene;
   let K3 = three.cloud;
   if (!on) { if (K3) K3.mesh.visible = false; return; }
   const THREE = three.THREE, C = CLOUD.cell, P = 256 * C;
@@ -14457,7 +14460,7 @@ function celestialTex(kind) {
   const t = new THREE.CanvasTexture(c); t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false; return t;
 }
 function updateCelestial(camera) {
-  const on = v3.light && v3.sunMoon !== false && !!three.scene; let S = three.celest;
+  const on = v3.light && !bpSkin() && v3.sunMoon !== false && !!three.scene; let S = three.celest;
   if (!on) { if (S) S.group.visible = false; return; }
   const THREE = three.THREE, D = 1500;
   if (!S) {
@@ -14696,7 +14699,7 @@ function syncScenery(core, lit) {
     three.scnPending = null; if (!three.scene) return;
     const cur = three.scenery; if (cur) { three.scene.remove(cur.group); for (const m of cur.group.children) m.geometry.dispose(); }
     const group = new three.THREE.Group(); for (const m of scnToMeshes(bufs, lit)) group.add(m);
-    three.scene.add(group); three.scenery = { key, group, R }; render3D();
+    three.scene.add(group); three.scenery = { key, group, R }; group.visible = !bpSkin(); render3D();
   };
   const W = scnWorker(), id = ++scnJob;
   if (!W) { done(scnBuffers(scnWorld(core, sc, R), lit, true, FT, ATL.S, smooth)); return; }
@@ -14749,7 +14752,7 @@ function applyLighting() {
   const { THREE, hemi, dl } = three, B = three.bounds;
   const c = B ? new THREE.Vector3((B.minX + B.maxX + 1) / 2, (B.minY + B.maxY + 1) / 2, (B.minZ + B.maxZ + 1) / 2) : new THREE.Vector3();
   const R = (B ? Math.max(8, Math.hypot(B.maxX - B.minX + 1, B.maxY - B.minY + 1, B.maxZ - B.minZ + 1) / 2 + 2) : 20) + (three.shadowPad || 0);
-  if (!v3.light) {
+  if (!v3.light || bpSkin()) {
     hemi.color.set(0xffffff); hemi.groundColor.set(0x8a96a0); hemi.intensity = 0.62;
     dl.color.set(0xffffff); dl.intensity = 0.42; dl.position.set(c.x + 0.5, c.y + 1, c.z + 0.3); dl.target.position.copy(c); dl.target.updateMatrixWorld(); dl.castShadow = false; three.sky = null; three.cloudCol = null; three.cloudDay = 1; return;
   }
@@ -15426,9 +15429,35 @@ function voxelMeshes(buckets, B, lit, out, ground) {
   }
   return true;
 }
+/* Blueprint in 3D: every block a flat blue solid, lightest on top, darker on its sides, glass a cyan tint; outlines in cyan and a faint grid under the build */
+function bpDress(group, track, VB) {
+  const { THREE } = three;
+  const mk = (alpha, cut, map) => track(new THREE.ShaderMaterial({
+    uniforms: { map: { value: map || null } }, transparent: alpha < 1, depthWrite: alpha >= 1,
+    vertexShader: 'varying vec3 vN; varying vec2 vU; void main(){ vN = normal; vU = uv; gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0); }',
+    fragmentShader: 'uniform sampler2D map; varying vec3 vN; varying vec2 vU; void main(){ ' + (cut ? 'if (texture2D(map, vU).a < 0.5) discard; ' : '') +
+      'vec3 c = vN.y > 0.5 ? vec3(0.357,0.576,0.788) : vN.y < -0.5 ? vec3(0.11,0.22,0.36) : abs(vN.x) > 0.5 ? vec3(0.184,0.373,0.561) : vec3(0.137,0.290,0.451); gl_FragColor = vec4(' + (alpha < 1 ? 'mix(c, vec3(0.208,0.827,0.961), 0.55), ' + alpha.toFixed(2) : 'c, 1.0') + '); }' }));
+  const solid = mk(1, false), glass = mk(0.32, false), cuts = new Map();
+  const swap = was => { if (!was || was.isShadowMaterial || was.isLineBasicMaterial) return was; const isGlass = !!was.transparent && !was.alphaTest, isCut = was.alphaTest > 0 && was.map; return isGlass ? glass : isCut ? (cuts.get(was.map) || cuts.set(was.map, mk(1, true, was.map)).get(was.map)) : solid; };
+  const meshes = []; group.traverse(n => { if (n.isMesh && !n.isLine) meshes.push(n); });
+  for (const m of meshes) {
+    if (m.material && m.material.isShadowMaterial) continue;
+    const was0 = [].concat(m.material)[0], solidish = !was0.transparent && !(was0.alphaTest > 0);
+    m.material = Array.isArray(m.material) ? m.material.map(swap) : swap(m.material);
+    m.castShadow = m.receiveShadow = false;
+    if (!solidish || !m.geometry.getAttribute('position') || m.geometry.getAttribute('position').count > 400000) continue;
+    const e = new THREE.LineSegments(track(new THREE.EdgesGeometry(m.geometry, 30)), track(new THREE.LineBasicMaterial({ color: 0x35d3f5, transparent: true, opacity: 0.55 })));
+    e.position.copy(m.position); e.rotation.copy(m.rotation); e.scale.copy(m.scale); (m.parent || group).add(e);
+  }
+  if (VB && VB.minX !== Infinity) {
+    const w = Math.max(VB.maxX - VB.minX + 1, VB.maxZ - VB.minZ + 1) + 16, n = Math.ceil(w / 2) * 2;
+    const g = new THREE.GridHelper(n, n, 0x35d3f5, 0x2a4f72); g.position.set((VB.minX + VB.maxX + 1) / 2, VB.minY - 0.01, (VB.minZ + VB.maxZ + 1) / 2);
+    for (const mt of [].concat(g.material)) { mt.transparent = true; mt.opacity = 0.35; track(mt); } track(g.geometry); group.add(g);
+  }
+}
 function build3D(refit) {
   if (!three || !plan) return;
-  const { THREE, scene, box } = three, lit = !!v3.light;
+  const { THREE, scene, box } = three, bp = bpSkin(), lit = !!v3.light && !bp;
   if (three.group) { scene.remove(three.group); for (const d of three.disposables) if (d && typeof d.dispose === 'function') d.dispose(); three.disposables = []; }
   const group = new THREE.Group(); three.group = group; scene.add(group);
   // every building; Up to current shows the others up to the same floor
@@ -15500,6 +15529,7 @@ function build3D(refit) {
   const m4 = new THREE.Matrix4(), meshes = [];
   const voxOK = (BB.minX !== Infinity || ground) && voxelMeshes(buckets, VB, lit, meshes, ground);
   if (voxOK) for (const mesh of meshes) { group.add(mesh); track(mesh.geometry); }
+  if (three.scenery) three.scenery.group.visible = !bp;
   else {
     if (ground) { let a = buckets.get(ground.id); if (!a) { a = []; buckets.set(ground.id, a); } for (const v of ground.cells) a.push(v); }
     const mats = three.mats, order = ['e', 'w', 'u', 'd', 's', 'n'];   // a box's faces, in the order three.js makes them
@@ -15564,6 +15594,7 @@ function build3D(refit) {
     ground.rotation.x = -Math.PI / 2; ground.position.set(gx, minY - 0.002, gz); ground.receiveShadow = true; group.add(ground);
   }
   syncScenery(showGround && ground ? ground.core : null, lit);
+  if (bp) bpDress(group, track, VB);
   applyLighting();
   if (refit || !three.fitted) {
     const O = three.orbit; O.tx = (minX + maxX + 1) / 2; O.ty = (minY + maxY + 1) / 2; O.tz = (minZ + maxZ + 1) / 2; camMoved(false);
