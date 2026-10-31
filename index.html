@@ -325,7 +325,7 @@ label.v3row,.v3row>label{cursor:pointer}
 .inspector.dock{top:12px;bottom:auto;right:12px;width:300px;max-height:calc(100% - 24px);overflow:auto}.inspector.dock.lift{bottom:auto}.inspector.dock.beside{right:360px}
 .prow{display:grid;gap:6px}.pkids{display:flex;gap:6px;align-items:center;flex-wrap:wrap}.pkids .seg button{padding-inline:8px}
 .pblk{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700}.pblk img{width:18px;height:18px;image-rendering:pixelated;border-radius:3px}
-@media (max-width:820px){.inspector{left:8px;right:8px;width:auto;bottom:8px;max-height:52vh;overflow:auto;border-radius:14px}}
+@media (max-width:820px), (max-width:1100px) and (orientation:portrait) and (pointer:coarse){.inspector{left:8px;right:8px;width:auto;bottom:8px;max-height:52vh;overflow:auto;border-radius:14px}}
 .objbar{position:absolute;left:0;top:0;z-index:5;display:flex;align-items:center;gap:2px;padding:4px;background:var(--panel);border:1px solid var(--line);border-radius:10px;box-shadow:var(--shadow);max-width:calc(100% - 16px);transition:opacity .12s ease;will-change:transform}
 .objbar.busy{opacity:0;pointer-events:none}
 .cornersw{position:absolute;left:14px;bottom:14px;z-index:4;width:88px;height:66px}
@@ -416,7 +416,7 @@ label.v3row,.v3row>label{cursor:pointer}
 .cp-sw button{width:22px;height:22px;border-radius:5px;border:0;box-shadow:inset 0 0 0 1px rgba(0,0,0,.15);padding:0}
 .cp-sw button:hover{box-shadow:0 0 0 2px var(--ink)}
 .cp-acts{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
-@media (max-width:820px){
+@media (max-width:820px), (max-width:1100px) and (orientation:portrait) and (pointer:coarse){
   .popover.cpop{left:0!important;right:0;top:auto!important;bottom:0;max-height:88vh;border-radius:14px 14px 0 0;padding:14px 16px calc(14px + env(safe-area-inset-bottom,0px))}
   .cpick{width:auto}
   .cp-sv{height:150px}
@@ -435,7 +435,7 @@ label.v3row,.v3row>label{cursor:pointer}
 .whead{display:flex;align-items:center;gap:8px;padding:10px 8px 8px 14px;border-bottom:1px solid var(--line);flex:none}
 .whead h2{flex:1;margin:0;font-size:14px;font-weight:700}
 .panel .tabbody{flex:1}
-@media (min-width:821px){
+@media (min-width:821px) and (pointer:fine), (min-width:821px) and (pointer:none), (min-width:821px) and (orientation:landscape), (min-width:1101px){
   .panel{position:absolute;top:12px;right:12px;z-index:8;width:336px;max-width:calc(100% - 24px);max-height:calc(100% - 24px);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);overflow:hidden;animation:v3in .14s ease}
   .panel:not(.open){display:none}
   .panel.wleft{left:62px;right:auto}
@@ -753,7 +753,7 @@ h4{margin:0 0 8px;font-size:12px;color:var(--ink-2);font-weight:700}
 .splitbar::before{content:'';position:absolute;left:4px;top:0;bottom:0;width:2px;background:var(--line)}.splitbar:hover::before,.splitbar.drag::before{background:var(--accent)}
 .splith{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:grid;place-items:center;width:30px;height:30px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--panel);color:var(--ink);box-shadow:var(--shadow);cursor:pointer}
 .splith:hover{border-color:var(--accent);color:var(--accent)}.splith svg.i{width:15px;height:15px}
-@media (max-width:820px){#vSegSp{display:none}}
+@media (max-width:820px), (max-width:1100px) and (orientation:portrait) and (pointer:coarse){#vSegSp{display:none}}
 
 /* home: the plans as tiles */
 .home{position:fixed;inset:0;z-index:40;display:grid;grid-template-rows:auto minmax(0,1fr);background:var(--paper);color:var(--ink)}
@@ -783,7 +783,7 @@ h4{margin:0 0 8px;font-size:12px;color:var(--ink-2);font-weight:700}
 .hm-opt:hover{border-color:var(--accent)}.hm-opt svg.i{width:24px;height:24px;color:var(--accent)}.hm-opt span{display:grid;gap:2px}.hm-opt small{color:var(--ink-2);font-size:12.5px}
 .hm-hi{border:0;background:none;padding:4px 2px;font-weight:700;text-decoration:underline;text-underline-offset:3px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .home-on .toast{position:fixed;z-index:70;bottom:28px;top:auto}
-@media (max-width:820px){.hm-top{padding:8px 14px}.hm-main{padding:16px 12px 40px}.hm-head h1{font-size:19px}.hm-grid.sz-s{--tw:120px;gap:10px}.hm-grid.sz-l{--tw:160px;gap:12px}.hm-grid.sz-xl{--tw:260px}.hm-brand svg.wordmark{height:13px}}
+@media (max-width:820px), (max-width:1100px) and (orientation:portrait) and (pointer:coarse){.hm-top{padding:8px 14px}.hm-main{padding:16px 12px 40px}.hm-head h1{font-size:19px}.hm-grid.sz-s{--tw:120px;gap:10px}.hm-grid.sz-l{--tw:160px;gap:12px}.hm-grid.sz-xl{--tw:260px}.hm-brand svg.wordmark{height:13px}}
 
 .topbar{position:relative}.texbar{position:absolute;left:0;right:0;bottom:-2px;z-index:95;height:3px;background:color-mix(in srgb,var(--accent) 18%,transparent);pointer-events:none}.texbar i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s linear}.texbar span{position:absolute;right:8px;top:6px;padding:1px 7px;opacity:.92;border-radius:999px;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);font:600 10.5px var(--f-mono);color:var(--ink-2);white-space:nowrap}
 .mlabel{padding:6px 10px 3px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
@@ -904,7 +904,7 @@ input.sw::after{content:'';position:absolute;top:3px;left:3px;width:16px;height:
 input.sw:checked{background:var(--accent)}
 input.sw:checked::after{transform:translateX(16px)}
 input.sw:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-@media (max-width:820px){
+@media (max-width:820px), (max-width:1100px) and (orientation:portrait) and (pointer:coarse){
   .setback{padding:0;place-items:stretch}
   .setdlg{width:100%;height:100%;border-radius:0;border:0}
   .setbody{grid-template-columns:1fr}
@@ -1034,7 +1034,7 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 .pal-foot{display:flex;gap:14px;padding:7px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink-2)}
 .pal-foot kbd{font-size:10.5px;padding:0 5px;border-bottom-width:1px}
 /* focus mode (desktop): panels away, tools stay */
-@media (min-width:821px){
+@media (min-width:821px) and (pointer:fine), (min-width:821px) and (pointer:none), (min-width:821px) and (orientation:landscape), (min-width:1101px){
   #app.focus .main{grid-template-columns:var(--railw,56px) minmax(0,1fr);grid-template-areas:"rail stage"}
   #app.focus .opts,#app.focus .panel,#app.focus .statusbar{display:none}
   #app.focus .ribbon{display:none}
@@ -1063,7 +1063,7 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 .gsw[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1.5px var(--accent)}
 .chk output{font-family:var(--f-mono);font-size:11.5px;color:var(--ink-2);min-width:62px;text-align:right}
 
-@media (max-width:820px){
+@media (max-width:820px), (max-width:1100px) and (orientation:portrait) and (pointer:coarse){
   .main{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr) auto;grid-template-areas:"stage" "rail"}
   .rail{flex-direction:row;border-right:0;border-top:1px solid var(--line);padding:4px 6px;overflow-x:auto;overflow-y:hidden;gap:2px}
   .rail .sep{display:none}
@@ -1186,14 +1186,14 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 .rb-b.ic span{display:none}
 .rb-flat .rb-gi{gap:8px}
 .rb-flat .hint{max-width:420px;font-size:12.5px;color:var(--ink-2);white-space:normal}
-@media (min-width:821px){
+@media (min-width:821px) and (pointer:fine), (min-width:821px) and (pointer:none), (min-width:821px) and (orientation:landscape), (min-width:1101px){
   #app.ribbon .main{grid-template-columns:minmax(0,1fr);grid-template-areas:"stage"}
   #app.ribbon .rail,#app.ribbon .opts,#app.ribbon .railgrip{display:none}
   #app.ribbon .v3s-floors,#app.ribbon .v3s-light,#app.ribbon .v3shots,#app.ribbon .v3t-a,.v3t-r{display:none}#app.ribbon .v3t-r{display:inline}
   #app.ribbon :is(#tbPair,#symTools,.tb-sep,#moreBtn,#objBtn){display:none}
   #app.has-corner #tbPair{display:none}
 }
-@media (min-width:821px){
+@media (min-width:821px) and (pointer:fine), (min-width:821px) and (pointer:none), (min-width:821px) and (orientation:landscape), (min-width:1101px){
   .main{grid-template-columns:var(--railw,56px) auto minmax(0,1fr);grid-template-areas:"rail opts stage"}
   .opts{grid-area:opts;display:flex;flex-direction:column;width:248px;min-height:0;border-right:1px solid var(--line);background:var(--panel)}
   .opts.collapsed{width:52px}
@@ -1272,19 +1272,19 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 .sbtn img{width:24px;height:24px;image-rendering:pixelated;border-radius:4px}
 .sbtn .netdot{width:16px;height:16px}
 .ssep{width:24px;height:1px;background:var(--line);margin:3px 0;flex:none}
-@media (max-width:820px){ .desk-only{display:none!important} }
+@media (max-width:820px), (max-width:1100px) and (orientation:portrait) and (pointer:coarse){ .desk-only{display:none!important} }
 @media (prefers-reduced-motion:reduce){ .panel,.toast{transition:none} }
 /* ===== Studio chrome (computers only). Phones keep the original layout. ===== */
-@media (min-width:821px){
+@media (min-width:821px) and (pointer:fine), (min-width:821px) and (pointer:none), (min-width:821px) and (orientation:landscape), (min-width:1101px){
 :root{--cv-accent:#b9481a;--f-ui:"Inter",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;--f-display:"Inter",system-ui,sans-serif;
   --panel:#ffffff;--panel-2:#f6f7f9;--ink:#171a1f;--ink-2:#5a6370;--line:#dde0e5;--accent:#171a1f;--accent-soft:#e9ebef;--on-accent:#ffffff;
   --shadow:0 6px 20px rgba(23,26,31,.12),0 1px 2px rgba(23,26,31,.12);--field:#f1f3f5}
 }
-@media (min-width:821px) and (prefers-color-scheme:dark){
+@media (min-width:821px) and (pointer:fine) and (prefers-color-scheme:dark), (min-width:821px) and (orientation:landscape) and (prefers-color-scheme:dark), (min-width:1101px) and (prefers-color-scheme:dark){
 :root:not([data-theme="light"]){--cv-accent:#ec7b40;--panel:#181b20;--panel-2:#20242a;--ink:#e6e9ee;--ink-2:#9aa3af;--line:#2d333b;--accent:#e6e9ee;--accent-soft:#2b313a;--on-accent:#14171b;--field:#20242a;
   --shadow:0 10px 30px rgba(0,0,0,.5),0 1px 3px rgba(0,0,0,.4)}
 }
-@media (min-width:821px){
+@media (min-width:821px) and (pointer:fine), (min-width:821px) and (pointer:none), (min-width:821px) and (orientation:landscape), (min-width:1101px){
 :root[data-theme="dark"]{--cv-accent:#ec7b40;--panel:#181b20;--panel-2:#20242a;--ink:#e6e9ee;--ink-2:#9aa3af;--line:#2d333b;--accent:#e6e9ee;--accent-soft:#2b313a;--on-accent:#14171b;--field:#20242a;
   --shadow:0 10px 30px rgba(0,0,0,.5),0 1px 3px rgba(0,0,0,.4)}
 
@@ -1482,8 +1482,8 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 #viewSeg{display:inline-flex;gap:2px;padding:3px;border-radius:9px;background:var(--panel-2)}
 #viewSeg button.vs{height:28px;padding:0 14px;border:0;font-weight:600;font-size:13px;color:var(--ink-2);border-radius:7px;background:transparent;min-width:44px}
 #viewSeg button.vs[aria-pressed="true"]{background:var(--panel);color:var(--ink);box-shadow:0 1px 2px rgba(23,26,31,.18)}
-@media (max-width:820px){#viewSeg button.vs{height:26px;padding:0 11px;font-size:12px;min-width:38px}}
-@media (max-width:820px){.dock,.brand-txt,.st-search{display:none!important}}
+@media (max-width:820px), (max-width:1100px) and (orientation:portrait) and (pointer:coarse){#viewSeg button.vs{height:26px;padding:0 11px;font-size:12px;min-width:38px}}
+@media (max-width:820px), (max-width:1100px) and (orientation:portrait) and (pointer:coarse){.dock,.brand-txt,.st-search{display:none!important}}
 /* Litematica export: the materials list */
 .exmats{border:1px solid var(--line);border-radius:10px;background:var(--panel-2);overflow:hidden}
 .exmh{display:flex;align-items:center;gap:10px;padding:8px 10px;border-bottom:1px solid var(--line)}
@@ -1500,7 +1500,7 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 .segsel{height:30px;max-width:100%;padding:0 26px 0 10px;border:1px solid var(--line);border-radius:8px;background-color:var(--panel);color:var(--ink);font:600 13px var(--f-ui,inherit);cursor:pointer;min-width:0}
 .segsel:hover{background-color:var(--panel-2)}
 .v3panel .segsel,.exrow .segsel,.pkids .segsel{width:100%}
-@media (min-width:821px){
+@media (min-width:821px) and (pointer:fine), (min-width:821px) and (pointer:none), (min-width:821px) and (orientation:landscape), (min-width:1101px){
 /* the rail, collapsed to icons */
 #app.cs .rail-toggle{display:flex;align-items:center;gap:12px;width:100%;height:28px;padding:0 8px;border:0;border-radius:8px;background:transparent;color:var(--ink-2);font-size:13px;font-weight:500;text-align:left;margin-bottom:2px}
 #app.cs .rail-toggle:hover{background:var(--panel-2);color:var(--ink)}
@@ -1514,7 +1514,7 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 .rail-tip{position:fixed;z-index:400;padding:6px 11px;border-radius:8px;background:var(--ink);color:var(--panel);font:600 12.5px var(--f-ui);white-space:nowrap;box-shadow:var(--shadow);pointer-events:none;opacity:0;transform:translate(-4px,-50%);transition:opacity .12s ease,transform .12s ease}
 .rail-tip.on{opacity:1;transform:translate(0,-50%)}
 }
-@media (max-width:820px){.rail-tip,.rail-toggle{display:none!important}}
+@media (max-width:820px), (max-width:1100px) and (orientation:portrait) and (pointer:coarse){.rail-tip,.rail-toggle{display:none!important}}
 @media (prefers-reduced-motion:reduce){.rail-tip{transition:none}}
 
 /* dock panes: one panel, or two when a tab has been dragged down */
@@ -1568,7 +1568,7 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 #app.cs.wallmode .viewport::after{content:"";position:absolute;inset:0;border:3px solid var(--wallc);pointer-events:none;z-index:3;box-shadow:inset 0 0 0 1px rgba(0,0,0,.12)}
 .stwall{display:inline-flex;align-items:center;gap:6px;padding:2px 9px;border-radius:99px;background:var(--wallc);color:#2a1800;font:700 10.5px var(--f-mono);letter-spacing:.08em;text-transform:uppercase}
 .stwall[hidden]{display:none}.stwall i{width:7px;height:7px;border-radius:50%;background:#2a1800}
-@media (max-width:820px){.stwall{display:none}}
+@media (max-width:820px), (max-width:1100px) and (orientation:portrait) and (pointer:coarse){.stwall{display:none}}
 /* the corner swatches: no letters on them, and never dimmed */
 #app.cs .csw .sltag{display:none}
 #app.cs .cornersw.dim{opacity:1}
@@ -1598,6 +1598,79 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 .dk-insp.inspector:not([hidden]),.props-win .inspector:not([hidden]){display:grid!important;gap:10px}
 
 .brand-txt{display:none}
+/* ---- phones and upright tablets: the plan fills the screen and the controls float over it ---- */
+@media (max-width:820px), (max-width:1100px) and (orientation:portrait) and (pointer:coarse){
+  #app{grid-template-rows:0 minmax(0,1fr)}
+  .topbar{position:relative;z-index:30;display:block;height:0;padding:0;border:0;background:none;pointer-events:none;overflow:visible}
+  .topbar>*{pointer-events:auto}
+  .mpill{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));display:flex;align-items:center;gap:2px;height:48px;padding:0 4px;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);pointer-events:auto;box-sizing:border-box}
+  #mPillL{left:10px;max-width:calc(100% - 196px);padding:0 6px 0 8px}
+  #mPillL .brand{margin:0;padding:0 2px}
+  #mPillL .tb-title{display:flex;flex-direction:column;align-items:flex-start;min-width:0;max-width:none}
+  #mPillL .planbtn{height:28px;padding:0 4px;max-width:100%;font-size:14.5px}
+  #mPillL .savestate{font-size:10.5px;line-height:1.1;margin:-2px 0 0 4px;min-height:0}
+  #mPillL .plandots{margin:1px 0 0 4px;justify-content:flex-start}
+  #mPillR{right:10px}
+  #mPillR .ib{width:40px;height:44px}
+  #mPillR #viewSeg{border:0;padding:0;margin:0 2px;background:transparent}
+  #mPillR #viewSeg button{height:34px;padding:0 10px;font-size:13px;border-radius:9px;background:var(--panel-2);color:var(--ink)}
+  #mPillR .tb-group{gap:0}
+  .mcol{position:absolute;right:10px;top:calc(68px + env(safe-area-inset-top,0px));display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);pointer-events:auto}
+  .mcol .ib,.mcol .objbtn{width:42px!important;height:40px;padding:0;justify-content:center}
+  .mcol .ib.caret{height:18px;width:42px!important}
+  .mcol .tb-group{display:flex;flex-direction:column;gap:2px;align-items:center}
+  .mcol .msep{width:26px;height:1px;background:var(--line);margin:2px 0}
+  /* the blocks: Primary over Secondary, bottom left above the tools */
+  #tbPair{position:fixed;left:12px;bottom:calc(92px + env(safe-area-inset-bottom,0px));z-index:12;width:78px;height:70px;margin:0;display:block;max-width:none}
+  #tbPair .tbblock{position:absolute;left:0;top:0;z-index:2;width:50px;height:50px;padding:0;border:3px solid var(--panel);border-radius:13px;background:var(--panel);box-shadow:var(--shadow);justify-content:center}
+  #tbPair .tbblock .sw img{width:44px;height:44px;border-radius:10px}
+  #tbPair .tbalt{position:absolute;left:36px;top:30px;z-index:1;width:42px;height:40px;padding:0;border:3px solid var(--panel);border-radius:11px;background:var(--panel);box-shadow:var(--shadow);justify-content:center}
+  #tbPair .tbalt .sw img{width:36px;height:34px;border-radius:8px;opacity:1;object-fit:cover}
+  #tbPair .tbalt>svg.i{display:none}
+  #tbPair .sltag{display:none}
+  /* the tools: a dark bar floating at the bottom */
+  .main{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);grid-template-areas:"stage"}
+  .railgrip{display:none!important}
+  .rail{grid-area:auto;position:absolute;left:10px;right:10px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:12;max-width:540px;margin:0 auto;height:64px;padding:0 6px;gap:2px;flex-direction:row;align-items:center;overflow:hidden;border:0;border-radius:22px;background:var(--ink);color:var(--panel);box-shadow:0 10px 28px rgba(22,30,27,.3)}
+  .rail .tool{flex:1 1 0;min-width:0;height:52px;border-radius:16px;color:var(--panel);display:grid;place-items:center}
+  .rail .tool svg.i{width:23px;height:23px}
+  .rail .tool .tl,.rail .tool .gtri{display:none!important}
+  .rail .tool[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+  .rail .tool:hover{background:color-mix(in srgb,var(--panel) 12%,transparent)}
+  .rail .tool[aria-pressed="true"]:hover{background:var(--accent)}
+  /* the stage: just the plan; the tool's options float above the tools */
+  .stage{position:relative;grid-template-rows:minmax(0,1fr)}
+  .statusbar{display:none}
+  .optbar.acc{position:absolute;left:92px;right:10px;bottom:calc(90px + env(safe-area-inset-bottom,0px));z-index:11;border:1px solid var(--line);border-radius:16px;background:var(--panel);box-shadow:var(--shadow)}
+  .optbar.acc:empty,.optbar.acc:not(:has(*)){display:none}
+  .acc-head{padding:5px 6px}
+  .acc-tog{height:40px;border-radius:11px}
+  .acc-body{top:auto;bottom:calc(100% + 6px);border-radius:16px;overflow:hidden}
+  .acc.open .acc-body{border:1px solid var(--line);box-shadow:var(--shadow)}
+  .acc-rows{max-height:min(52vh,460px)}
+  .fstrip{top:calc(68px + env(safe-area-inset-top,0px));left:10px;border-radius:14px}
+  .selbar{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+  .inspector,.inspector.lift{bottom:calc(92px + env(safe-area-inset-bottom,0px))}
+  .toast{top:calc(66px + env(safe-area-inset-top,0px))}
+  .objbar{z-index:13}
+  /* 3D: no drawing tools, just the view's own controls */
+  #app:has(#view3d:not([hidden])) :is(.rail,.optbar,#tbPair,.mcol){display:none!important}
+  #app:has(#view3d:not([hidden])) .v3bar{bottom:calc(14px + env(safe-area-inset-bottom,0px))}
+  #app:has(#view3d:not([hidden])) .v3pins{top:calc(68px + env(safe-area-inset-top,0px))}
+}
+/* All tools: every tool in a sheet, grouped */
+.tsheet-back{position:fixed;inset:0;z-index:58;background:rgba(10,14,13,.42);animation:tsfade .16s ease}
+.tsheet{position:fixed;left:0;right:0;bottom:0;z-index:59;max-height:82vh;overflow-y:auto;padding:8px 16px calc(20px + env(safe-area-inset-bottom,0px));background:var(--panel);border-radius:18px 18px 0 0;box-shadow:0 -10px 30px rgba(0,0,0,.2);display:grid;gap:14px;animation:tsup .2s ease}
+.tsheet .ts-handle{width:40px;height:5px;border-radius:3px;background:var(--line);justify-self:center}
+.tsheet .ts-head{display:flex;align-items:center;justify-content:space-between}.tsheet h2{margin:0;font-size:18px}
+.tsheet .ts-sec{display:grid;gap:6px}.tsheet .ts-lbl{font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.tsheet .ts-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.tsheet .ts-t{height:68px;border:1px solid var(--line);border-radius:12px;background:var(--panel-2);color:var(--ink);display:grid;place-items:center;align-content:center;gap:4px;font-size:12px;font-weight:700;padding:0}
+.tsheet .ts-t svg.i{width:22px;height:22px}
+.tsheet .ts-t[aria-pressed="true"]{border:1.5px solid var(--accent);background:var(--accent-soft);color:var(--accent)}
+@keyframes tsup{from{transform:translateY(30px);opacity:0}to{transform:none;opacity:1}}@keyframes tsfade{from{opacity:0}to{opacity:1}}
+@media (prefers-reduced-motion:reduce){.tsheet,.tsheet-back{animation:none}}
+
 </style>
 </head>
 <body>
@@ -1755,7 +1828,8 @@ const clampInt = (v, a, b, d) => { v = Math.round(Number(v)); return Number.isFi
 const SEG_RE = /^[A-Za-z0-9_\-]{1,64}$/;
 const COLOR_RE = /^#[0-9a-fA-F]{6}$/;
 const sgn = n => (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(n);
-const isMobile = () => matchMedia('(max-width: 820px)').matches;
+const MOB_MQ = '(max-width: 820px), (max-width: 1100px) and (orientation: portrait) and (pointer: coarse)';   // phones, and tablets held upright
+const isMobile = () => matchMedia(MOB_MQ).matches;
 function fgFor(hex) { if (!COLOR_RE.test(hex)) return '#fff'; const [r, g, b] = hex2rgb(hex); return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#141a18' : '#ffffff'; }
 function lsGet(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch { return null; } }
 let MODELVER = 0, LMAP = null;   // edits so far, for the light map's cache
@@ -1776,6 +1850,7 @@ const ICONS = {
   vmore: '<circle cx="10" cy="4.5" r=".9" fill="currentColor"/><circle cx="10" cy="10" r=".9" fill="currentColor"/><circle cx="10" cy="15.5" r=".9" fill="currentColor"/>',
   infoi: '<circle cx="10" cy="10" r="7.4"/><path d="M10 9.2v5"/><circle cx="10" cy="6.3" r=".55" fill="currentColor"/>',
   pointer: '<path d="M5 3l10.5 6.6-4.6 1.2-2.3 4.6z"/>',
+  grid4: '<rect x="3.5" y="3.5" width="5.5" height="5.5" rx="1"/><rect x="11" y="3.5" width="5.5" height="5.5" rx="1"/><rect x="3.5" y="11" width="5.5" height="5.5" rx="1"/><rect x="11" y="11" width="5.5" height="5.5" rx="1"/>',
   light: '<path d="M10 9.6v7.9"/><path d="M10 2.4c-2.3 2.5-2.7 4.3-1 6.2h2c1.7-1.9 1.3-3.7-1-6.2z"/><path d="M4.2 5.2l1.3.9M15.8 5.2l-1.3.9M3.6 9.6h1.5M16.4 9.6h-1.5"/>',
   roof: '<path d="M2 10.5L10 4l8 6.5"/><path d="M4.5 8.6V16h11V8.6"/>',
   floors: '<rect x="4" y="3" width="12" height="4" rx="1"/><rect x="4" y="8" width="12" height="4" rx="1"/><rect x="4" y="13" width="12" height="4" rx="1"/>',
@@ -10071,7 +10146,7 @@ const PLAN_SECTIONS = [['Features', ['stair', 'door', 'window', 'light', 'roof']
 const TOOL_DEFS = TOOL_GROUPS.flatMap(g => g.tools); toolDefsReady = true; syncToolKeys();
 const GROUP_OF = {}; TOOL_GROUPS.forEach(g => g.tools.forEach(d => { GROUP_OF[d[0]] = g.id; }));
 const EDIT_TOOLS = new Set(['extend', 'pencil', 'shape', 'bucket', 'select', 'eraser', 'zone', 'stamp', 'anchor', 'note', 'route', 'roof', 'door', 'window', 'stair', 'path', 'light']);
-const MOBILE_TOOLS = ['pointer', 'pencil', 'shape', 'bucket', 'select', 'eraser'];
+const MOBILE_TOOLS = ['pointer', 'pencil', 'shape', 'bucket', 'eraser', 'select'];
 const toolDef = id => TOOL_DEFS.find(d => d[0] === id);
 function groupShown(g) { if (isMobile() && g.id === 'plan' && (view.tool === 'stair' || view.tool === 'path')) return toolDef(view.tool); const on = GROUP_OF[view.tool] === g.id ? view.tool : view.groupLast[g.id]; return g.tools.find(d => d[0] === on) || g.tools[0]; }
 function buildRail() {
@@ -10081,8 +10156,8 @@ function buildRail() {
     // Pick and Pan share a slot: tap Pick again for Pan, and again to go back
     for (const id of MOBILE_TOOLS) rail.append(id === 'pointer' ? el('button', { class: 'tool', 'data-pickpan': '1', 'aria-pressed': 'false', 'aria-label': 'Pick. Tap again for Pan', onclick: () => { const pan = view.tool === 'pointer'; setTool(pan ? 'pan' : 'pointer'); if (pan && !view._panTold) { view._panTold = true; toast('Pan: drag to move round the plan. Tap again for Pick.'); } } }, icon('pointer'), el('span', { class: 'tl', text: 'Pick' })) : btn(toolDef(id)));
     // the last slot shows the Plan tool in use; a tap opens the list of plan tools
-    const g = TOOL_GROUPS.find(x => x.id === 'plan');
-    rail.append(el('button', { class: 'tool tgroup', 'data-group': 'plan', 'aria-label': 'Plan tools', 'aria-haspopup': 'true', 'aria-pressed': 'false', onclick: ev => openToolGroup(ev.currentTarget, 'plan') }, icon(groupShown(g)[0]), el('span', { class: 'tl', text: groupShown(g)[1] }), el('span', { class: 'gtri' })));
+    // the last slot opens every tool; while one of them is in use it shows that tool
+    rail.append(el('button', { class: 'tool', 'data-all': '1', 'aria-label': 'All tools', 'aria-haspopup': 'dialog', 'aria-pressed': 'false', title: 'All tools', onclick: openAllTools }, icon('grid4'), el('span', { class: 'tl', text: 'All tools' })));
   } else if (!isMobile()) {
     buildStudioRail(rail);
   } else if (false) {
@@ -10120,6 +10195,38 @@ function attachRailGrip() {
   grip.addEventListener('pointerdown', e => { e.preventDefault(); x0 = e.clientX; w0 = clamp(Number(view.railW) || 56, 56, 240); document.body.classList.add('railsizing'); addEventListener('pointermove', move); addEventListener('pointerup', up); });
   grip.addEventListener('dblclick', () => { view.railW = 56; applyRailWidth(); savePrefs(); });
 }
+/* All tools: a sheet of every tool, in groups */
+const ALL_TOOLS = [['Draw and edit', ['pencil', 'shape', 'bucket', 'path', 'select', 'eraser', 'extend', '@fr']], ['Structure', ['stair', 'door', 'window', 'light', 'roof']], ['Plan', ['zone', 'stamp', 'route', 'note', 'anchor', 'measure', 'pointer', 'pan']]];
+function closeAllTools() { for (const n of document.querySelectorAll('.tsheet,.tsheet-back')) n.remove(); }
+function openAllTools() {
+  closePopover(); closeAllTools(); const ro = store.readOnly;
+  const tile = id => {
+    if (id === '@fr') return ro ? null : el('button', { class: 'ts-t', onclick: () => { closeAllTools(); openFindReplace(); } }, icon('swap'), 'Replace');
+    if (ro && EDIT_TOOLS.has(id)) return null;
+    return el('button', { class: 'ts-t', 'aria-pressed': String(view.tool === id), onclick: () => { closeAllTools(); setTool(id); } }, icon(id), STUDIO_NAME[id] || id);
+  };
+  const back = el('div', { class: 'tsheet-back', onclick: closeAllTools });
+  const sheet = el('div', { class: 'tsheet', role: 'dialog', 'aria-label': 'All tools' }, el('div', { class: 'ts-handle' }),
+    el('div', { class: 'ts-head' }, el('h2', { text: 'All tools' }), el('button', { class: 'ib', 'aria-label': 'Close', onclick: closeAllTools }, icon('x'))),
+    ...ALL_TOOLS.map(([name, ids]) => { const ts = ids.map(tile).filter(Boolean); return ts.length ? el('div', { class: 'ts-sec' }, el('span', { class: 'ts-lbl', text: name }), el('div', { class: 'ts-grid' }, ...ts)) : null; }).filter(Boolean));
+  document.body.append(back, sheet);
+}
+/* phones and upright tablets: the top bar's buttons go into floating pills (the plan's name on the left, undo and 2D/3D on the right),
+   a column of extras down the right and the blocks above the tools; on a computer they go back where they were */
+const MOBL = { home: null };
+function mobLayout() {
+  const tb = $('.topbar'); if (!tb) return;
+  const ids = ['.topbar .brand', '.topbar .tb-title', '#undoGrp', '#viewSeg', '#moreBtn', '#searchBtn', '#exportBtn', '#objBtn', '#symTools', '#tbPair'];
+  if (!MOBL.home) MOBL.home = ids.map(q => { const n = $(q); return n ? [n, n.parentNode, n.nextSibling] : null; }).filter(Boolean);
+  const mob = isMobile();
+  if (!mob) { for (const n of ['#mPillL', '#mPillR', '#mCol']) { const x = $(n); if (x) x.remove(); } for (const [n, p, nx] of MOBL.home) p.insertBefore(n, nx && nx.parentNode === p ? nx : null); return; }
+  if ($('#mPillL')) return;
+  const L = el('div', { class: 'mpill', id: 'mPillL' }), R = el('div', { class: 'mpill', id: 'mPillR' }), C = el('div', { class: 'mcol', id: 'mCol' });
+  L.append($('.topbar .brand'), $('.topbar .tb-title'));
+  R.append($('#undoGrp'), $('#viewSeg'), $('#moreBtn'));
+  C.append($('#searchBtn'), $('#exportBtn'), $('#objBtn'), el('div', { class: 'msep' }), $('#symTools'));
+  tb.append(L, R, C, $('#tbPair'));
+}
 function attachGroupButton(b, g, againOpens) {
   let timer = null, held = false;
   b.addEventListener('pointerdown', () => { held = false; clearTimeout(timer); timer = setTimeout(() => { held = true; try { if (navigator.vibrate) navigator.vibrate(10); } catch {} openToolGroup(b, g.id); }, 380); });
@@ -10144,6 +10251,12 @@ function renderRail() {
   const rl = onRoof();
   for (const b of document.querySelectorAll('#rail .tool')) {
     const rerase = rl && view.roofMode !== 'pick';
+    if (b.dataset.all) {
+      const other = !MOBILE_TOOLS.includes(view.tool) && view.tool !== 'pan', id = other ? view.tool : 'grid4', ic = b.querySelector('svg.i');
+      b.setAttribute('aria-pressed', String(other)); b.setAttribute('aria-label', other ? `${STUDIO_NAME[view.tool] || 'Tool'} in use. All tools` : 'All tools');
+      if (ic && ic.dataset.id !== id) { const n = icon(id); n.dataset.id = id; ic.replaceWith(n); }
+      continue;
+    }
     if (b.dataset.pickpan) {
       const pan = view.tool === 'pan', id = pan ? 'pan' : 'pointer', ic = b.querySelector('svg.i');
       b.setAttribute('aria-pressed', String(pan || view.tool === 'pointer')); b.setAttribute('aria-label', pan ? 'Pan. Tap for Pick' : 'Pick. Tap again for Pan');
@@ -11518,7 +11631,7 @@ function renderOptbarH(target) {
     if ((t === 'pencil' || t === 'shape' || t === 'bucket') && roofLevel(curLevel())) note = 'This is a roof floor: one layer of blocks, no walls.';
     else if (t === 'pencil' || t === 'shape' || t === 'bucket') {
       if (view.wall) sum.push('Wall');
-      note = ribbonOn() ? null : 'Your Primary and Secondary blocks are the two swatches in the top bar: tap the second one to swap them. The Wall button turns wall mode on, so new blocks are walls, which rise to full floor height in 3D.';
+      note = ribbonOn() ? null : (isMobile() ? 'Your Primary and Secondary blocks sit above the tools, bottom left: tap the front one to choose, the one behind to swap them. The Wall button on the right turns wall mode on, so new blocks are walls, which rise to full floor height in 3D.' : 'Your Primary and Secondary blocks are the two swatches in the top bar: tap the second one to swap them. The Wall button turns wall mode on, so new blocks are walls, which rise to full floor height in 3D.');
     }
     if (t === 'select') note = view.selShape === 'wand' ? 'Tap a block to select what it touches, or every block of that type with Every match.' : null;
   } else if (t === 'roof') {
@@ -15476,7 +15589,7 @@ function wire() {
   new ResizeObserver(() => resize()).observe(vp);
   const retheme = () => { readTheme(); requestDraw(); if (plan && view.tab === 'objects') renderPanel(); if (three && show3D()) build3D(false); };
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', retheme);
-  matchMedia('(max-width: 820px)').addEventListener('change', () => { if (pov.on && isMobile()) povExit(); if (view.split && !splitOK()) setViewMode('3d'); buildRail(); applyUiMode(); if (plan) { renderOptbar(); renderSelbar(); } if (settingsOpen()) renderSettings(); });
+  matchMedia(MOB_MQ).addEventListener('change', () => { mobLayout(); if (pov.on && isMobile()) povExit(); if (view.split && !splitOK()) setViewMode('3d'); buildRail(); applyUiMode(); if (plan) { renderOptbar(); renderSelbar(); } if (settingsOpen()) renderSettings(); });
   new MutationObserver(retheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class', 'style'] });
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushNow(); });
   window.addEventListener('pagehide', () => { if (prefPending) { clearTimeout(prefTimer); writePrefs(); } flushNow(); });
@@ -15700,7 +15813,7 @@ async function boot() {
   if (packsOn) await Promise.race([pack.localDone, new Promise(r => setTimeout(r, 5000))]);
   if (!pack.list.some(P => P.on && P.d) || !texVer) rebuildTextures();
   await Promise.race([swLoad(), new Promise(r => setTimeout(r, 1500))]);
-  readTheme(); buildRail(); wire(); applyUiMode(); resize();
+  readTheme(); buildRail(); wire(); mobLayout(); applyUiMode(); resize();
   if (view.blockCat && !CATS.includes(view.blockCat)) view.blockCat = '';
   view.favs = view.favs.filter(id => BY_ID[id]); view.recents = view.recents.filter(id => BY_ID[id]);
   showOverlay('Loading your plans…');
