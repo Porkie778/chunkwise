@@ -733,7 +733,37 @@ h4{margin:0 0 8px;font-size:12px;color:var(--ink-2);font-weight:700}
 .mi svg.i{width:17px;height:17px}
 .msep{height:1px;background:var(--line);margin:5px 4px}
 .mnote{margin:6px 10px 4px;max-width:250px;font-size:11.5px;line-height:1.4;color:var(--ink-2)}
-.sbbox{display:grid;gap:10px;width:min(360px,calc(100vw - 64px))}.sbbox p{margin:0;font-size:13px;line-height:1.45}.sbmsg{min-height:1em;color:var(--ink-2)}.sbmsg.bad{color:var(--danger)}.sblinks{display:flex;justify-content:space-between;gap:8px}
+.sbbox{display:grid;gap:10px;width:min(360px,calc(100vw - 64px))}.sbbox p{margin:0;font-size:13px;line-height:1.45}.sbmsg{min-height:1em;color:var(--ink-2)}.sbmsg.bad{color:var(--danger)}.sblinks{display:flex;justify-content:space-between;gap:8px}.sblab{font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:-4px}.sbrow{display:flex;gap:8px}.sbrow .field{flex:1;min-width:0}.sbacts{display:flex;flex-wrap:wrap;gap:8px}.sbwarn{padding:10px 12px;border-radius:8px;background:color-mix(in srgb,var(--danger) 12%,transparent);color:var(--danger);font-weight:700}
+/* home: the plans as tiles */
+.home{position:fixed;inset:0;z-index:40;display:grid;grid-template-rows:auto minmax(0,1fr);background:var(--paper);color:var(--ink)}
+.hm-top{display:flex;align-items:center;gap:12px;padding:10px 20px;border-bottom:1px solid var(--line);background:var(--panel);min-height:56px}
+.hm-brand{display:flex;align-items:center;gap:9px}.hm-brand svg{width:26px;height:26px;display:block}.hm-brand svg.wordmark{width:auto;height:16px;fill:var(--ink)}
+.hm-acct{margin-left:auto;display:flex;align-items:center;gap:8px;min-width:0}
+.hm-main{overflow-y:auto;padding:24px 20px 48px}
+.hm-head{display:flex;align-items:center;gap:10px;max-width:1400px;margin:0 auto 16px}.hm-head h1{margin:0;font:700 22px/1.2 var(--f-ui);letter-spacing:-.01em}
+.hm-count{font-size:13px;color:var(--ink-2)}.hm-sp{flex:1}
+.hm-grid{display:grid;gap:16px;max-width:1400px;margin:0 auto;grid-template-columns:repeat(auto-fill,minmax(var(--tw),1fr))}
+.hm-grid.sz-s{--tw:150px;gap:12px}.hm-grid.sz-l{--tw:230px}.hm-grid.sz-xl{--tw:340px;gap:20px}
+.hm-tile{display:grid;grid-template-rows:auto auto;background:var(--panel);border:1px solid var(--line);border-radius:12px;overflow:hidden;transition:box-shadow .15s,border-color .15s}
+.hm-tile:hover,.hm-tile:focus-within{border-color:var(--ink-2);box-shadow:var(--shadow)}.hm-tile.cur{border-color:var(--accent)}
+.hm-open{display:block;width:100%;padding:0;border:0;background:none}
+.hm-pic{aspect-ratio:16/10;background:linear-gradient(#7fb2f0,#cfe3f7);overflow:hidden}.hm-pic img{display:block;width:100%;height:100%;object-fit:cover;image-rendering:auto}
+.hm-pic.wait{background:linear-gradient(100deg,var(--panel-2) 30%,var(--panel) 50%,var(--panel-2) 70%);background-size:300% 100%;animation:hmwait 1.4s linear infinite}
+@keyframes hmwait{from{background-position:100% 0}to{background-position:0 0}}
+@media (prefers-reduced-motion:reduce){.hm-pic.wait{animation:none}}
+.hm-foot{display:flex;align-items:center;gap:4px;padding:8px 6px 8px 12px;border-top:1px solid var(--line);min-width:0}
+.hm-name{flex:1;min-width:0;font-weight:700;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sz-s .hm-foot{padding:5px 4px 5px 9px}.sz-s .hm-name{font-size:12.5px}
+.hm-add{display:grid;place-items:center;min-height:120px;border:2px dashed var(--line);border-radius:12px;background:transparent;color:var(--ink-2);font-weight:700}
+.hm-add:hover{border-color:var(--accent);color:var(--accent)}.hm-addin{display:grid;justify-items:center;gap:6px}.hm-add svg.i{width:34px;height:34px}
+.hm-wait{max-width:1400px;margin:24px auto;color:var(--ink-2)}
+.hm-opts{display:grid;gap:8px;width:min(380px,calc(100vw - 64px))}
+.hm-opt{display:flex;align-items:center;gap:12px;padding:12px 14px;border:1px solid var(--line);border-radius:10px;background:var(--panel);text-align:left}
+.hm-opt:hover{border-color:var(--accent)}.hm-opt svg.i{width:24px;height:24px;color:var(--accent)}.hm-opt span{display:grid;gap:2px}.hm-opt small{color:var(--ink-2);font-size:12.5px}
+.hm-hi{border:0;background:none;padding:4px 2px;font-weight:700;text-decoration:underline;text-underline-offset:3px;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.home-on .toast{position:fixed;z-index:70;bottom:28px;top:auto}
+@media (max-width:820px){.hm-top{padding:8px 14px}.hm-main{padding:16px 12px 40px}.hm-head h1{font-size:19px}.hm-grid.sz-s{--tw:120px;gap:10px}.hm-grid.sz-l{--tw:160px;gap:12px}.hm-grid.sz-xl{--tw:260px}.hm-brand svg.wordmark{height:13px}}
+
 .topbar{position:relative}.texbar{position:absolute;left:0;right:0;bottom:-2px;z-index:95;height:3px;background:color-mix(in srgb,var(--accent) 18%,transparent);pointer-events:none}.texbar i{display:block;height:100%;width:0;background:var(--accent);transition:width .2s linear}.texbar span{position:absolute;right:8px;top:6px;padding:1px 7px;opacity:.92;border-radius:999px;background:var(--panel);border:1px solid var(--line);box-shadow:var(--shadow);font:600 10.5px var(--f-mono);color:var(--ink-2);white-space:nowrap}
 .mlabel{padding:6px 10px 3px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
 .mrow{display:flex;gap:6px;padding:4px 6px}
@@ -764,7 +794,8 @@ h4{margin:0 0 8px;font-size:12px;color:var(--ink-2);font-weight:700}
 .setchk:hover{background:var(--panel-2)}
 .setchk input{accent-color:var(--accent);width:16px;height:16px;margin:0;flex:none}
 .settip{position:fixed;z-index:80;max-width:300px;padding:7px 10px;border-radius:7px;background:var(--ink);color:var(--panel);font-size:12.5px;line-height:1.45;pointer-events:none;box-shadow:var(--shadow)}
-.tipbtn{margin-left:6px;padding:0 4px;border:0;background:transparent;color:var(--ink-2);font-size:14px;line-height:1;vertical-align:middle}
+.infotip{display:inline-grid;place-items:center;width:20px;height:20px;margin-left:5px;padding:0;border:0;border-radius:50%;background:transparent;color:var(--ink-2);vertical-align:-4px;cursor:help;flex:none}.infotip svg.i{width:16px;height:16px}.infotip:hover,.infotip:focus-visible{color:var(--ink)}
+.setchkw{display:flex;align-items:center;min-width:0}.setchkw .setchk{min-width:0}
 .rb-floor span{display:grid;justify-items:center;line-height:1.2}
 .rb-floor small{font-weight:400;font-size:10.5px;color:var(--ink-2)}
 img[src$="#iso"]{image-rendering:auto!important}
@@ -1694,6 +1725,8 @@ const fmtHalf = v => (Number.isInteger(v) ? String(v) : v.toFixed(1)).replace('-
 
 const ICONS = {
   user: '<circle cx="10" cy="7" r="3.2"/><path d="M3.8 16.5c.9-3 3.4-4.6 6.2-4.6s5.3 1.6 6.2 4.6"/>',
+  vmore: '<circle cx="10" cy="4.5" r=".9" fill="currentColor"/><circle cx="10" cy="10" r=".9" fill="currentColor"/><circle cx="10" cy="15.5" r=".9" fill="currentColor"/>',
+  infoi: '<circle cx="10" cy="10" r="7.4"/><path d="M10 9.2v5"/><circle cx="10" cy="6.3" r=".55" fill="currentColor"/>',
   pointer: '<path d="M5 3l10.5 6.6-4.6 1.2-2.3 4.6z"/>',
   roof: '<path d="M2 10.5L10 4l8 6.5"/><path d="M4.5 8.6V16h11V8.6"/>',
   floors: '<rect x="4" y="3" width="12" height="4" rx="1"/><rect x="4" y="8" width="12" height="4" rx="1"/><rect x="4" y="13" width="12" height="4" rx="1"/>',
@@ -3425,9 +3458,9 @@ function toolHow(t = view.tool) {
   return null;
 }
 function brushExpand(pts) {
-  const n = view.tool === 'eraser' ? view.brush : 1; if (n <= 1) return pts;
-  const r = (n - 1) >> 1, m = new Map();
-  for (const [x, z] of pts) for (let dz = -r; dz <= r; dz++) for (let dx = -r; dx <= r; dx++) m.set(K(x + dx, z + dz), [x + dx, z + dz]);
+  const k = brushKind(), n = k === 'brush' && view.tool === 'eraser' ? view.brush : k === 'pen' ? view.penBrush || 1 : 1; if (n <= 1) return pts;
+  const a = -((n - 1) >> 1), b = a + n - 1, m = new Map();
+  for (const [x, z] of pts) for (let dz = a; dz <= b; dz++) for (let dx = a; dx <= b; dx++) m.set(K(x + dx, z + dz), [x + dx, z + dz]);
   return [...m.values()];
 }
 const polyOpts = () => ({ sides: view.polySides, point: view.polyPoint });
@@ -4462,8 +4495,8 @@ function pickBuilding(x, z, add) {
 function setRoofMode(m) { view.roofMode = m; cv.classList.toggle('grab', view.tool === 'roof' && m === 'pick'); renderRail(); renderOptbar(); requestDraw(); }
 function roofBrush(x0, z0, x1, z1) {
   const L = curLevel(), R = L && L.roofSpec; if (!R || !G.rset) return;
-  const n = view.brush || 1, r = (n - 1) >> 1;
-  for (const [x, z] of lineCells(x0, z0, x1, z1)) for (let dz = -r; dz <= r; dz++) for (let dx = -r; dx <= r; dx++) {
+  const n = view.brush || 1, a = -((n - 1) >> 1), b = a + n - 1;
+  for (const [x, z] of lineCells(x0, z0, x1, z1)) for (let dz = a; dz <= b; dz++) for (let dx = a; dx <= b; dx++) {
     const k = K(x + dx, z + dz);
     if (G.rmode === 'erase') { if (G.covered.has(k) && !G.rset.has(k)) { G.rset.add(k); G.rhit = true; } else if (!G.covered.has(k) && !G.rset.has(k)) G.rmiss = true; }
     else if (G.rset.delete(k)) G.rhit = true;
@@ -4736,7 +4769,7 @@ function roofRows(L, i) {
         hint(sb ? 'The roof options now change this building only. Tap empty ground to go back to all of them.' : 'Tap a building on the plan to give it its own roof.');
       } else hint('This floor is one building. Draw a separate building on it to give that one its own roof.');
       row('Brush', null, seg([['pick', nB > 1 ? 'Pick' : 'Move', null, nB > 1 ? 'Pick a building' : 'Move around'], ['erase', 'Erase', null, 'Erase roof'], ['restore', 'Put back', null, 'Put roof back']], view.roofMode, v => setRoofMode(v), 'Roof brush'));
-      if (view.roofMode !== 'pick') row('Brush size', null, seg(BRUSHES.map(n => [n, `${n}×${n}`]), view.brush, v => { view.brush = v; rerender(); }, 'Brush size'));
+      if (view.roofMode !== 'pick') row('Brush size', null, brushStep('brush', rerender));
       if (L.roofSpec && L.roofSpec.skip.length) row('Erased', `${L.roofSpec.skip.length.toLocaleString()} spots`, el('button', { class: 'btn sm', onclick: restoreRoofSpots }, icon('history'), 'Put it all back'));
       hint(view.roofMode === 'erase' ? 'Brush over parts of the floor that shouldn’t be roofed, like a deck. The roof refits around them.' : view.roofMode === 'restore' ? 'Brush over erased parts to roof them again.' : 'Erase leaves parts of the floor, like a deck, out of the roof.');
     out.push(el('div', { class: 'ddsep' }), el('div', { class: 'ddkids' }, ...roofActions(L, i)));
@@ -4905,7 +4938,38 @@ const DOOR_TYPES = [['std', 'Standard', 'door', '1 wide, 2 high'], ['double', 'D
 const DOOR_STYLES = [['plain', 'Plain', 'door'], ['frame', 'Framed', 'wFrame'], ['key', 'Keystone', 'dKey'], ['round', 'Round arch', 'dArch'], ['point', 'Pointed arch', 'dPoint']];
 const doorStyles = dt => DOOR_STYLES.filter(s => dt === 'arch' || (s[0] !== 'round' && s[0] !== 'point'));
 const TRIM_BLOCKS = ['stripped_spruce_log', 'stripped_oak_log', 'stripped_dark_oak_log', 'spruce_log', 'oak_log', 'dark_oak_log', 'spruce_planks', 'dark_oak_planks', 'oak_planks', 'stone_bricks', 'chiseled_stone_bricks', 'smooth_stone', 'polished_andesite', 'polished_deepslate', 'deepslate_bricks', 'polished_blackstone', 'bricks', 'quartz_block', 'smooth_sandstone', 'cut_sandstone'];
-const BRUSHES = [1, 3, 5, 7, 9];   // eraser and roof brush sizes
+const BRUSH_MAX = 32;
+/* the brush the tool in hand has: the Eraser's and the roof's (view.brush), the Pencil's when it isn't drawing walls (view.penBrush), the Path's width */
+function brushKind(t = view.tool) {
+  if (t === 'roof') return view.roofMode !== 'pick' ? 'brush' : null;
+  if (t === 'eraser') return view.eraseMode === 'brush' || view.eraseMode === 'line' ? 'brush' : null;
+  if (t === 'pencil') return view.wall ? null : 'pen';
+  if (t === 'path') return 'path';
+  return null;
+}
+const brushOf = k => k === 'pen' ? view.penBrush || 1 : k === 'path' ? pathOpt().w : view.brush || 1;
+function setBrushSize(k, v, quiet) {
+  v = clamp(Math.round(v), 1, BRUSH_MAX); if (!k || v === brushOf(k)) return;
+  if (k === 'path') { setPathOpt({ w: v }); } else { if (k === 'pen') view.penBrush = v; else view.brush = v; savePrefs(); renderOptbar(); updateHoverGhost(); requestDraw(); }
+  if (!quiet) toast(`Brush size ${v}`);
+}
+const brushStep = (k, rr) => stepBox('Brush size', brushOf(k), 1, BRUSH_MAX, v => { setBrushSize(k, v, true); if (rr) rr(); });
+/* [ and ]: the brush size, or with a shape the size across (Alt: down, Shift: both, Shift+Alt: square up to the larger side) */
+function sizeKey(e) {
+  const d = e.code === 'BracketRight' ? 1 : -1;
+  if (curShape()) {
+    const n = view.tool === 'shape' && view.shapeKind === 'rect' && wallRoomOn() && drawPosts().on && drawPosts().n > 1 ? drawPosts().n : 1, fit = v => postLen(clamp(v, 1, 256), n > 1 ? n : 0);
+    let w = view.w, h = view.h;
+    if (e.shiftKey && e.altKey) { const m = Math.max(w, h); w = h = w === h ? m + d * n : m; }
+    else if (e.shiftKey) { w += d * n; h += d * n; }
+    else if (e.altKey) { h += d * n; if (view.lock) w = Math.round(h / view.ratio); }
+    else { w += d * n; if (view.lock) h = Math.round(w * view.ratio); }
+    view.w = fit(w); view.h = fit(h); if (e.shiftKey && e.altKey) view.ratio = 1; view.sizeMode = 'size';
+    toast(`${view.w} across × ${view.h} down`); renderOptbar(); updateHoverGhost(); requestDraw(); savePrefs(); return true;
+  }
+  const k = brushKind(); if (!k) return false;
+  setBrushSize(k, brushOf(k) + d); return true;
+}
 const WALL_LOOKS = [['same', 'Same as floor'], ['dark', 'Darker'], ['outline', 'Outlined'], ['hatch', 'Hatched']];
 const view = { z: 22, ox: 0, oy: 0, tool: 'shape', mode: 'draw', shapeKind: 'rect', selShape: 'rect', eraseMode: 'brush', zoneShape: 'rect', zoneOp: 'new', roofMode: 'pick', roofSel: [], roofPick: null, roofMulti: false, bhPick: null, roomSel: null, mix: null, altMix: null, pattern: 'none', patBlock: 'polished_andesite', penPat: 'none', penPatBlock: 'polished_andesite', postEvery: 0, postBlock: 'stripped_spruce_log', roofTab: 'shape', optOpen: false, brush: 1, eraseT: { blocks: true, paths: false, routes: false, zones: false }, railMode: 'all', groupLast: { nav: 'pointer', build: 'pencil', edit: 'select', plan: 'zone' }, lastBuild: 'pencil', selOp: 'new', drawOp: 'place', fill: 'solid', sizeMode: 'drag', w: 9, h: 9, lock: false, ratio: 1, block: 'oak_planks', altBlock: 'cobblestone', stamp: null, rot: 0, inspFor: null, expKind: 'litematica', expScope: 'all', uiMode: 'rail', flat2d: false, wallLook: 'same', railMin: false, ribbonTab: 'home', ribbonMin: false, setCat: null, roofWalls: true, roofStyled: false, rampOuter: false, fenceFill: 'base', fenceH: 2, extN: 1, wallThick: 1, wallStyle: null, cornerSw: true, doorType: 'std', archW: 3, archWAuto: true, archH: 4, archHAuto: true, doorStyle: 'plain', doorTrim: null, winStyle: 'plain', winTrim: null, fov: 70, povSens: 1, povKeys: null, doorW: 1, winAuto: true, winW: 2, winH: 2, winSill: 1, winGlass: 'pane', winDepth: 'outer',
   hover: null, ghost: null, preview: null, measure: null, selected: null, is3D: false, tab: 'floors', win: null, contig: true, wall: false, pencil: 'free', showMid: true, sideOpen: true, net: 'power', routeOp: 'place', circleKind: 'circle', polySides: 6, polyPoint: false, ghostAlpha: 0.35, bface: 'n', btop: false, lastRoof: null, favs: [], recents: [], blockSort: 'family', blockCat: '', bq: '',
@@ -4913,7 +4977,7 @@ const view = { z: 22, ox: 0, oy: 0, tool: 'shape', mode: 'draw', shapeKind: 'rec
 const mirror = { x: false, z: false, radial: 0, ax: 0.5, az: 0.5, placing: false };
 const v3 = { upTo: false, spread: 1, walls: true, light: false, tod: 12, gamma: 1, sunMoon: true, smooth: true, scn: null, rock: true, roofs: true, dims: true, smoothTex: true, clouds: true };
 const ZMIN = 2, ZMAX = 96;
-function syncedSettings() { return { roofWalls: view.roofWalls !== false, layers: { ...view.layers }, originStyle: view.originStyle, flat2d: !!view.flat2d, wallLook: view.wallLook, zoneStyle: view.zoneStyle, zoneAlpha: view.zoneAlpha, recentColors: view.recentColors.slice(), showMid: view.showMid, v3: { walls: v3.walls, spread: v3.spread, upTo: v3.upTo, light: v3.light, tod: v3.tod, rock: v3.rock, roofs: v3.roofs, clouds: v3.clouds }, favs: view.favs.slice(), recents: view.recents.slice(), blockSort: view.blockSort, blockDesc: !!view.blockDesc, blockIcons: view.blockIcons || 'list', ghostAlpha: view.ghostAlpha, presets: view.presets.slice() }; }
+function syncedSettings() { return { roofWalls: view.roofWalls !== false, layers: { ...view.layers }, originStyle: view.originStyle, flat2d: !!view.flat2d, wallLook: view.wallLook, zoneStyle: view.zoneStyle, zoneAlpha: view.zoneAlpha, recentColors: view.recentColors.slice(), showMid: view.showMid, v3: { walls: v3.walls, spread: v3.spread, upTo: v3.upTo, light: v3.light, tod: v3.tod, rock: v3.rock, roofs: v3.roofs, clouds: v3.clouds }, favs: view.favs.slice(), recents: view.recents.slice(), blockSort: view.blockSort, blockDesc: !!view.blockDesc, blockIcons: view.blockIcons || 'list', ghostAlpha: view.ghostAlpha, presets: view.presets.slice(), keys: view.keys ? { ...view.keys } : null, povKeys: view.povKeys ? { ...view.povKeys } : null }; }
 const SYNC_DEFAULTS = JSON.stringify(syncedSettings());
 const sync = { ref: null, last: null, ready: false, timer: null };
 const prefs = lsGet(LS_VIEW) || {};
@@ -4977,7 +5041,7 @@ function keyBindBtn(a, name, again) {
   return keyCatchBtn('tk-' + a, name, () => keyName(keyOf(a)), ev => {
     const k = ev.key.length === 1 ? ev.key.toLowerCase() : null;
     if (ev.ctrlKey || ev.metaKey || ev.altKey || !k) return 'Use a single letter, number or symbol key, without Ctrl, ⌘ or Alt.';
-    if (KEY_FIXED.has(k)) return `${keyName(k)} is kept for ${k === ' ' ? 'panning' : k === '[' || k === ']' ? 'changing floors' : k === '?' || k === '/' ? 'the keys sheet' : 'zooming'}.`;
+    if (KEY_FIXED.has(k)) return `${keyName(k)} is kept for ${k === ' ' ? 'panning' : k === '[' || k === ']' ? 'brush size and changing floors' : k === '?' || k === '/' ? 'the keys sheet' : 'zooming'}.`;
     const swapped = setKey(a, k); again(); if (swapped) toast(`${keyName(k)} was ${swapped}. That now has ${keyName(keyOf(KEY_ACTIONS.find(r => r[1] === swapped)[0]))}.`);
   });
 }
@@ -5036,7 +5100,7 @@ function syncBldTools() {
   if (p.tourDone) view.tourDone = true;
   if (['drag', 'tap'].includes(p.measureHow)) view.measureHow = p.measureHow;
   if (p.flight && typeof p.flight === 'object') { const f = p.flight; view.flight = { kind: ['straight', 'l', 'spiral', 'ladder'].includes(f.kind) ? f.kind : 'straight', w: clampInt(f.w, 1, 4, 2), r: clampInt(f.r, 1, 4, 2), under: f.under === 'solid' ? 'solid' : 'open', dir: ['n', 'e', 's', 'w'].includes(f.dir) ? f.dir : 'n', turn: f.turn === 'l' ? 'l' : 'r', n1: clampInt(f.n1, 1, 60, 3), steps: f.steps === 'slabs' ? 'slabs' : 'stairs', walls: f.walls === 'well' ? 'well' : 'off', ups: Array.isArray(f.ups) ? f.ups.map(v => clampInt(v, 1, 32, 1)) : [1], mat: typeof f.mat === 'string' && BY_ID[f.mat] ? f.mat : null }; }
-  if (p.pathOpt && typeof p.pathOpt === 'object') { const ok = v => typeof v === 'string' && (v.startsWith('mix:') || BY_ID[v]); view.pathOpt = { style: p.pathOpt.style === 'line' ? 'line' : 'curve', w: clampInt(p.pathOpt.w, 1, 9, 3), block: ok(p.pathOpt.block) ? p.pathOpt.block : 'gravel', edge: !!p.pathOpt.edge, edgeBlock: ok(p.pathOpt.edgeBlock) ? p.pathOpt.edgeBlock : 'cobblestone' }; }
+  if (p.pathOpt && typeof p.pathOpt === 'object') { const ok = v => typeof v === 'string' && (v.startsWith('mix:') || BY_ID[v]); view.pathOpt = { style: p.pathOpt.style === 'line' ? 'line' : 'curve', w: clampInt(p.pathOpt.w, 1, BRUSH_MAX, 3), block: ok(p.pathOpt.block) ? p.pathOpt.block : 'gravel', edge: !!p.pathOpt.edge, edgeBlock: ok(p.pathOpt.edgeBlock) ? p.pathOpt.edgeBlock : 'cobblestone' }; }
   if (['none', 'checker', 'stripes', 'herring', 'border'].includes(p.pattern)) view.pattern = p.pattern; if (typeof p.patBlock === 'string') view.patBlock = p.patBlock;   // a block id, or mix:<id>
   if (['none', 'checker', 'stripes', 'herring', 'border'].includes(p.penPat)) view.penPat = p.penPat; if (typeof p.penPatBlock === 'string') view.penPatBlock = p.penPatBlock;   // the pencil's own pattern
   if (typeof p.postBlock === 'string') view.postBlock = p.postBlock; if (typeof p.postOut === 'boolean') view.postOut = p.postOut; if (Number.isInteger(p.postEvery)) view.postEvery = clamp(p.postEvery, 0, 16);
@@ -5053,7 +5117,7 @@ function syncBldTools() {
   if (['rect', 'circle', 'poly', 'free'].includes(p.zoneShape)) view.zoneShape = p.zoneShape;
   if (['new', 'add', 'sub'].includes(p.zoneOp)) view.zoneOp = p.zoneOp;
   if (['shape', 'fill', 'bld'].includes(p.roofTab)) view.roofTab = p.roofTab;
-  if (BRUSHES.includes(p.brush)) view.brush = p.brush;
+  if (Number.isFinite(p.brush)) view.brush = clamp(Math.round(p.brush), 1, BRUSH_MAX); if (Number.isFinite(p.penBrush)) view.penBrush = clamp(Math.round(p.penBrush), 1, BRUSH_MAX);
   if (p.eraseT && typeof p.eraseT === 'object') for (const k of ['blocks', 'paths', 'routes', 'zones']) if (typeof p.eraseT[k] === 'boolean') view.eraseT[k] = p.eraseT[k];
   if (p.railMode === 'all' || p.railMode === 'groups') view.railMode = p.railMode; if (Number.isFinite(p.railW)) view.railW = clamp(p.railW, 56, 240);
   if (p.groupLast && typeof p.groupLast === 'object') for (const k in view.groupLast) if (typeof p.groupLast[k] === 'string') view.groupLast[k] = p.groupLast[k];
@@ -5075,7 +5139,7 @@ function syncBldTools() {
   if (['family', 'colour', 'az', 'mod'].includes(p.blockSort)) view.blockSort = p.blockSort;
   if (typeof p.blockCat === 'string') view.blockCat = p.blockCat;
   if (typeof p.blockMod === 'string') view.blockMod = p.blockMod; if (typeof p.blockDesc === 'boolean') view.blockDesc = p.blockDesc;
-  if (['list', 's', 'l', 'xl'].includes(p.blockIcons)) view.blockIcons = p.blockIcons; if (typeof p.blocksFloat === 'boolean') view.blocksFloat = p.blocksFloat; if (typeof p.floorsFloat === 'boolean') view.floorsFloat = p.floorsFloat;
+  if (['list', 's', 'l', 'xl'].includes(p.blockIcons)) view.blockIcons = p.blockIcons; if (['s', 'l', 'xl'].includes(p.homeSize)) view.homeSize = p.homeSize; if (typeof p.blocksFloat === 'boolean') view.blocksFloat = p.blocksFloat; if (typeof p.floorsFloat === 'boolean') view.floorsFloat = p.floorsFloat;
   if (typeof p.expDig === 'boolean') view.expDig = p.expDig;
   if (typeof p.mobShadows === 'boolean') view.mobShadows = p.mobShadows;
   if (DIR4.includes(p.bface)) view.bface = p.bface; if (typeof p.btop === 'boolean') view.btop = p.btop; if (p.lastRoof) view.lastRoof = deRoofPart(p.lastRoof);
@@ -5123,7 +5187,7 @@ function writePrefs() {
     prefPending = false;
     if (plan) prefs.views[plan.id] = { z: view.z, ox: view.ox, oy: view.oy, lid: curLid, w: W, h: H };
     prefs.lastPlan = plan && plan.id;
-    prefs.ui = { measureHow: view.measureHow || null, flight: view.flight || null, pathOpt: view.pathOpt || null, tourDone: !!view.tourDone, stripPin: !!view.stripPin, postFit: !!view.postFit, drawPosts: view.drawPosts || null, pattern: view.pattern, patBlock: view.patBlock, penPat: view.penPat, penPatBlock: view.penPatBlock, postEvery: view.postEvery, postBlock: view.postBlock, postOut: !!view.postOut, mix: view.mix, altMix: view.altMix, tool: view.tool, selOp: view.selOp, fill: view.fill, sizeMode: view.sizeMode, block: view.block, altBlock: view.altBlock, expKind: view.expKind, expScope: view.expScope, uiMode: view.uiMode, flat2d: !!view.flat2d, wallLook: view.wallLook, railMin: !!view.railMin, theme: view.theme || 'system', viewPin: view.viewPin || 'top', ribbonTab: view.ribbonTab, ribbonMin: !!view.ribbonMin, roofWalls: view.roofWalls !== false, cornerSw: !!view.cornerSw, fov: view.fov, povSens: view.povSens, povKeys: view.povKeys, keys: view.keys || null, cfg: view.cfg, bldTools: view.bldTools || null, doorW: view.doorW, extN: view.extN, fenceH: view.fenceH, fenceFill: view.fenceFill, wallThick: view.wallThick, wallStyle: view.wallStyle, roofStyled: !!view.roofStyled, rampOuter: !!view.rampOuter, doorType: view.doorType, archW: view.archW, archWAuto: view.archWAuto, archH: view.archH, archHAuto: view.archHAuto, doorStyle: view.doorStyle, doorTrim: view.doorTrim, winStyle: view.winStyle, winTrim: view.winTrim, winAuto: view.winAuto, winW: view.winW, winH: view.winH, winSill: view.winSill, winGlass: view.winGlass, w: view.w, h: view.h, lock: view.lock, ratio: view.ratio, layers: view.layers, originStyle: view.originStyle, zoneStyle: view.zoneStyle, zoneAlpha: view.zoneAlpha, recentColors: view.recentColors, contig: view.contig, wall: view.wall, pencil: view.pencil, showMid: view.showMid, sideOpen: view.sideOpen, shapeKind: view.shapeKind, selShape: view.selShape, eraseMode: view.eraseMode, zoneShape: view.zoneShape, zoneOp: view.zoneOp, roofTab: view.roofTab, brush: view.brush, eraseT: view.eraseT, railMode: view.railMode, railW: view.railW || 56, groupLast: view.groupLast, lastBuild: view.lastBuild, net: view.net, routeOp: view.routeOp, circleKind: view.circleKind, polySides: view.polySides, polyPoint: view.polyPoint, ghostAlpha: view.ghostAlpha, favs: view.favs, recents: view.recents, blockSort: view.blockSort, blockCat: view.blockCat, blockMod: view.blockMod || '', blockDesc: !!view.blockDesc, blockIcons: view.blockIcons || 'list', blocksFloat: !!view.blocksFloat, floorsFloat: !!view.floorsFloat, expDig: view.expDig !== false, mobShadows: !!view.mobShadows, bface: view.bface, btop: view.btop, lastRoof: view.lastRoof, mirror: { x: mirror.x, z: mirror.z, radial: mirror.radial || 0, ax: mirror.ax, az: mirror.az }, povFx: view.povFx !== false, v3: pov.on && pov.saved ? { ...v3, ...pov.saved } : v3 };
+    prefs.ui = { measureHow: view.measureHow || null, flight: view.flight || null, pathOpt: view.pathOpt || null, tourDone: !!view.tourDone, stripPin: !!view.stripPin, postFit: !!view.postFit, drawPosts: view.drawPosts || null, pattern: view.pattern, patBlock: view.patBlock, penPat: view.penPat, penPatBlock: view.penPatBlock, postEvery: view.postEvery, postBlock: view.postBlock, postOut: !!view.postOut, mix: view.mix, altMix: view.altMix, tool: view.tool, selOp: view.selOp, fill: view.fill, sizeMode: view.sizeMode, block: view.block, altBlock: view.altBlock, expKind: view.expKind, expScope: view.expScope, uiMode: view.uiMode, flat2d: !!view.flat2d, wallLook: view.wallLook, railMin: !!view.railMin, theme: view.theme || 'system', viewPin: view.viewPin || 'top', ribbonTab: view.ribbonTab, ribbonMin: !!view.ribbonMin, roofWalls: view.roofWalls !== false, cornerSw: !!view.cornerSw, fov: view.fov, povSens: view.povSens, povKeys: view.povKeys, keys: view.keys || null, cfg: view.cfg, bldTools: view.bldTools || null, doorW: view.doorW, extN: view.extN, fenceH: view.fenceH, fenceFill: view.fenceFill, wallThick: view.wallThick, wallStyle: view.wallStyle, roofStyled: !!view.roofStyled, rampOuter: !!view.rampOuter, doorType: view.doorType, archW: view.archW, archWAuto: view.archWAuto, archH: view.archH, archHAuto: view.archHAuto, doorStyle: view.doorStyle, doorTrim: view.doorTrim, winStyle: view.winStyle, winTrim: view.winTrim, winAuto: view.winAuto, winW: view.winW, winH: view.winH, winSill: view.winSill, winGlass: view.winGlass, w: view.w, h: view.h, lock: view.lock, ratio: view.ratio, layers: view.layers, originStyle: view.originStyle, zoneStyle: view.zoneStyle, zoneAlpha: view.zoneAlpha, recentColors: view.recentColors, contig: view.contig, wall: view.wall, pencil: view.pencil, showMid: view.showMid, sideOpen: view.sideOpen, shapeKind: view.shapeKind, selShape: view.selShape, eraseMode: view.eraseMode, zoneShape: view.zoneShape, zoneOp: view.zoneOp, roofTab: view.roofTab, brush: view.brush, penBrush: view.penBrush || 1, eraseT: view.eraseT, railMode: view.railMode, railW: view.railW || 56, groupLast: view.groupLast, lastBuild: view.lastBuild, net: view.net, routeOp: view.routeOp, circleKind: view.circleKind, polySides: view.polySides, polyPoint: view.polyPoint, ghostAlpha: view.ghostAlpha, favs: view.favs, recents: view.recents, blockSort: view.blockSort, blockCat: view.blockCat, blockMod: view.blockMod || '', blockDesc: !!view.blockDesc, blockIcons: view.blockIcons || 'list', homeSize: view.homeSize || 'l', blocksFloat: !!view.blocksFloat, floorsFloat: !!view.floorsFloat, expDig: view.expDig !== false, mobShadows: !!view.mobShadows, bface: view.bface, btop: view.btop, lastRoof: view.lastRoof, mirror: { x: mirror.x, z: mirror.z, radial: mirror.radial || 0, ax: mirror.ax, az: mirror.az }, povFx: view.povFx !== false, v3: pov.on && pov.saved ? { ...v3, ...pov.saved } : v3 };
     const keys = Object.keys(prefs.views); if (keys.length > 40) delete prefs.views[keys[0]];
     lsSet(LS_VIEW, prefs);
     syncSettings();
@@ -5157,6 +5221,9 @@ function applySynced(x) {
   if (Array.isArray(x.recents)) view.recents = x.recents.filter(id => typeof id === 'string' && BY_ID[id]).slice(0, 12);
   if (['family', 'colour', 'az', 'mod'].includes(x.blockSort)) view.blockSort = x.blockSort; if (typeof x.blockDesc === 'boolean') view.blockDesc = x.blockDesc; if (['list', 's', 'l', 'xl'].includes(x.blockIcons)) view.blockIcons = x.blockIcons;
   if (Array.isArray(x.presets)) view.presets = x.presets.map(dePreset).filter(Boolean).slice(0, 40);
+  // your keys for tools and Walk mode follow you too
+  if ('keys' in x) { const o = {}; if (x.keys && typeof x.keys === 'object') for (const [a] of KEY_ACTIONS) if (typeof x.keys[a] === 'string' && x.keys[a].length <= 1) o[a] = x.keys[a]; view.keys = Object.keys(o).length ? o : null; syncToolKeys(); }
+  if ('povKeys' in x) { const o = {}; if (x.povKeys && typeof x.povKeys === 'object') for (const k in x.povKeys) if (typeof x.povKeys[k] === 'string' && x.povKeys[k].length < 32) o[k] = x.povKeys[k]; view.povKeys = Object.keys(o).length ? o : null; }
   if (x.v3 && typeof x.v3 === 'object') {
     if (typeof x.v3.walls === 'boolean') v3.walls = x.v3.walls;
     if (Number.isFinite(x.v3.spread)) v3.spread = clamp(x.v3.spread, 1, 3);
@@ -5326,6 +5393,7 @@ function setSaveState(s) {
 }
 function touch(lids, meta) {
   if (store.readOnly || !plan) return;
+  THUMB.stale.add(plan.id);
   for (const id of lids) store.dirtyLevels.add(id);
   if (meta) store.dirtyMeta = true;
   scheduleFlush();
@@ -5426,13 +5494,7 @@ async function switchPlan(pid) {
     loadPlanInto(dePlan(pid, d));
   }
 }
-function loadLocal() {
-  const all = lsGet(LS_PLANS) || { plans: {} };
-  const ids = Object.keys(all.plans);
-  if (!ids.length) { startNewPlan('My base'); return; }
-  const pid = ids.includes(prefs.lastPlan) ? prefs.lastPlan : ids.sort((a, b) => (all.plans[b].updatedAt || 0) - (all.plans[a].updatedAt || 0))[0];
-  loadPlanInto(dePlan(pid, all.plans[pid]));
-}
+function loadLocal() { homeStart(); }
 async function openDbPlan(entry) {
   const tok = store.openTok = (store.openTok || 0) + 1, mods = entry.meta && entry.meta.mods;
   // a plan's mods' block lists come first: without them, its floors' mod blocks would be unknown
@@ -5460,17 +5522,15 @@ function subscribePlans() {
     store.plans = snap.docs.map(d => { const x = d.data() || {}; return { id: d.id, name: str(x.name, 'Untitled plan'), updatedAt: Number(x.updatedAt) || 0, meta: x }; }).sort((a, b) => b.updatedAt - a.updatedAt);
     if (!store.gotPlans) {
       store.gotPlans = true; hideOverlay();
-      if (!store.plans.length) { if (store.readOnly) showOverlay('Nothing shared yet', 'The owner has not saved any plans here.'); else startNewPlan('My base'); }
-      else { const e = store.plans.find(p => p.id === prefs.lastPlan) || store.plans[0]; openDbPlan(e); }
+      homeStart();
       return;
     }
     for (const ch of snap.docChanges()) {
       if (!plan || ch.doc.id !== plan.id) continue;
       if (ch.type === 'removed') {
         if (store.deleting === plan.id) continue;
-        const next = store.plans[0];
         toast('This plan was deleted somewhere else.');
-        if (next) openDbPlan(next); else if (!store.readOnly) startNewPlan('My base');
+        closePlan(); showHome();
         break;
       }
       const x = ch.doc.data() || {};
@@ -5484,7 +5544,7 @@ function subscribePlans() {
       }
       store.metaSeq = (store.metaSeq || 0) + 1; applyRemoteMeta(x);
     }
-    renderPlanName();
+    renderPlanName(); if (HOME.on) renderHome();
   }, err => {
     if (err && err.code === 'revoked') { setReadOnly(true); return; }
     if (!store.gotPlans) { store.gotPlans = true; store.mode = 'local'; hideOverlay(); loadLocal(); toast('Saved plans could not be reached, so this session saves in this browser only.'); }
@@ -5716,24 +5776,7 @@ function duplicatePlan() {
   const p = dePlan(uid('p'), data); p.name = nextPlanName(plan.name + ' copy');
   loadPlanInto(p, { fresh: true }); touchAll(); copyModAtlases(p, from.id); toast('Plan duplicated.');
 }
-async function deletePlan() {
-  const pid = plan.id, lids = [...plan.levels.keys()];
-  clearTimeout(store.timer); store.dirtyLevels.clear(); store.dirtyMeta = false;
-  if (store.mode === 'db') {
-    store.deleting = pid;
-    try { for (const lid of lids) await store.db.doc(levelPath(pid, lid)).delete(); for (const md of plan.mods || []) deleteModAtlas(pid, md); await store.db.doc('plans/' + pid).delete(); }
-    catch { toast('The plan could not be deleted. Try again.'); store.deleting = null; return; }
-    store.plans = store.plans.filter(p => p.id !== pid);
-    const next = store.plans[0];
-    if (next) openDbPlan(next); else startNewPlan('My base');
-  } else {
-    const all = lsGet(LS_PLANS) || { plans: {} }; delete all.plans[pid]; lsSet(LS_PLANS, all); for (const md of plan.mods || []) deleteModAtlas(pid, md);
-    const ids = Object.keys(all.plans);
-    if (ids.length) loadPlanInto(dePlan(ids[0], all.plans[ids[0]])); else startNewPlan('My base');
-  }
-  delete prefs.views[pid]; savePrefs();
-  toast('Plan deleted.');
-}
+async function deletePlan() { if (!plan) return; if (await deletePlanById(plan.id)) showHome(); }
 
 /* selection */
 function selChanged() { selVer++; selCache = null; if (plan && curLevel()) { renderSelbar(); renderStatus(); if (view.tool === 'zone') renderOptbar(); renderObjectsIfOpen(); } updateAnts(); }
@@ -7835,7 +7878,7 @@ function setPathOpt(patch) { view.pathOpt = { ...pathOpt(), ...patch }; renderOp
 function pathOptRows() {
   const o = pathOpt(), rows = [];
   rows.push(['Line', seg([['line', 'Straight', 'line'], ['curve', 'Curve', 'route']], o.style, v => setPathOpt({ style: v }), 'Straight or curved')]);
-  rows.push(['Width', stepBox('Width', o.w, 1, 9, v => setPathOpt({ w: v }))]);
+  rows.push(['Brush size', brushStep('path')]);
   rows.push(['Block', blockBtn({ value: o.block, mixes: true, filter: b => fullBlock(b) || (b.shape === 'slab' && !b.top), suggest: ['dirt_path', 'gravel', 'coarse_dirt', 'packed_mud', 'cobblestone', 'stone_bricks', 'mossy_cobblestone', 'polished_andesite', 'sand', 'mud_bricks'].filter(id => BY_ID[id]), aria: 'Path block', onPick: v => { if (v) setPathOpt({ block: v }); } })]);
   rows.push(['Edging', seg([[false, 'None'], [true, 'Edged']], !!o.edge, v => setPathOpt({ edge: v }), 'Edging'), o.edge ? blockBtn({ value: o.edgeBlock, mixes: true, filter: b => fullBlock(b) || b.shape === 'slab', suggest: ['cobblestone', 'stone_bricks', 'mossy_cobblestone', 'stone_brick_slab', 'cobblestone_slab', 'polished_andesite'].filter(id => BY_ID[id]), aria: 'Edging block', onPick: v => { if (v) setPathOpt({ edgeBlock: v }); } }) : null]);
   return rows;
@@ -9030,7 +9073,7 @@ function addStroke(x0, z0, x1, z1) {
   }
   else { for (const p of pts) G.cells.set(K(p[0], p[1]), p); view.preview = { kind: 'stroke', cells: [...G.cells.values()], op: G.op }; }
 }
-const roofBrushCells = (x, z) => { const r = ((view.brush || 1) - 1) >> 1, out = []; for (let dz = -r; dz <= r; dz++) for (let dx = -r; dx <= r; dx++) out.push([x + dx, z + dz]); return out; };
+const roofBrushCells = (x, z) => { const n = view.brush || 1, a = -((n - 1) >> 1), b = a + n - 1, out = []; for (let dz = a; dz <= b; dz++) for (let dx = a; dx <= b; dx++) out.push([x + dx, z + dz]); return out; };
 function updateHoverGhost(e) {
   if (G || !view.hover || store.readOnly) return;
   const [x, z] = view.hover;
@@ -9040,6 +9083,7 @@ function updateHoverGhost(e) {
   if (view.tool === 'roof' && view.roofMode !== 'pick' && onRoof()) { view.ghost = view.roofMode === 'erase' ? { kind: 'brush', op: 'erase', cells: roofBrushCells(x, z) } : { kind: 'brush', cells: roofBrushCells(x, z) }; return; }
   if (curShape() && view.sizeMode === 'size') view.ghost = presetGhost(x, z, e);
   else if (view.tool === 'eraser' && (view.eraseMode === 'brush' || view.eraseMode === 'line') && view.brush > 1 && hoverIsMouse) view.ghost = { kind: 'brush', op: 'erase', cells: brushExpand(mirrorExpand([[x, z]])) };
+  else if (view.tool === 'pencil' && brushKind() === 'pen' && (view.penBrush || 1) > 1 && hoverIsMouse) view.ghost = { kind: 'brush', cells: brushExpand(mirrorExpand([[x, z]])) };
   else if (view.tool === 'stamp') view.ghost = stampGhost(x, z);
   else if (view.tool === 'paste' && floating.active) { floating.x = x - ((floating.clip.w - 1) >> 1); floating.z = z - ((floating.clip.h - 1) >> 1); if (fitSnapOn(e)) [floating.x, floating.z] = postFitSnap(floating.x, floating.z); view.ghost = floatGhost(); }
   else view.ghost = null;
@@ -9334,8 +9378,8 @@ cv.addEventListener('wheel', e => {
 
 window.addEventListener('keyup', e => { if (e.key === 'Alt' && view.is3D) e.preventDefault(); });
 window.addEventListener('keydown', e => {
-  if (tour.box) return;
   if (settingsOpen()) { if (e.key === 'Escape') { if (!$('#modal').hidden) closeModal(); else closeSettings(); } return; }
+  if (HOME.on) { if (e.key === 'Escape') { if (!$('#popover').hidden) closePopover(); else if (!$('#modal').hidden) closeModal(); } return; }
   const t = e.target; const typing = t && (t.tagName === 'INPUT' || t.tagName === 'TEXTAREA' || t.tagName === 'SELECT' || t.isContentEditable);
   if ((e.ctrlKey || e.metaKey) && !e.altKey && e.key.toLowerCase() === 'k') { e.preventDefault(); if (pal.back) closePalette(); else openPalette(); return; }
   if (pal.back) return;
@@ -9352,6 +9396,7 @@ window.addEventListener('keydown', e => {
   if (e.key === 'Alt' && view.is3D) { e.preventDefault(); return; }
   if (e.key === 'Shift') setShift(true);
   if (e.key === '?' && !mod) { showShortcuts(); return; }
+  if (!mod && (e.code === 'BracketLeft' || e.code === 'BracketRight') && plan && !store.readOnly && !view.is3D && sizeKey(e)) { e.preventDefault(); return; }
   if (mod || e.altKey) return;
   if (e.key === 'Home' && view.is3D && !pov.on) { e.preventDefault(); resetView3D(); return; }
   if (e.key === ' ') { if (!spaceDown) { spaceDown = true; cv.classList.add('grab'); } e.preventDefault(); return; }
@@ -10615,6 +10660,7 @@ function sideGroups() {
       view.pencil === 'line' && vtoggle('Snap to 45°', 'link', view.lock, () => { view.lock = !view.lock; sideRerender(); })));
     const rr = () => sideRerender(), full = node => { node.classList.add('fullseg'); return node; };
     if (t === 'pencil' && wallOptsOn()) out.push(vgroup('Walls', null, el('div', { class: 'oddrow' }, wallsDD(rr)), wallsReset(rr)));
+    if (t === 'pencil' && brushKind() === 'pen') out.push(vgroup('Brush size', '[ ]', el('div', { class: 'oddrow' }, brushStep('pen', rr))));
     if (t === 'pencil') out.push(vgroup('Pattern', null, el('div', { class: 'oddrow' }, patternDD(rr, true))));
     // the Shape tool, most changed first: the shape, the fill, the walls, then the size
     if (t === 'shape') {
@@ -10631,7 +10677,7 @@ function sideGroups() {
     }
     if (t === 'eraser') {
       out.push(vgroup('Erase with', null, ...vradio([['brush', 'Brush', 'eraser'], ['line', 'Line', 'line'], ['rect', 'Rectangle', 'rect'], ['circle', 'Circle', 'circle'], ['poly', 'Polygon', 'hex'], ['fill', 'Fill erase', 'bucket']], view.eraseMode, v => { view.eraseMode = v; view.ghost = null; sideRerender(); }), ...sidePolyKids()));
-      if (view.eraseMode === 'brush' || view.eraseMode === 'line') out.push(vgroup('Brush size', null, ...vradio(BRUSHES.map(n => [n, `${n} × ${n}`, 'solid']), view.brush, v => { view.brush = v; sideRerender(); })));
+      if (view.eraseMode === 'brush' || view.eraseMode === 'line') out.push(vgroup('Brush size', '[ ]', el('div', { class: 'oddrow' }, brushStep('brush', sideRerender))));
       const et = (k, text, ic) => vtoggle(text, ic, view.eraseT[k], () => { view.eraseT[k] = !view.eraseT[k]; sideRerender(); });
       out.push(vgroup('Erases', null, et('blocks', 'Blocks', 'solid'), et('paths', 'Path blocks only', 'path'), et('routes', 'Cable and pipe routes', 'route'), et('zones', 'Zone areas', 'zone'),
         view.eraseT.paths && view.eraseT.blocks ? ohint('Blocks takes paths too. Turn Blocks off to erase only what the Path tool laid.') : null));
@@ -10694,6 +10740,8 @@ const zoneHint = () => {
   if (view.zoneOp !== 'new') { const tz = pickedZone(), verb = view.zoneOp === 'add' ? 'add to' : 'cut from'; return tz ? `Drag to ${verb} ${tz.name || 'the zone'}. Tap another zone to switch to it.` : `Tap a zone to pick it, then drag to ${verb} it.`; }
   return (view.zoneShape === 'free' ? 'Drag to paint the zone area, one block wide.' : 'Drag to draw the zone.') + (isMobile() ? '' : ' Hold Shift to add to the picked zone, Alt to cut from it.') + (sel.size ? '' : ' To zone a shape you already drew, select it, then make it a zone.');
 };
+/* the strip's brush button: shows the size, opens a stepper */
+function brushSbtn(k) { const n = brushOf(k), b = el('button', { class: 'sbtn', title: `Brush size ${n} ([ and ] to change)`, 'aria-label': `Brush size ${n}. Change`, onclick: () => openPopover(b, [el('div', { class: 'ddrow' }, el('span', { class: 'acc-lbl', text: 'Brush size' }), brushStep(k, () => { sideRerender(); closePopover(); }))]) }, el('span', { class: 'sbnum', text: String(n) })); return b; }
 function stripItems() {
   const t = view.tool, out = [], ro = store.readOnly;
   const sb = (ic, title, fn, pressed, img) => el('button', { class: 'sbtn', title, 'aria-label': title, 'aria-pressed': pressed == null ? null : String(!!pressed), onclick: fn }, img ? el('img', { src: img, alt: '' }) : icon(ic));
@@ -10705,6 +10753,7 @@ function stripItems() {
     const shName = { rect: 'Rectangle', circle: 'Circle', poly: 'Polygon', free: 'Freehand', wand: 'Magic wand', brush: 'Brush', line: 'Line', fill: 'Fill erase' };
     out.push(sep());
     if (t === 'pencil') out.push(sb(view.pencil === 'line' ? 'line' : 'pencil', `Pencil: ${view.pencil === 'line' ? 'Line' : 'Freehand'} (B, L)`, () => { view.pencil = view.pencil === 'line' ? 'free' : 'line'; sideRerender(); }));
+    if (t === 'pencil' && brushKind() === 'pen') out.push(brushSbtn('pen'));
     if (t === 'shape') out.push(sb(shIcon[view.shapeKind], `Shape: ${shName[view.shapeKind]} (click to change)`, () => { view.shapeKind = cyc(['rect', 'circle', 'poly'], view.shapeKind); sideRerender(); }));
     if (t === 'select') {
       const ops = ['new', 'add', 'sub', 'inter'], ic = { new: 'selNew', add: 'selAdd', sub: 'selSub', inter: 'selInt' }, nm = { new: 'New', add: 'Add', sub: 'Subtract', inter: 'Intersect' };
@@ -10713,7 +10762,7 @@ function stripItems() {
     }
     if (t === 'eraser') {
       out.push(sb(shIcon[view.eraseMode], `Erase with: ${shName[view.eraseMode]} (click to change)`, () => { view.eraseMode = cyc(['brush', 'line', 'rect', 'circle', 'poly', 'fill'], view.eraseMode); view.ghost = null; sideRerender(); }));
-      if (view.eraseMode === 'brush' || view.eraseMode === 'line') out.push(el('button', { class: 'sbtn', title: `Brush size ${view.brush} × ${view.brush} (click to change)`, 'aria-label': `Brush size ${view.brush}`, onclick: () => { view.brush = cyc(BRUSHES, view.brush); sideRerender(); } }, el('span', { class: 'sbnum', text: view.brush + '×' + view.brush })));
+      if (view.eraseMode === 'brush' || view.eraseMode === 'line') out.push(brushSbtn('brush'));
     }
     if (curShape()) out.push(sb(effFill(), `Fill: ${FILL_NAMES[effFill()]} (F)`, () => { view.fill = nextFill(); sideRerender(); }));
     if (t === 'pencil' || t === 'shape' || t === 'bucket') { const A = slotShow(true), B = slotShow(false); out.push(sep(), sb(null, `${slotName(view.wall)} ${A.mix ? 'mix' : 'block'}: ${A.name}`, () => openWin('blocks'), null, A.img), el('button', { class: 'sbtn sbalt', title: `Swap to the ${slotName(!view.wall).toLowerCase()} ${B.mix ? 'mix' : 'block'}, ${B.name} (X)`, 'aria-label': `Swap to the ${slotName(!view.wall).toLowerCase()} block`, onclick: swapSlots }, el('img', { src: B.img, alt: '' }))); }
@@ -10787,7 +10836,8 @@ function renderOptbarH(target) {
     };
     if (t === 'pencil') {
       row('Pencil', seg(PENCIL_MODES, view.pencil, v => pencilMode(v), 'Pencil type'), view.pencil === 'line' && togBtn('Snap 45°', view.lock, () => { view.lock = !view.lock; rerender(); }, 'Snap to straight and 45° lines'));
-      sumIcon = view.pencil === 'line' ? 'line' : 'pencil'; sum.push(view.pencil === 'line' ? 'Line' + (view.lock ? ' · 45°' : '') : 'Freehand');
+      if (brushKind() === 'pen') { row('Brush size', brushStep('pen', rerender)); }
+      sumIcon = view.pencil === 'line' ? 'line' : 'pencil'; sum.push((view.pencil === 'line' ? 'Line' + (view.lock ? ' · 45°' : '') : 'Freehand') + (brushKind() === 'pen' && view.penBrush > 1 ? ` ${view.penBrush}×${view.penBrush}` : ''));
     }
     if (t === 'shape') { row('Shape', seg([['rect', '', 'rect', 'Rectangle'], ['circle', '', 'circle', 'Circle'], ['poly', '', 'hex', 'Polygon']], view.shapeKind, v => { view.shapeKind = v; rerender(); }, 'Shape')); sumIcon = shIc[view.shapeKind]; sum.push(shText(view.shapeKind)); }
     if (t === 'pencil') { wallRows(); const r = wallsReset(rerender); if (r) row('', r); row('Pattern', patternDD(rerender, true)); if (view.penPat !== 'none') sum.push(PATTERNS.find(q => q[0] === view.penPat)[1]); }
@@ -10800,7 +10850,7 @@ function renderOptbarH(target) {
     if (t === 'eraser') {
       row('Erase with', seg([['brush', '', 'eraser', 'Brush'], ['line', '', 'line', 'Line'], ['rect', '', 'rect', 'Rectangle'], ['circle', '', 'circle', 'Circle'], ['poly', '', 'hex', 'Polygon'], ['fill', '', 'bucket', 'Fill erase']], view.eraseMode, v => { view.eraseMode = v; view.ghost = null; rerender(); }, 'Erase with'));
       const brushy = view.eraseMode === 'brush' || view.eraseMode === 'line';
-      if (brushy) row('Brush', seg(BRUSHES.map(n => [n, `${n}×${n}`]), view.brush, v => { view.brush = v; rerender(); }, 'Brush size'));
+      if (brushy) row('Brush size', brushStep('brush', rerender));
       const et = (k, text) => togBtn(text, view.eraseT[k], () => { view.eraseT[k] = !view.eraseT[k]; rerender(); });
       row('Erases', et('blocks', 'Blocks'), et('paths', 'Paths'), et('routes', 'Routes'), et('zones', 'Zones'));
       const what = ['blocks', 'paths', 'routes', 'zones'].filter(k => view.eraseT[k] && !(k === 'paths' && view.eraseT.blocks)).map(k => ({ blocks: 'Blocks', paths: 'Paths', routes: 'Routes', zones: 'Zones' })[k]);
@@ -10917,8 +10967,9 @@ function renderOptbarH(target) {
   if (rib) { bar.replaceChildren(...ribbonGroupsFrom(rows, acts)); return; }
   // quick chips: the settings you flip most, without unfolding the bar. Each tap moves to the next choice
   const chips = [], covered = new Set(), cyc = (list, cur) => list[(list.indexOf(cur) + 1) % list.length];
-  const qc = (ic, label, fn, text, pressed) => chips.push(el('button', { class: 'qchip', title: label, 'aria-label': label, 'aria-pressed': pressed == null ? null : String(!!pressed), onclick: ev => { ev.stopPropagation(); fn(); } }, ic ? icon(ic) : null, text ? el('span', { text }) : null));
+  const qc = (ic, label, fn, text, pressed) => chips.push(el('button', { class: 'qchip', title: label, 'aria-label': label, 'aria-pressed': pressed == null ? null : String(!!pressed), onclick: ev => { ev.stopPropagation(); fn(ev.currentTarget); } }, ic ? icon(ic) : null, text ? el('span', { text }) : null));
   if (BLOCK_TOOLS.has(t) && !ro) {
+    if (t === 'pencil' && brushKind() === 'pen') qc(null, `Brush size ${view.penBrush || 1}. Tap to change`, b => openPopover(b, [el('div', { class: 'ddrow' }, el('span', { class: 'acc-lbl', text: 'Brush size' }), brushStep('pen', () => { rerender(); closePopover(); }))]), `${view.penBrush || 1}×${view.penBrush || 1}`);
     if (t === 'pencil') { qc(view.pencil === 'line' ? 'line' : 'pencil', `${view.pencil === 'line' ? 'Line' : 'Freehand'}. Tap for ${view.pencil === 'line' ? 'freehand' : 'line'}`, () => { view.pencil = view.pencil === 'line' ? 'free' : 'line'; rerender(); }); covered.add('Freehand').add('Line'); }
     if (t === 'shape') { qc(shIc[view.shapeKind], `${shText(view.shapeKind)}. Tap for the next shape`, () => { view.shapeKind = cyc(['rect', 'circle', 'poly'], view.shapeKind); rerender(); }); covered.add(shText(view.shapeKind)); }
     if (t === 'select') {
@@ -10930,7 +10981,7 @@ function renderOptbarH(target) {
     if (t === 'eraser') {
       const brushy = view.eraseMode === 'brush' || view.eraseMode === 'line';
       qc(shIc[view.eraseMode], `Erase with ${shText(view.eraseMode).toLowerCase()}. Tap for the next way`, () => { view.eraseMode = cyc(['brush', 'line', 'rect', 'circle', 'poly', 'fill'], view.eraseMode); view.ghost = null; rerender(); });
-      if (brushy) qc(null, `Brush ${view.brush} by ${view.brush}. Tap to change`, () => { view.brush = cyc(BRUSHES, view.brush); rerender(); }, `${view.brush}×${view.brush}`);
+      if (brushy) qc(null, `Brush size ${view.brush}. Tap to change`, b => openPopover(b, [el('div', { class: 'ddrow' }, el('span', { class: 'acc-lbl', text: 'Brush size' }), brushStep('brush', () => { rerender(); closePopover(); }))]), `${view.brush}×${view.brush}`);
       covered.add(shText(view.eraseMode) + (brushy && view.brush > 1 ? ` ${view.brush}×${view.brush}` : ''));
     }
     if (curShape()) { const f = effFill(), nx = nextFill(); qc(f, `${FILL_NAMES[f]}. Tap for ${FILL_NAMES[nx].toLowerCase()} (F)`, () => { view.fill = nx; rerender(); }); covered.add(FILL_NAMES[f]); }
@@ -12163,9 +12214,9 @@ const toastUndo = msg => toast(msg, { undo: true });
 function showOverlay(title, text) { const o = $('#overlay'); o.replaceChildren(el('div', { class: 'ochip' }, el('strong', { text: title }), text && el('p', { text }))); o.hidden = false; }
 function hideOverlay() { $('#overlay').hidden = true; }
 
+/* the plan name's menu: this plan's own actions. The other plans are on the home page (the logo) */
 function openPlanMenu(btn) {
-  const ro = store.readOnly, items = [el('div', { class: 'mlabel', text: 'Plans' })];
-  for (const p of planList()) items.push(el('button', { class: 'mi' + (plan && p.id === plan.id ? ' active' : ''), onclick: () => { closePopover(); switchPlan(p.id); } }, el('span', { class: 'mname', text: p.name }), el('span', { class: 'sub', text: plan && p.id === plan.id ? 'open' : relTime(p.updatedAt) })));
+  const ro = store.readOnly, items = [el('button', { class: 'mi', onclick: () => { closePopover(); goHome(); } }, icon('chevL'), 'All plans')];
   if (!ro && plan) {
     const nm = el('input', { class: 'field', id: 'planRename', value: plan.name, maxlength: '60', 'aria-label': 'Plan name' });
     nm.addEventListener('change', () => renamePlan(nm.value));
@@ -12173,17 +12224,309 @@ function openPlanMenu(btn) {
     items.push(el('div', { class: 'msep' }), el('div', { class: 'mlabel', text: 'This plan' }), el('div', { class: 'mrow' }, nm),
       el('button', { class: 'mi', onclick: () => { closePopover(); openSnapshotsModal(); } }, icon('history'), 'Snapshots…'),
       el('button', { class: 'mi', onclick: () => { closePopover(); duplicatePlan(); } }, icon('plus'), 'Duplicate plan'),
-      confirmBtn(el('button', { class: 'mi danger' }, icon('trash'), 'Delete plan'), () => { closePopover(); deletePlan(); }, 'Tap again to delete this plan'),
-      el('div', { class: 'msep' }),
-      el('button', { class: 'mi', onclick: async () => { closePopover(); await flushNow(); startNewPlan(); toast('New plan started.'); } }, icon('plus'), 'New plan'));
+      confirmBtn(el('button', { class: 'mi danger' }, icon('trash'), 'Delete plan'), () => { closePopover(); deletePlan(); }, 'Tap again to delete this plan'));
   }
-  // the file side: bring plans in and send them out
   items.push(el('div', { class: 'msep' }), el('div', { class: 'mlabel', text: 'File' }),
-    !ro && el('button', { class: 'mi', onclick: () => { closePopover(); $('#importFile').click(); } }, icon('upload'), 'Import plan (.json)…'),
     plan && el('button', { class: 'mi', onclick: () => { closePopover(); openExportModal(); } }, icon('download'), 'Export…'),
     !ro && plan && el('button', { class: 'mi', onclick: () => { closePopover(); openSwap(); } }, icon('swap'), 'Swap palette…'));
   openPopover(btn, items.filter(Boolean));
 }
+/* ================= home: every plan as a tile, the first thing you see =================
+   The app opens here rather than straight into a plan. Each tile has a picture of the plan from above at an angle, on a patch of grass with
+   trees round it; the Chunkwise logo in the top bar comes back here. HOME.want: a plan to open straight away instead (the desktop app's files) */
+const HOME = { on: false, want: null, add: [] };
+const HOME_SIZES = [['s', 'Small tiles'], ['l', 'Large tiles'], ['xl', 'Larger tiles']];
+function showHome() {
+  let h = $('#home');
+  if (!h) {
+    h = el('div', { class: 'home', id: 'home', role: 'region', 'aria-label': 'Your plans' }); document.body.append(h);
+    h.addEventListener('keydown', ev => { if (ev.key === 'Escape' && !$('#popover').hidden) { ev.stopPropagation(); closePopover(); } });
+  }
+  HOME.on = true; document.body.classList.add('home-on'); h.hidden = false; closePopover(); tipHide(); hideOverlay(); $('#toast').classList.remove('show');
+  renderHome(); thumbQueue();
+}
+function hideHome() { HOME.on = false; document.body.classList.remove('home-on'); const h = $('#home'); if (h) h.hidden = true; closePopover(); }
+/* where the app starts once the plans are known: the plan asked for, or here */
+function homeStart() {
+  const want = HOME.want; HOME.want = null;
+  if (want && store.mode === 'db') { const e = store.plans.find(p => p.id === want); if (e) { openDbPlan(e); return; } }
+  showHome();
+}
+function renderHome() {
+  const h = $('#home'); if (!h || !HOME.on) return;
+  const ro = store.readOnly, sz = HOME_SIZES.some(x => x[0] === view.homeSize) ? view.homeSize : 'l', ready = store.mode !== 'db' || store.gotPlans, list = ready ? planList() : [];
+  const brand = el('div', { class: 'hm-brand' }); { const b = document.querySelector('.topbar .brand'); if (b) for (const n of b.children) if (n.tagName.toLowerCase() === 'svg') brand.append(n.cloneNode(true)); }
+  const acct = typeof sbHomeAccount === 'function' ? sbHomeAccount() : null;
+  const sizes = el('div', { class: 'bfsize', role: 'group', 'aria-label': 'Tile size' }, ...HOME_SIZES.map(([v, n]) => el('button', { class: 'bfs bfs-' + v, title: n, 'aria-label': n, 'aria-pressed': String(sz === v), onclick: () => { view.homeSize = v; savePrefs(); renderHome(); } }, el('i'))));
+  const grid = el('div', { class: 'hm-grid sz-' + sz, role: 'list' });
+  for (const p of list) grid.append(homeTile(p, ro));
+  if (!ro && ready) grid.append(el('button', { class: 'hm-add', role: 'listitem', onclick: openAddPlan }, el('span', { class: 'hm-addin' }, icon('plus'), el('span', { text: 'Add Plan' }))));
+  const keep = h.querySelector('.hm-main') ? h.querySelector('.hm-main').scrollTop : 0;
+  h.replaceChildren(
+    el('header', { class: 'hm-top' }, brand, el('div', { class: 'hm-acct' }, acct)),
+    el('main', { class: 'hm-main' },
+      el('div', { class: 'hm-head' }, el('h1', { text: 'Your plans' }), ready && list.length ? el('span', { class: 'hm-count', text: `${list.length} plan${list.length === 1 ? '' : 's'}` }) : null, el('span', { class: 'hm-sp' }), sizes),
+      ready ? grid : el('p', { class: 'hm-wait', text: 'Loading your plans…' }),
+      ready && !list.length && ro ? el('p', { class: 'hm-wait', text: 'Nothing shared yet. The owner has not saved any plans here.' }) : null));
+  const m = h.querySelector('.hm-main'); if (m) m.scrollTop = keep;
+}
+function homeTile(p, ro) {
+  const pic = el('div', { class: 'hm-pic' });
+  const t = THUMB.mem.get(p.id);
+  if (t && t.img) pic.append(el('img', { src: t.img, alt: '' })); else pic.classList.add('wait');
+  if (!t) thumbGet(p.id).then(x => { if (x && x.img && pic.isConnected && !pic.querySelector('img')) { pic.classList.remove('wait'); pic.append(el('img', { src: x.img, alt: '' })); } });
+  pic.dataset.pid = p.id;
+  const more = ro ? null : el('button', { class: 'ib sm hm-more', 'aria-label': `Rename or delete ${p.name}`, title: 'Rename or delete', onclick: ev => { ev.stopPropagation(); homeMenu(more, p); } }, icon('vmore'));
+  return el('div', { class: 'hm-tile' + (plan && plan.id === p.id ? ' cur' : ''), role: 'listitem' },
+    el('button', { class: 'hm-open', 'aria-label': `Open ${p.name}`, onclick: () => homeOpen(p.id) }, pic),
+    el('div', { class: 'hm-foot' }, el('span', { class: 'hm-name', text: p.name, title: p.name }), more));
+}
+function homeMenu(btn, p) {
+  openPopover(btn, [
+    el('button', { class: 'mi', onclick: () => { closePopover(); homeRenameDlg(p); } }, icon('pencil'), 'Rename'),
+    confirmBtn(el('button', { class: 'mi danger' }, icon('trash'), 'Delete'), () => { closePopover(); homeDelete(p.id); }, 'Tap again to delete this plan')]);
+}
+function homeRenameDlg(p) {
+  const nm = el('input', { class: 'field', id: 'homeRename', value: p.name, maxlength: '60', 'aria-label': 'Plan name' });
+  const go = () => { const v = nm.value.trim().slice(0, 60); closeModal(); if (v && v !== p.name) homeRename(p.id, v); };
+  nm.addEventListener('keydown', ev => { if (ev.key === 'Enter') go(); });
+  openModal('Rename plan', [nm, el('div', { class: 'exact' }, el('button', { class: 'btn', onclick: closeModal }, 'Cancel'), el('button', { class: 'btn primary', onclick: go }, 'Save'))]);
+  setTimeout(() => { nm.focus(); nm.select(); }, 40);
+}
+async function homeRename(pid, v) {
+  if (plan && plan.id === pid) { renamePlan(v); await flushNow(); renderHome(); return; }
+  if (store.mode === 'db') {
+    const e = store.plans.find(q => q.id === pid); if (!e) return;
+    try { await store.db.doc('plans/' + pid).set({ ...e.meta, name: v, updatedAt: Date.now(), client: store.client }); e.name = v; e.meta = { ...e.meta, name: v }; }
+    catch { toast('The plan could not be renamed. Try again.'); return; }
+  } else {
+    const all = lsGet(LS_PLANS) || { plans: {} }; if (!all.plans[pid]) return;
+    all.plans[pid].name = v; all.plans[pid].updatedAt = Date.now(); lsSet(LS_PLANS, all);
+  }
+  renderHome();
+}
+async function homeDelete(pid) { if (await deletePlanById(pid)) renderHome(); }
+async function homeOpen(pid) {
+  if (plan && plan.id === pid) { hideHome(); renderAll(); return; }
+  hideHome(); await switchPlan(pid);
+}
+function openAddPlan() {
+  const opt = (ic, title, sub, fn) => el('button', { class: 'hm-opt', onclick: () => { closeModal(); fn(); } }, icon(ic), el('span', {}, el('strong', { text: title }), el('small', { text: sub })));
+  openModal('Add a plan', [el('div', { class: 'hm-opts' },
+    opt('plus', 'New plan', 'Start with an empty plan.', async () => { hideHome(); await flushNow(); startNewPlan(); }),
+    opt('upload', 'Import a plan', 'A .json file exported from Chunkwise.', () => $('#importFile').click()),
+    ...HOME.add.map(([ic, t, sub, fn]) => opt(ic, t, sub, fn)))]);
+}
+/* back to the plans: the open plan saves and gets a fresh picture */
+async function goHome() {
+  if (HOME.on) return;
+  cancelGesture(); closePopover(); if (pov.on) povExit();
+  const pid = plan && plan.id;
+  if (pid) { try { await flushNow(); } catch {} }
+  showHome();
+  if (pid && plan && plan.id === pid && (THUMB.stale.has(pid) || !THUMB.mem.has(pid))) setTimeout(() => { if (plan && plan.id === pid) thumbMake(pid, plan); }, 60);
+}
+/* a plan is closed: nothing is open behind the plans */
+function closePlan() {
+  if (store.unsubLevels) { store.unsubLevels(); store.unsubLevels = null; }
+  cancelGesture(); if (floating.active) { floating.active = false; floating.lifted = null; }
+  if (view.is3D) set3D(false);
+  plan = null; curLid = null; sel = new Set(); selCache = null; clearHistory(); view.selected = null; view.ghost = null; view.preview = null; view.measure = null;
+  renderPlanName(); requestDraw();
+}
+/* deletes any plan, open or not */
+async function deletePlanById(pid) {
+  const open = !!plan && plan.id === pid;
+  if (open) { clearTimeout(store.timer); store.dirtyLevels.clear(); store.dirtyMeta = false; }
+  if (store.mode === 'db') {
+    const e = store.plans.find(q => q.id === pid);
+    store.deleting = pid;
+    try {
+      const lids = open ? [...plan.levels.keys()] : (await store.db.collection(`plans/${pid}/levels`).get()).docs.map(d => d.id);
+      for (const lid of lids) await store.db.doc(levelPath(pid, lid)).delete();
+      for (const md of (open ? plan.mods : e ? deMeta(e.meta).mods : []) || []) deleteModAtlas(pid, md);
+      await store.db.doc('plans/' + pid).delete();
+    } catch { toast('The plan could not be deleted. Try again.'); store.deleting = null; return false; }
+    store.plans = store.plans.filter(q => q.id !== pid);
+  } else {
+    const all = lsGet(LS_PLANS) || { plans: {} }, d = all.plans[pid];
+    const mods = open ? plan.mods : d ? dePlan(pid, d).mods : [];
+    delete all.plans[pid]; lsSet(LS_PLANS, all); for (const md of mods || []) deleteModAtlas(pid, md);
+  }
+  thumbDrop(pid);
+  if (open) closePlan();
+  delete prefs.views[pid]; savePrefs();
+  toast('Plan deleted.'); return true;
+}
+
+/* ---------- the pictures ----------
+   Kept per plan: with the plans in an account (thumbs/<id>), otherwise in this browser. Made when you leave a plan, every few minutes while
+   it changes, and in the background for plans that have none yet */
+const THUMB = { mem: new Map(), stale: new Set(), q: [], busy: false, tried: new Set() };
+const thumbKey = pid => 'thumb.' + pid;
+async function thumbGet(pid) {
+  if (THUMB.mem.has(pid)) return THUMB.mem.get(pid);
+  let x = null;
+  try {
+    if (store.mode === 'db') { const s = await store.db.doc('thumbs/' + pid).get(); x = s.exists ? s.data() : null; }
+    else x = await idbGet(thumbKey(pid));
+  } catch { x = null; }
+  x = x && typeof x.img === 'string' && x.img.startsWith('data:image/') ? { img: x.img, at: Number(x.at) || 0 } : null;
+  if (x || !THUMB.mem.has(pid)) THUMB.mem.set(pid, x);
+  return x;
+}
+function thumbPut(pid, img) {
+  const x = { img, at: Date.now() }; THUMB.mem.set(pid, x); THUMB.stale.delete(pid);
+  if (store.mode === 'db') { if (!store.readOnly) store.db.doc('thumbs/' + pid).set(x).catch(() => {}); }
+  else idbPut(thumbKey(pid), x).catch(() => {});
+  const pic = HOME.on && document.querySelector(`#home .hm-pic[data-pid="${pid}"]`);
+  if (pic) { pic.classList.remove('wait'); const im = pic.querySelector('img'); if (im) im.src = img; else pic.append(el('img', { src: img, alt: '' })); }
+}
+function thumbDrop(pid) {
+  THUMB.mem.delete(pid); THUMB.stale.delete(pid);
+  if (store.mode === 'db') { if (!store.readOnly) store.db.doc('thumbs/' + pid).delete().catch(() => {}); } else idbDel(thumbKey(pid)).catch(() => {});
+}
+/* the plans with no picture, or one older than their last change, get one, a plan at a time */
+async function thumbQueue() {
+  if (THUMB.busy) return; THUMB.busy = true;
+  try {
+    for (const p of planList()) {
+      if (!HOME.on) break;
+      const x = await thumbGet(p.id);
+      const old = !x || (p.updatedAt && x.at < p.updatedAt - 30000);
+      if (!old || THUMB.tried.has(p.id + ':' + p.updatedAt)) continue;
+      THUMB.tried.add(p.id + ':' + p.updatedAt);
+      await new Promise(r => (window.requestIdleCallback || setTimeout)(r, { timeout: 400 }));
+      if (!HOME.on) break;
+      if (plan && plan.id === p.id) { thumbMake(p.id, plan); continue; }
+      const P = await thumbPlan(p.id); if (P) thumbMake(p.id, P);
+    }
+  } catch (e) { console.warn('thumbs', e); }
+  THUMB.busy = false;
+}
+/* a plan that isn't open, read for its picture */
+async function thumbPlan(pid) {
+  try {
+    if (store.mode !== 'db') { const all = lsGet(LS_PLANS) || { plans: {} }; return all.plans[pid] ? dePlan(pid, all.plans[pid]) : null; }
+    const e = store.plans.find(q => q.id === pid); if (!e) return null;
+    const m = deMeta(e.meta), docs = (await store.db.collection(`plans/${pid}/levels`).get()).docs;
+    const lids = m.order.length ? m.order : docs.map(d => d.id); if (!lids.length) return null;
+    const p = defStack({ id: pid, name: m.name, mixes: m.mixes, bldgs: bldsFor(m, lids), stamps: m.stamps, anchors: m.anchors, networks: m.networks, autoSnapDay: m.autoSnapDay, terrain: m.terrain, mods: m.mods, levels: new Map() });
+    for (const lid of lids) p.levels.set(lid, newLevel('', 5, lid));
+    for (const d of docs) if (p.levels.has(d.id)) p.levels.set(d.id, deLevel(d.id, d.data() || {}));
+    return p;
+  } catch (e) { console.warn('thumb plan', e); return null; }
+}
+function thumbMake(pid, P) {
+  try { const c = thumbPicture(planVoxels(P), pid); if (c) thumbPut(pid, thumbUrl(c)); } catch (e) { console.warn('thumb', e); }
+}
+function thumbUrl(c) { let u = ''; try { u = c.toDataURL('image/webp', 0.84); } catch {} if (!u.startsWith('data:image/webp')) u = c.toDataURL('image/jpeg', 0.86); return u; }
+/* a plan's blocks as the 3D view has them: walls raised, roofs on, every floor above ground */
+function planVoxels(P) {
+  const prev = plan, keep = { walls: v3.walls, spread: v3.spread, upTo: v3.upTo, roofs: v3.roofs }, cut = view.cut3, cells = new Map();
+  plan = P; v3.walls = true; v3.spread = 1; v3.upTo = false; v3.roofs = true; view.cut3 = null;
+  const add = (b, x, y, z) => { if (!b || y < 0 || !BY_ID[b]) return; cells.set(x + ',' + y + ',' + z, b); };
+  try {
+    for (const B of plan.bldgs) withBld(B, () => { for (let i = Math.max(0, plan.ground); i < plan.order.length; i++) {
+      const L = lv(i); if (!L) continue;
+      const y = Math.round(baseY(i)), t = thickOf(i), layers = slabLayers(i), rb = roofOf(i), given = slabGiven(i);
+      for (const D of [openingDeco(L, i).extra, rampartDeco(L, i)]) for (const [k, m] of D) { const [x, z] = parseK(k), yo = y + offNear(i, k); for (const [dy, id] of m) if (id) add(id, x, yo + dy, z); }
+      for (const [k, m] of flightDeco(L, i)) { const [x, z] = parseK(k), yo = y + offAt(i, k); for (const [dy, id] of m) if (id) add(id, x, yo + dy, z); }
+      for (const [k, b] of L.blocks) {
+        const [x, z] = parseK(k), yo = y + offAt(i, k), mx = L.mix && L.mix.size && L.mix.has(k);
+        if (L.walls.has(k)) { wallColumn(L, i, k, b, (id, dy) => add(id, x, yo + dy, z)); continue; }
+        const fb = i > 0 ? fillFromBelow(i, k) : 0;
+        for (const d of cellLayers(L, i, k, layers)) { if ((!d && given && given.has(k)) || d < fb) continue; add(mx ? mixedB(L, k, b, d, x, z) : b, x, yo + d, z); }
+      }
+      for (const m of L.multis) { const st = stampById(m.stamp); if (!st) continue; const fp = footprint(st, m.rot), my = y + offAt(i, K(m.x, m.z)) + t + (m.dy || 0); for (const [dx, dz, b] of fp.cells) if (b) add(b, m.x + dx, my, m.z + dz); }
+      if (rb) { const ry = y + roofBase(i); for (const [k, b] of rb.cells) { const a = k.indexOf(','), c2 = k.lastIndexOf(','); add(b, +k.slice(0, a), ry + +k.slice(a + 1, c2), +k.slice(c2 + 1)); } }
+    } });
+  } finally { plan = prev; Object.assign(v3, keep); view.cut3 = cut; }
+  return cells;
+}
+/* the picture: the plan on an island of grass with dirt sides, oak trees, grass and flowers round it, seen from the south-east */
+function thumbPicture(cells, seed) {
+  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
+  for (const k of cells.keys()) { const a = k.indexOf(','), b = k.lastIndexOf(','), x = +k.slice(0, a), z = +k.slice(b + 1); if (x < x0) x0 = x; if (x > x1) x1 = x; if (z < z0) z0 = z; if (z > z1) z1 = z; }
+  if (x0 === Infinity) { x0 = -4; x1 = 4; z0 = -4; z1 = 4; }
+  const span = Math.max(x1 - x0, z1 - z0) + 1, M = clamp(Math.round(span * 0.28), 4, 12), s = [...String(seed)].reduce((h, c) => Math.imul(h ^ c.charCodeAt(0), 16777619), 2166136261) | 0;
+  const X0 = x0 - M, X1 = x1 + M, Z0 = z0 - M, Z1 = z1 + M, W = cells, sprites = [];
+  const put = (id, x, y, z) => { const k = x + ',' + y + ',' + z; if (!W.has(k)) W.set(k, id); };
+  for (let x = X0; x <= X1; x++) for (let z = Z0; z <= Z1; z++) { put('grass_block', x, 0, z); W.set(x + ',-1,' + z, 'dirt'); W.set(x + ',-2,' + z, 'dirt'); }
+  // round the build: trees spaced apart, then grass and flowers
+  const near = (x, z, d) => x >= x0 - d && x <= x1 + d && z >= z0 - d && z <= z1 + d, used = new Set(), trees = [];
+  for (let x = X0 + 1; x < X1; x++) for (let z = Z0 + 1; z < Z1; z++) {
+    if (near(x, z, 2) || W.has(x + ',1,' + z)) continue;
+    const r = scnHash(x, z, s);
+    if (r < 0.04 && (x < x0 - 1 || z < z0 - 1) && !trees.some(([a, b]) => Math.abs(a - x) < 6 && Math.abs(b - z) < 6)) { trees.push([x, z]); continue; }   // trees behind and beside the build, never in front of it
+    if (r > 0.8) used.add(x + ',' + z);
+  }
+  for (const [x, z] of trees) {
+    const h = 4 + (scnHash(x, z, s + 3) > 0.5 ? 1 : 0);
+    for (let y = 1; y <= h; y++) W.set(x + ',' + y + ',' + z, 'oak_log');
+    for (let y = h - 1; y <= h + 2; y++) { const R = y < h + 1 ? 2 : 1; for (let dx = -R; dx <= R; dx++) for (let dz = -R; dz <= R; dz++) { if ((dx || dz) === 0 && y <= h) continue; if (Math.abs(dx) === R && Math.abs(dz) === R && (y === h + 2 || scnHash(x + dx, z + dz, s + y) < 0.5)) continue; const k = (x + dx) + ',' + y + ',' + (z + dz); if (!W.has(k)) W.set(k, 'oak_leaves'); } }
+  }
+  for (const xz of used) { const [x, z] = xz.split(',').map(Number); if (W.has(x + ',1,' + z)) continue; const r = scnHash(x, z, s + 9); sprites.push({ id: r < 0.18 ? ['poppy', 'dandelion', 'cornflower'][Math.floor(r * 100) % 3] : 'short_grass', x, y: 1, z }); }
+  return isoScene(W, sprites, 640, 400);
+}
+/* draws blocks (and flat plants) seen from the south-east, a little above, back to front */
+function isoScene(cells, sprites, Wpx, Hpx) {
+  const A = Math.PI / 4, E = 30 * Math.PI / 180, ca = Math.cos(A), sa = Math.sin(A), ce = Math.cos(E), se = Math.sin(E);
+  const faces = id => TEXF[id] || (SCN_PACK[id] ? scnFaces(id) : null);
+  const solidAt = (x, y, z) => { const id = cells.get(x + ',' + y + ',' + z), N = id && BY_ID[id]; return !!N && !N.shape && !N.h && !N.glass && N.kind !== 'cut'; };
+  const items = [];
+  for (const [key, id] of cells) {
+    const a = key.indexOf(','), b = key.lastIndexOf(','), x = +key.slice(0, a), y = +key.slice(a + 1, b), z = +key.slice(b + 1), B = BY_ID[id];
+    const full = !B || (!B.shape && !B.h);
+    if (full && solidAt(x, y + 1, z) && solidAt(x + 1, y, z) && solidAt(x, y, z + 1)) continue;   // hidden all round
+    const parts = B && (B.shape || B.h) ? shapeBoxes(B, shapeArg((xx, yy, zz) => BY_ID[cells.get(xx + ',' + yy + ',' + zz)] || null, x, y, z, B)) : [[0, 0, 0, 1, 1, 1]];
+    for (const q of parts) items.push({ id, x, y, z, q, full });
+  }
+  for (const sp of sprites) items.push({ ...sp, sprite: true, q: [0, 0, 0, 1, 1, 1] });
+  const P = (x, y, z) => [x * ca - z * sa, (x * sa + z * ca) * se - y * ce], depth = (x, y, z) => x * sa * ce + y * se + z * ca * ce;
+  let mnx = Infinity, mxx = -Infinity, mny = Infinity, mxy = -Infinity;
+  for (const o of items) for (const dx of [0, 1]) for (const dy of [0, 1]) for (const dz of [0, 1]) { const [u, v] = P(o.x + dx, o.y + dy, o.z + dz); if (u < mnx) mnx = u; if (u > mxx) mxx = u; if (v < mny) mny = v; if (v > mxy) mxy = v; }
+  const pad = 18, sc = Math.min((Wpx - 2 * pad) / (mxx - mnx || 1), (Hpx - 2 * pad) / (mxy - mny || 1));
+  const ox = (Wpx - (mxx - mnx) * sc) / 2 - mnx * sc, oy = (Hpx - (mxy - mny) * sc) / 2 - mny * sc, S2 = (x, y, z) => { const [u, v] = P(x, y, z); return [ox + u * sc, oy + v * sc]; };
+  const cv = document.createElement('canvas'); cv.width = Wpx; cv.height = Hpx; const g = cv.getContext('2d');
+  const sky = g.createLinearGradient(0, 0, 0, Hpx); sky.addColorStop(0, '#7fb2f0'); sky.addColorStop(1, '#cfe3f7'); g.fillStyle = sky; g.fillRect(0, 0, Wpx, Hpx);
+  g.imageSmoothingEnabled = false;
+  const dOf = o => depth(o.x + (o.q[0] + o.q[3]) / 2, o.y + (o.q[1] + o.q[4]) / 2, o.z + (o.q[2] + o.q[5]) / 2);
+  items.sort((a, b) => dOf(a) - dOf(b));
+  const tiny = sc < 3.2, sub = (a, b2) => [a[0] - b2[0], a[1] - b2[1]];
+  const face = (tex, O, U, V, sx, sy, sw, sh) => {
+    if (!tex || sw <= 0 || sh <= 0) return;
+    const lu = Math.hypot(U[0], U[1]) || 1, lv = Math.hypot(V[0], V[1]) || 1, e = 0.5;
+    const U2 = [U[0] * (1 + e / lu), U[1] * (1 + e / lu)], V2 = [V[0] * (1 + e / lv), V[1] * (1 + e / lv)], O2 = [O[0] - (U[0] / lu + V[0] / lv) * e / 2, O[1] - (U[1] / lu + V[1] / lv) * e / 2];
+    g.setTransform(U2[0] / sw, U2[1] / sw, V2[0] / sh, V2[1] / sh, O2[0], O2[1]); g.drawImage(tex, sx, sy, sw, sh, 0, 0, sw, sh);
+  };
+  const flat = (col, k, O, U, V) => { g.setTransform(1, 0, 0, 1, 0, 0); g.globalAlpha = 1; g.fillStyle = col; g.beginPath(); g.moveTo(O[0], O[1]); g.lineTo(O[0] + U[0], O[1] + U[1]); g.lineTo(O[0] + U[0] + V[0], O[1] + U[1] + V[1]); g.lineTo(O[0] + V[0], O[1] + V[1]); g.closePath(); g.fill(); if (k < 1) { g.fillStyle = `rgba(0,0,0,${1 - k})`; g.fill(); } };
+  for (const o of items) {
+    const { id, x, y, z, q } = o, F0 = faces(id); if (!F0) continue;
+    if (o.sprite) {
+      const t = texCv(F0.u); if (!t) continue; const [bx, by] = S2(x + 0.5, y, z + 0.5), w = sc * 0.95, hh = w;
+      g.setTransform(1, 0, 0, 1, 0, 0); g.drawImage(t, 0, 0, t.width, t.height, bx - w / 2, by - hh, w, hh); continue;
+    }
+    const [qx0, qy0, qz0, qx1, qy1, qz1] = q, X0 = x + qx0, X1 = x + qx1, Y0 = y + qy0, Y1 = y + qy1, Z0 = z + qz0, Z1 = z + qz1, full = o.full;
+    const top = !(full && solidAt(x, y + 1, z)), east = !(full && solidAt(x + 1, y, z)), south = !(full && solidAt(x, y, z + 1));
+    if (tiny) {
+      const col = AVG[id] || (id === 'oak_leaves' ? '#4f7f2a' : '#7a7a7a'), side = id === 'grass_block' ? (AVG.dirt || '#866043') : col;
+      if (top) { const O = S2(X0, Y1, Z0); flat(col, 1, O, sub(S2(X1, Y1, Z0), O), sub(S2(X0, Y1, Z1), O)); }
+      if (east) { const O = S2(X1, Y1, Z0); flat(side, 0.8, O, sub(S2(X1, Y1, Z1), O), sub(S2(X1, Y0, Z0), O)); }
+      if (south) { const O = S2(X0, Y1, Z1); flat(side, 0.64, O, sub(S2(X1, Y1, Z1), O), sub(S2(X0, Y0, Z1), O)); }
+      continue;
+    }
+    const F = { u: texCv(F0.u), e: texCv(F0.e), s: texCv(F0.s) }; if (!F.u) continue; const N = F.u.width;
+    if (top) { const O = S2(X0, Y1, Z0); face(F.u, O, sub(S2(X1, Y1, Z0), O), sub(S2(X0, Y1, Z1), O), qx0 * N, qz0 * N, (qx1 - qx0) * N, (qz1 - qz0) * N); }
+    if (east && F.e) { const O = S2(X1, Y1, Z0), T2 = shadedTex(F.e, 0.8), n2 = F.e.width; face(T2, O, sub(S2(X1, Y1, Z1), O), sub(S2(X1, Y0, Z0), O), qz0 * n2, (1 - qy1) * n2, (qz1 - qz0) * n2, (qy1 - qy0) * n2); }
+    if (south && F.s) { const O = S2(X0, Y1, Z1), T3 = shadedTex(F.s, 0.64), n3 = F.s.width; face(T3, O, sub(S2(X1, Y1, Z1), O), sub(S2(X0, Y0, Z1), O), qx0 * n3, (1 - qy1) * n3, (qx1 - qx0) * n3, (qy1 - qy0) * n3); }
+  }
+  g.setTransform(1, 0, 0, 1, 0, 0);
+  return cv;
+}
+/* while a plan changes, its picture is brought up to date every few minutes */
+setInterval(() => { if (plan && !HOME.on && !G && THUMB.stale.has(plan.id) && document.visibilityState === 'visible') { const P = plan; (window.requestIdleCallback || setTimeout)(() => { if (plan === P && !G) thumbMake(P.id, P); }, { timeout: 2000 }); } }, 180000);
+
 /* ================= Settings: categories on the left, each setting with a line on what it does ================= */
 const LAYER_INFO = {
   grid: 'Thin lines around every block, once you zoom in close enough.', chunks: 'Bolder lines every 16 blocks, matching Minecraft’s chunks.',
@@ -12232,29 +12575,33 @@ function renderSettings() {
 /* one setting: its name and what it does on the left, the control on the right */
 /* one setting: its name on the left, the control on the right. What it does shows by the pointer on hover; on a phone, the ⓘ shows it */
 function setRow(title, desc, ...ctl) {
-  const sd = desc && isMobile() ? el('div', { class: 'sd', text: desc, hidden: true }) : null;
-  return el('div', { class: 'setrow', 'data-tip': desc || null }, el('div', { class: 'setlab' }, el('div', { class: 'st' }, title, sd ? el('button', { class: 'tipbtn', 'aria-label': `About ${title}`, onclick: () => { sd.hidden = !sd.hidden; } }, 'ⓘ') : null), sd), el('div', { class: 'setctl' }, ...ctl.filter(Boolean)));
+  return el('div', { class: 'setrow' }, el('div', { class: 'setlab' }, el('div', { class: 'st' }, title, desc ? infoTip(desc, title) : null)), el('div', { class: 'setctl' }, ...ctl.filter(Boolean)));
 }
+/* ⓘ by a setting's name: pointing at it (or tapping it) shows what the setting does */
+function infoTip(desc, title) { return el('button', { type: 'button', class: 'infotip', 'data-tip': desc, 'aria-label': `About ${title}: ${desc}`, onclick: ev => { ev.preventDefault(); ev.stopPropagation(); tipToggle(ev.currentTarget); } }, icon('infoi')); }
 /* switches as a compact grid of ticks */
 function setChecks(items) {
-  return el('div', { class: 'setgrid' }, ...items.filter(Boolean).map(([id, label, on, fn, tip]) => { const inp = el('input', { type: 'checkbox', id, checked: on ? true : null }); inp.addEventListener('change', () => fn(inp.checked)); return el('label', { class: 'setchk', for: id, 'data-tip': tip || null }, inp, el('span', { text: label })); }));
+  return el('div', { class: 'setgrid' }, ...items.filter(Boolean).map(([id, label, on, fn, tip]) => { const inp = el('input', { type: 'checkbox', id, checked: on ? true : null }); inp.addEventListener('change', () => fn(inp.checked)); return el('div', { class: 'setchkw' }, el('label', { class: 'setchk', for: id }, inp, el('span', { text: label })), tip ? infoTip(tip, label) : null); }));
 }
 function setSelect(id, opts, value, fn, label) { const s2 = el('select', { class: 'pick', id, 'aria-label': label }, opts.map(([v, n]) => el('option', { value: v, selected: v === value ? true : null }, n))); s2.addEventListener('change', () => fn(s2.value)); return s2; }
-/* the settings tooltip: follows the pointer over any setting that says what it does */
+/* the settings tooltip: under the ⓘ the pointer is on, or the one last tapped */
+let tipEl = null, tipFor = null;
+function tipShow(b) {
+  if (!tipEl) { tipEl = el('div', { class: 'settip', role: 'tooltip', hidden: true }); document.body.append(tipEl); }
+  tipFor = b; tipEl.textContent = b.dataset.tip; tipEl.hidden = false;
+  const r = b.getBoundingClientRect(), w = tipEl.offsetWidth, h = tipEl.offsetHeight;
+  let x = r.left + r.width / 2 - w / 2, y = r.bottom + 6; if (y + h > innerHeight - 8) y = r.top - h - 6;
+  tipEl.style.left = clamp(x, 8, innerWidth - w - 8) + 'px'; tipEl.style.top = Math.max(8, y) + 'px';
+}
+function tipHide() { if (tipEl) tipEl.hidden = true; tipFor = null; }
+function tipToggle(b) { if (tipFor === b && tipEl && !tipEl.hidden) tipHide(); else tipShow(b); }
 function settingsTips(back) {
   if (back._tips) return; back._tips = true;
-  const tip = el('div', { class: 'settip', role: 'tooltip', hidden: true }); document.body.append(tip);
-  back.addEventListener('pointermove', e => {
-    if (e.pointerType !== 'mouse' || isMobile()) { tip.hidden = true; return; }
-    const r = e.target.closest && e.target.closest('[data-tip]');
-    if (!r || !back.contains(r)) { tip.hidden = true; return; }
-    if (tip.textContent !== r.dataset.tip) tip.textContent = r.dataset.tip;
-    tip.hidden = false; const w = tip.offsetWidth, h = tip.offsetHeight;
-    let x = e.clientX + 14, y = e.clientY + 16; if (x + w > innerWidth - 8) x = e.clientX - w - 14; if (y + h > innerHeight - 8) y = e.clientY - h - 12;
-    tip.style.left = Math.max(8, x) + 'px'; tip.style.top = Math.max(8, y) + 'px';
-  });
-  back.addEventListener('pointerleave', () => { tip.hidden = true; });
-  new MutationObserver(() => { if (back.hidden) tip.hidden = true; }).observe(back, { attributes: true, attributeFilter: ['hidden'] });
+  back.addEventListener('pointerover', e => { if (e.pointerType !== 'mouse') return; const b = e.target.closest && e.target.closest('.infotip'); if (b) tipShow(b); });
+  back.addEventListener('pointerout', e => { if (e.pointerType !== 'mouse') return; const b = e.target.closest && e.target.closest('.infotip'); if (b && !b.contains(e.relatedTarget)) tipHide(); });
+  back.addEventListener('pointerdown', e => { if (!(e.target.closest && e.target.closest('.infotip'))) tipHide(); });
+  back.addEventListener('scroll', tipHide, true);
+  new MutationObserver(() => { if (back.hidden) tipHide(); }).observe(back, { attributes: true, attributeFilter: ['hidden'] });
 }
 function setSwitch(id, on, fn, label) { const inp = el('input', { type: 'checkbox', class: 'sw', id, role: 'switch', checked: on ? true : null, 'aria-label': label }); inp.addEventListener('change', () => fn(inp.checked)); return inp; }
 function setRange(id, min, max, step, value, fn, fmt, label) {
@@ -12283,7 +12630,6 @@ function settingsRows(cat) {
   } else if (cat === 'floors') {
     const nf = view.cfg.nf;
     const cur = curLevel(), odd = nf.t >= 3;
-    rows.push(setRow('Height', 'Blocks of room between a new floor and the next.', stepBox('New floor height', nf.h, 1, 64, v => { nf.h = v; savePrefs(); })));
     rows.push(setRow('Floor thickness', 'How thick a new floor’s own slab is.', stepBox('New floor thickness', nf.t, 1, 15, v => { nf.t = v; savePrefs(); again(); })));
     rows.push(setRow('Cavity', odd ? 'New floors leave the blocks between their top and bottom layers empty, for cables and pipes.' : 'Needs a floor thickness of 3 or more to have a middle to hollow out.', setSwitch('set-nfcav', !!nf.cav, v => { nf.cav = v; savePrefs(); }, 'Cavity')));
     if (cur && plan) rows.push(setRow('Reset to selected floor', `Take the height and thickness of ${floorTag(levelIndex(curLid))} ${cur.name}: ${cur.height} high, ${cur.thick || 1} thick.`, el('button', { class: 'btn sm', onclick: () => { nf.h = cur.height; nf.t = cur.thick || 1; nf.cav = !!cur.cavity; savePrefs(); again(); toast('New floors now match the selected floor.'); } }, icon('undo'), 'Reset to selected floor')));
@@ -12394,7 +12740,6 @@ function openMoreMenu(btn) {
     !ro && mi('swap', 'Find and replace…', () => openFindReplace()),
     !ro && mi('swap', 'Swap palette…', () => openSwap()),
     !ro && mi('history', 'Snapshots…', openSnapshotsModal),
-    mi('focus', 'Take the tour', startTour),
     !ro && sbMenuItem(mi),
     !ro && mi('upload', 'Import plan (.json)', () => $('#importFile').click()),
     !mob && el('div', { class: 'msep' }), !mob && mi('search', 'Search commands', openPalette, mac ? '⌘K' : 'Ctrl+K'),
@@ -12406,9 +12751,9 @@ const kk = (...a) => a.filter(x => keyOf(x)).map(x => keyName(keyOf(x))).join(' 
 const shortcutGroups = () => shortcutRaw().map(([t, rows]) => [t, rows.filter(r => r[0] !== '')]);
 const shortcutRaw = () => [
   ['Tools', [[kk('pointer', 'pan'), 'Pick, pan'], [kk('pencil', 'line'), 'Pencil'], [kk('shape', 'circle'), 'Shape'], [kk('bucket', 'path'), 'Fill, path'], [kk('select', 'eraser', 'extend'), 'Select, eraser, extend up'], [kk('stair', 'door', 'window', 'roof'), 'Stairs, doorway, window, roof'], [kk('zone', 'stamp', 'route'), 'Zone, multiblock, route'], [kk('note', 'anchor', 'measure'), 'Note, anchor, measure']]],
-  ['Drawing', [[kk('swapBlocks'), 'Swap the Main and Alt blocks'], [kk('wallMode'), 'Wall mode on / off'], [kk('resetBlocks'), 'Main and Alt back to the defaults'], [kk('fillMode'), 'Fill: solid, frame or room'], [`Shift + a tool's key`, 'Change that tool’s shape: pencil (freehand, line, path), shape, select, eraser, zone'], ['Shift while drawing', 'Keep a shape 1:1: a square, a circle'], ['Alt while drawing', 'Erase instead of place'], [kk('turn'), 'Turn the stair you are placing, or a multiblock'], [kk('flipHalf'), 'Upside-down stair or top-half slab'], ['Right-click', 'Pick a block (with its facing), or quick actions']]],
+  ['Drawing', [[kk('swapBlocks'), 'Swap the Main and Alt blocks'], [kk('wallMode'), 'Wall mode on / off'], [kk('resetBlocks'), 'Main and Alt back to the defaults'], [kk('fillMode'), 'Fill: solid, frame or room'], [`Shift + a tool's key`, 'Change that tool’s shape: pencil (freehand, line, path), shape, select, eraser, zone'], ['Shift while drawing', 'Keep a shape 1:1: a square, a circle'], ['Alt while drawing', 'Erase instead of place'], [kk('turn'), 'Turn the stair you are placing, or a multiblock'], [kk('flipHalf'), 'Upside-down stair or top-half slab'], ['[ / ]', 'Brush size smaller / bigger (Pencil, Eraser, Path, roof brush)'], ['[ ]  with a shape', 'Size across; Alt: down; Shift: both; Shift+Alt: square'], ['Right-click', 'Pick a block (with its facing), or quick actions']]],
   ['Editing', [['Shift / Alt while selecting', 'Add / subtract (both: intersect)'], [`${kk('turn')} / Shift+${kk('turn')}`, 'Turn the selection right / left'], ['Ctrl+C / Ctrl+X / Ctrl+V', 'Copy, move, paste blocks'], ['Enter', 'Fill the selection, build up what Extend picked, or lay a path'], ['Delete', 'Erase the selection or the picked object'], ['Ctrl+Z / Ctrl+Shift+Z', 'Undo / redo'], ['Right-click undo', 'Undo history'], ['Ctrl+D or Esc', 'Deselect']]],
-  ['Floors and view', [['[ ]  or  PgDn PgUp', 'Floor down / up'], ['Right-click a floor tag', 'That floor’s settings'], ['Space + drag', 'Pan with any tool'], ['Scroll, + / −, 0', 'Zoom, fit to screen'], ['Alt with the Ruler', 'A quick measurement that isn’t kept'], ['Ctrl+K', 'Search tools, blocks, floors and actions'], ['Arrow keys', 'Move the view a few cells (Shift: further)'], ['?', 'These keys']]],
+  ['Floors and view', [['PgDn PgUp', 'Floor down / up (also [ ] with tools that have no size)'], ['Right-click a floor tag', 'That floor’s settings'], ['Space + drag', 'Pan with any tool'], ['Scroll, + / −, 0', 'Zoom, fit to screen'], ['Alt with the Ruler', 'A quick measurement that isn’t kept'], ['Ctrl+K', 'Search tools, blocks, floors and actions'], ['Arrow keys', 'Move the view a few cells (Shift: further)'], ['?', 'These keys']]],
   ['3D', [['Alt + drag', 'Orbit round the block under the cursor'], ['Alt + scroll', 'Zoom in on the block under the cursor'], ['Home', 'Back to the whole build']]]];
 const keyCaps = k => el('span', {}, k.split(' / ').map((x, i) => [i ? ' / ' : '', el('kbd', { text: x })]));
 function shortcutList() { return el('div', { class: 'keysheet' }, shortcutGroups().map(([h, rows]) => el('section', { class: 'keyg' }, el('h4', { class: 'keyh', text: h }), el('div', { class: 'keys' }, rows.flatMap(([k, d]) => [keyCaps(k), el('span', { text: d })]))))); }
@@ -12416,73 +12761,8 @@ function shortcutList() { return el('div', { class: 'keysheet' }, shortcutGroups
 function showAllKeys() { openModal('All keybindings', [shortcutList(), el('div', { class: 'exact' }, el('button', { class: 'btn primary', onclick: closeModal }, 'Done'))]); $('#modal .modal').classList.add('full'); }
 function showShortcuts() {
   if (!$('#modal').hidden && $('#modalTitle').textContent === 'Keyboard shortcuts') { closeModal(); return; }
-  openModal('Keyboard shortcuts', [shortcutList(), el('div', { class: 'exact' }, el('button', { class: 'btn', onclick: () => { closeModal(); startTour(); } }, icon('focus'), 'Take the tour'), el('button', { class: 'btn primary', onclick: closeModal }, 'Done'))]);
+  openModal('Keyboard shortcuts', [shortcutList(), el('div', { class: 'exact' }, el('button', { class: 'btn primary', onclick: closeModal }, 'Done'))]);
   $('#modal .modal').classList.add('wide');
-}
-
-/* ================= the tour =================
-   A short walk round the app the first time it opens, pointing at each part in turn. Replay it from the keys sheet, Search or the menu */
-const tour = { i: 0, box: null, ring: null, bub: null };
-const visEl = sel => { const e = document.querySelector(sel); if (!e || e.hidden) return null; const r = e.getBoundingClientRect(); return r.width > 4 && r.height > 4 && r.bottom > 0 && r.top < innerHeight ? e : null; };
-const ribTab = t => { if (!ribbonOn() || view.ribbonMin) return; if (tour.tab0 == null) tour.tab0 = view.ribbonTab; if (view.ribbonTab !== t) { view.ribbonTab = t; renderRibbon(); } };
-const TOUR = [
-  { t: 'Welcome to Chunkwise', d: 'Plan a Minecraft build a floor at a time, see it in 3D, and take it into your world. This quick look round takes a minute.' },
-  { prep: () => ribTab('build'), at: () => visEl('#rail') || visEl('#ribbon'), t: 'Tools', d: 'Pencil draws freehand, straight lines and paths. Shape and Fill do the rest. Select area, Eraser and Extend up change what’s there. Stairs, Door, Window and Roof finish a building.', mob: 'Pencil, Shape and Fill draw; Select and Eraser change what’s there. The rest of the tools are a tap away.' },
-  { prep: () => { if (!view.cornerSw) ribTab('home'); }, at: () => visEl('#dock .dk-chips') || visEl('#cornerSw') || visEl('#tbPair') || visEl('#ribbon [data-g="Blocks"]'), t: 'Main and Alt', d: 'Two blocks that are alike: Main is the one you draw with. X swaps them, W turns wall mode on so new blocks are walls, and D puts oak planks and cobblestone back. In a Room, Main is the walls and Alt the floor. The Blocks tab also has mixes and presets.' },
-  { prep: () => { const t = tabOfTool(view.tool); if (t && t !== 'home') ribTab(t); }, at: () => visEl('#ribbon .st-strip') || visEl('#optbar') || visEl('#opts'), t: 'Tool options', d: 'The tool you have out shows its options in the bar along the top: the shape, wall thickness and design, a pattern for floors, the size.' },
-  { at: () => visEl('#dock .dk-floors') || visEl('#floorChip'), t: 'Floors and buildings', d: 'Each building is a stack of floors with its own heights. Pick a floor in the Floors panel, or press [ and ] to go down and up.', mob: 'Each building is a stack of floors with its own heights. Tap here to change floor or building.' },
-  { at: () => visEl('#viewSeg') || visEl('#v3tog'), t: '3D', d: 'See the build in 3D, roofs and all, or walk round it at Minecraft scale.' },
-  { at: () => visEl('#exportBtn') || visEl('#moreBtn'), t: 'Into Minecraft', d: 'Export a Litematica schematic, with its materials list, or a WorldEdit .schem to build it in your world, or a plan file to keep.' },
-  { t: 'That’s the tour', d: 'Press ? any time for the keys. You can take the tour again from there, or from Search (Ctrl+K).', mob: 'You can take the tour again from the ⋯ menu.' }];
-function startTour() {
-  closePopover(); closeModal(); if (settingsOpen()) closeSettings(); endTour(true);
-  tour.i = 0; tour.tab0 = null; tour.steps = tourSteps();
-  tour.box = el('div', { class: 'tour', role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Tour' });
-  tour.ring = el('div', { class: 'tring' }); tour.bub = el('div', { class: 'tbub' });
-  tour.box.append(tour.ring, tour.bub); document.body.append(tour.box);
-  tour.box.addEventListener('keydown', ev => { if (ev.key === 'Escape') { ev.stopPropagation(); endTour(); } else if (ev.key === 'ArrowRight') tourGo(1); else if (ev.key === 'ArrowLeft') tourGo(-1); });
-  addEventListener('resize', tourPlace);
-  tourShow();
-}
-/* the steps this layout has: a part that isn't on screen (after bringing its ribbon tab) is left out */
-function tourSteps() { const keep = []; for (const S of TOUR) { if (S.prep && S.at) { S.prep(); } if (!S.at || S.at()) keep.push(S); } return keep; }
-function tourGo(d) { const n = tour.i + d; if (n < 0) return; if (n >= tour.steps.length) { endTour(); return; } tour.i = n; tourShow(); }
-function tourShow() {
-  if (!tour.box) return;
-  const S = tour.steps[tour.i], mob = isMobile(), last = tour.i === tour.steps.length - 1;
-  if (S.prep) S.prep();
-  tour.bub.replaceChildren(
-    el('div', { class: 'tstep', text: `${tour.i + 1} of ${tour.steps.length}` }), el('h3', { text: S.t }), el('p', { text: mob && S.mob ? S.mob : S.d }),
-    el('div', { class: 'tact' }, !last ? el('button', { class: 'btn ghost sm', onclick: () => endTour() }, 'Skip') : el('span'), el('span', { class: 'tsp' }),
-      tour.i ? el('button', { class: 'btn sm', onclick: () => tourGo(-1) }, 'Back') : null,
-      el('button', { class: 'btn primary sm', onclick: () => tourGo(1) }, last ? 'Done' : tour.i ? 'Next' : 'Show me')));
-  tourPlace();
-  const f = tour.bub.querySelector('.btn.primary'); if (f) f.focus();
-}
-function tourPlace() {
-  if (!tour.box) return;
-  const S = tour.steps[tour.i], t = S.at && S.at(), b = tour.bub, pad = 6;
-  if (!t) { tour.ring.hidden = true; tour.box.classList.add('dim'); b.style.left = Math.max(12, (innerWidth - b.offsetWidth) / 2) + 'px'; b.style.top = Math.max(12, (innerHeight - b.offsetHeight) / 2) + 'px'; b.dataset.side = ''; return; }
-  tour.box.classList.remove('dim'); tour.ring.hidden = false;
-  const r = t.getBoundingClientRect(), x0 = Math.max(4, r.left - pad), y0 = Math.max(4, r.top - pad), x1 = Math.min(innerWidth - 4, r.right + pad), y1 = Math.min(innerHeight - 4, r.bottom + pad);
-  Object.assign(tour.ring.style, { left: x0 + 'px', top: y0 + 'px', width: (x1 - x0) + 'px', height: (y1 - y0) + 'px' });
-  const bw = b.offsetWidth, bh = b.offsetHeight, gap = 12;
-  // beside the part: below it, above it, or to its right or left, whichever has room
-  let side = innerHeight - y1 > bh + gap + 8 ? 'below' : y0 > bh + gap + 8 ? 'above' : innerWidth - x1 > bw + gap + 8 ? 'right' : 'left';
-  let left = side === 'right' ? x1 + gap : side === 'left' ? x0 - gap - bw : (x0 + x1) / 2 - bw / 2;
-  let top = side === 'below' ? y1 + gap : side === 'above' ? y0 - gap - bh : (y0 + y1) / 2 - bh / 2;
-  b.style.left = clamp(left, 12, innerWidth - bw - 12) + 'px'; b.style.top = clamp(top, 12, innerHeight - bh - 12) + 'px'; b.dataset.side = side;
-}
-function endTour(quiet) {
-  if (!tour.box) return; tour.box.remove(); tour.box = null; removeEventListener('resize', tourPlace);
-  if (tour.tab0 != null && ribbonOn()) { view.ribbonTab = tour.tab0; renderRibbon(); } tour.tab0 = null;
-  if (!quiet) { view.tourDone = true; savePrefs(); }
-}
-/* the first time the app opens with a plan to look at */
-function maybeTour(n) {
-  if (view.tourDone || store.readOnly || tour.box) return;
-  if (!plan || !$('#overlay').hidden || !$('#modal').hidden) { if ((n || 0) < 40) setTimeout(() => maybeTour((n || 0) + 1), 500); return; }
-  startTour();
 }
 
 /* ================= colour picker: square + hue, RGB, HSL, hex, presets, recents, eyedropper ================= */
@@ -12615,7 +12895,6 @@ function paletteSource() {
   A('Add a resource pack', () => pickPack(), { icon: 'image', kw: 'textures zip texture pack' });
   A('Texture packs…', () => openSettings('packs'), { icon: 'image', kw: 'textures resource pack order remove' });
   A('Keyboard shortcuts', showShortcuts, { icon: 'keys', kw: 'keys help ?' });
-  A('Take the tour', startTour, { icon: 'focus', kw: 'help walkthrough tutorial intro welcome' });
   A('New plan', async () => { await flushNow(); startNewPlan(); toast('New plan started.'); }, { icon: 'plus', edit: 1, kw: 'base' });
   for (const k in LAYER_NAMES) A(`${view.layers[k] ? 'Hide' : 'Show'} ${LAYER_NAMES[k].toLowerCase()}`, () => { view.layers[k] = !view.layers[k]; requestDraw(); schedule3D(); savePrefs(); }, { icon: 'layers', kw: 'layer toggle' });
   for (const [id, , long, key] of TOOL_DEFS) if (!(ro && EDIT_TOOLS.has(id))) out.push({ label: long, kind: 'Tool', icon: id, key, run: () => setTool(id), kw: 'tool' });
@@ -12970,7 +13249,7 @@ $('#importFile').addEventListener('change', async e => {
     await flushNow();
     const p = dePlan(uid('p'), d); p.name = nextPlanName(p.name);
     const urls = {}; if (d.modtex && typeof d.modtex === 'object') for (const md of p.mods) { const u = d.modtex[md.k]; if (typeof u === 'string' && u.startsWith('data:image/png;base64,')) urls[md.k] = u; }
-    loadPlanInto(p, { fresh: true }); touchAll(); copyModAtlases(p, null, urls); toast(`Imported “${p.name}”.`);
+    hideHome(); loadPlanInto(p, { fresh: true }); touchAll(); copyModAtlases(p, null, urls); toast(`Imported “${p.name}”.`);
   } catch { toast('That file is not a Chunkwise plan.'); }
 });
 
@@ -14327,7 +14606,7 @@ function wire() {
   $('#layersBtn').addEventListener('click', () => { if (settingsOpen()) closeSettings(); else openSettings(); }); $('#exportBtn').addEventListener('click', () => { if (plan) toggleWin('export'); }); $('#searchBtn').addEventListener('click', openPalette);
   $('#moreBtn').addEventListener('click', e => openMoreMenu(e.currentTarget));
   $('#planBtn').addEventListener('click', e => openPlanMenu(e.currentTarget)); attachPlanSwipe();
-  { const br = document.querySelector('.brand'); br.setAttribute('role', 'button'); br.tabIndex = 0; br.title = 'File: plans, import and export'; br.addEventListener('click', () => openPlanMenu(br)); br.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openPlanMenu(br); } }); }
+  { const br = document.querySelector('.brand'); br.setAttribute('role', 'button'); br.tabIndex = 0; br.title = 'All plans'; br.setAttribute('aria-label', 'Chunkwise: all plans'); br.addEventListener('click', goHome); br.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); goHome(); } }); }
   $('#objBtn').addEventListener('click', () => toggleWin('objects'));
   $('#winClose').addEventListener('click', closeWin); $('#winDock').addEventListener('click', toggleWinFloat);
   $('#modalClose').addEventListener('click', closeModal);
@@ -14372,7 +14651,7 @@ function wire() {
    small documents are rows of the docs table, big ones (texture packs, mod pictures) files in a private bucket. Every row and file is
    locked to its owner by row-level security. Each floor is its own document, so two devices editing different floors both keep their work */
 const SB = { url: 'https://cvettjrnugszffrsamcu.supabase.co', key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImN2ZXR0anJudWdzemZmcnNhbWN1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTI5OTgxNzMsImV4cCI6MjEwODU3NDE3M30.F2dkMxJomT6j3vcxRe4VaMtZRlATK6v1h8_OK9opVW0',
-  lib: 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js', client: null, email: null, uid: null, recovering: false };
+  lib: 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js', client: null, email: null, uid: null, name: '', recovering: false };
 const SB_TOKEN = 'sb-cvettjrnugszffrsamcu-auth-token';
 function sbLoad() {
   if (SB.client) return Promise.resolve(SB.client);
@@ -14455,10 +14734,17 @@ async function sbStart() {
   const { data } = await sb.auth.getSession(), s = data && data.session;
   if (fromLink) history.replaceState(null, '', location.pathname);
   if (!s || !s.user) return null;
-  SB.uid = s.user.id; SB.email = s.user.email || '';
+  sbUser(s.user);
   const db = sbDb(sb, SB.uid);
   try { await sbMoveLocal(db, SB.uid); } catch {}
   return { db, user: { id: async () => SB.uid, canEdit: async () => true, can: async () => true } };
+}
+function sbUser(u) { SB.uid = u.id; SB.email = u.email || ''; SB.name = String((u.user_metadata && u.user_metadata.name) || '').trim().slice(0, 40); }
+const sbName = () => SB.name || (SB.email ? SB.email.split('@')[0] : 'there');
+/* the home page's corner: Log in, or Hi and your name, which opens your account */
+function sbHomeAccount() {
+  if (SB.uid) return el('button', { class: 'hm-hi', title: 'Your account', onclick: openAccount, text: `Hi ${sbName()}` });
+  return el('button', { class: 'btn primary sm', onclick: openAccount }, icon('user'), 'Log in');
 }
 /* the first time an account is used in this browser, the plans saved here go into it, so nothing is left behind */
 async function sbMoveLocal(db, id) {
@@ -14474,34 +14760,46 @@ async function sbMoveLocal(db, id) {
   lsSet(flag, 1);
   if (n) setTimeout(() => toast(`${n} plan${n === 1 ? '' : 's'} from this browser moved into your account.`), 1500);
 }
-/* ⋯ menu: sign in, or who's signed in and sign out */
+/* ⋯ menu: sign in, or who's signed in */
 function sbMenuItem(mi) {
   return SB.uid ? mi('user', `Account · ${SB.email}`, openAccount) : mi('user', 'Sign in to sync…', openAccount);
 }
 function openAccount() {
   if (SB.uid) {
+    const nm = el('input', { class: 'field', id: 'sbName', value: SB.name, maxlength: '40', placeholder: 'Your name', autocomplete: 'nickname', 'aria-label': 'Your name' }), msg = el('p', { class: 'sbmsg', role: 'status' });
+    const saveName = async () => {
+      const v = nm.value.trim().slice(0, 40); if (v === SB.name) return;
+      msg.classList.remove('bad'); msg.textContent = 'Saving…';
+      const { error } = await SB.client.auth.updateUser({ data: { name: v } });
+      if (error) { msg.textContent = error.message; msg.classList.add('bad'); return; }
+      SB.name = v; msg.textContent = 'Name saved.'; if (typeof renderHome === 'function') renderHome();
+    };
+    nm.addEventListener('keydown', ev => { if (ev.key === 'Enter') saveName(); });
     openModal('Your account', [el('div', { class: 'sbbox' },
       el('p', { text: `Signed in as ${SB.email}. Your plans, settings and texture packs sync to every device you sign in on.` }),
-      el('div', { class: 'exact' },
+      el('label', { class: 'sblab', for: 'sbName', text: 'Name' }), el('div', { class: 'sbrow' }, nm, el('button', { class: 'btn', onclick: saveName }, 'Save')), msg,
+      el('div', { class: 'sbacts' },
         el('button', { class: 'btn', onclick: () => { closeModal(); openNewPassword(); } }, 'Change password'),
-        el('button', { class: 'btn primary', onclick: async () => { try { await flushNow(); } catch {} await SB.client.auth.signOut(); location.reload(); } }, 'Sign out')),
+        el('button', { class: 'btn', onclick: async () => { try { await flushNow(); } catch {} await SB.client.auth.signOut(); location.reload(); } }, 'Sign out'),
+        el('button', { class: 'btn danger', onclick: () => { closeModal(); openDeleteAccount(); } }, 'Delete account')),
       el('p', { class: 'ddhint', text: 'Signed out, this browser shows the plans saved in it before you signed in.' }))]);
     return;
   }
   let mode = 'in';
-  const box = el('div', { class: 'sbbox' }), email = el('input', { class: 'field', type: 'email', autocomplete: 'email', placeholder: 'Email', 'aria-label': 'Email' });
+  const box = el('div', { class: 'sbbox' }), name = el('input', { class: 'field', type: 'text', autocomplete: 'nickname', maxlength: '40', placeholder: 'Your name', 'aria-label': 'Your name' }), email = el('input', { class: 'field', type: 'email', autocomplete: 'email', placeholder: 'Email', 'aria-label': 'Email' });
   const pw = el('input', { class: 'field', type: 'password', autocomplete: 'current-password', placeholder: 'Password', 'aria-label': 'Password' });
   const msg = el('p', { class: 'sbmsg', role: 'status' });
   const say = (t, bad) => { msg.textContent = t; msg.classList.toggle('bad', !!bad); };
   const go = async () => {
     const e = email.value.trim(), p = pw.value;
     if (!/^\S+@\S+\.\S+$/.test(e)) { say('Type the email address for your account.', true); return; }
+    if (mode === 'up' && !name.value.trim()) { say('Type the name you’d like to be called.', true); return; }
     if (mode !== 'reset' && p.length < 8) { say('Passwords need at least 8 characters.', true); return; }
     say('One moment…');
     try {
       const sb = await sbLoad(), back = location.origin + location.pathname;
       if (mode === 'in') { const { error } = await sb.auth.signInWithPassword({ email: e, password: p }); if (error) throw error; location.reload(); return; }
-      if (mode === 'up') { const { data, error } = await sb.auth.signUp({ email: e, password: p, options: { emailRedirectTo: back } }); if (error) throw error; if (data && data.session) { location.reload(); return; } say('Check your email and click the link to confirm your account. It brings you back here, signed in.'); return; }
+      if (mode === 'up') { const { data, error } = await sb.auth.signUp({ email: e, password: p, options: { emailRedirectTo: back, data: { name: name.value.trim().slice(0, 40) } } }); if (error) throw error; if (data && data.session) { location.reload(); return; } say('Check your email and click the link to confirm your account. It brings you back here, signed in.'); return; }
       const { error } = await sb.auth.resetPasswordForEmail(e, { redirectTo: back }); if (error) throw error; say('If that email has an account, a link to set a new password is on its way.');
     } catch (err) { say(/invalid login/i.test(String(err && err.message)) ? 'That email and password don’t match an account.' : (err && err.message) || 'Something went wrong. Try again.', true); }
   };
@@ -14509,14 +14807,14 @@ function openAccount() {
     pw.hidden = mode === 'reset'; pw.autocomplete = mode === 'up' ? 'new-password' : 'current-password';
     box.replaceChildren(
       el('p', { text: 'Sign in to keep your plans, settings and texture packs in sync across your devices. Plans already in this browser move into your account the first time.' }),
-      email, pw, msg,
-      el('div', { class: 'exact' }, el('button', { class: 'btn primary', onclick: go }, mode === 'in' ? 'Sign in' : mode === 'up' ? 'Create account' : 'Send reset link')),
+      mode === 'up' ? name : null, email, pw, msg,
+      el('div', { class: 'exact' }, el('button', { class: 'btn primary', onclick: go }, mode === 'in' ? 'Log in' : mode === 'up' ? 'Create account' : 'Send reset link')),
       el('div', { class: 'sblinks' },
         mode !== 'in' ? el('button', { class: 'btn ghost sm', onclick: () => { mode = 'in'; say(''); render(); } }, 'I have an account') : el('button', { class: 'btn ghost sm', onclick: () => { mode = 'up'; say(''); render(); } }, 'Create an account'),
         mode !== 'reset' ? el('button', { class: 'btn ghost sm', onclick: () => { mode = 'reset'; say(''); render(); } }, 'Forgot password?') : null));
   };
-  for (const n of [email, pw]) n.addEventListener('keydown', ev => { if (ev.key === 'Enter') go(); });
-  render(); openModal('Sign in', [box]); setTimeout(() => email.focus(), 50);
+  for (const n of [name, email, pw]) n.addEventListener('keydown', ev => { if (ev.key === 'Enter') go(); });
+  render(); openModal('Log in', [box]); setTimeout(() => email.focus(), 50);
 }
 function openNewPassword() {
   const pw = el('input', { class: 'field', type: 'password', autocomplete: 'new-password', placeholder: 'New password', 'aria-label': 'New password' }), msg = el('p', { class: 'sbmsg', role: 'status' });
@@ -14529,6 +14827,32 @@ function openNewPassword() {
   pw.addEventListener('keydown', ev => { if (ev.key === 'Enter') go(); });
   openModal('Set a new password', [el('div', { class: 'sbbox' }, pw, msg, el('div', { class: 'exact' }, el('button', { class: 'btn primary', onclick: go }, 'Save password')))]);
   setTimeout(() => pw.focus(), 50);
+}
+
+/* deleting the account: everything in it goes, after typing delete */
+function openDeleteAccount() {
+  const inp = el('input', { class: 'field', id: 'sbDel', autocomplete: 'off', placeholder: 'Type delete', 'aria-label': 'Type delete to confirm' }), msg = el('p', { class: 'sbmsg', role: 'status' });
+  const go = el('button', { class: 'btn danger', disabled: true, onclick: async () => {
+    go.disabled = true; inp.disabled = true; msg.classList.remove('bad'); msg.textContent = 'Deleting your account…';
+    try {
+      const st = SB.client.storage.from('files'), all = [];
+      const walk = async dir => { const { data, error } = await st.list(dir, { limit: 1000 }); if (error) throw error; for (const f of data || []) { const p = dir + '/' + f.name; if (f.id) all.push(p); else await walk(p); } };
+      await walk(SB.uid);
+      for (let i = 0; i < all.length; i += 100) { const { error } = await st.remove(all.slice(i, i + 100)); if (error) throw error; }
+      const { error } = await SB.client.rpc('delete_my_account'); if (error) throw error;
+      if (typeof deskForgetAccount === 'function') await deskForgetAccount();
+      try { await SB.client.auth.signOut({ scope: 'local' }); } catch {}
+      try { localStorage.removeItem(SB_TOKEN); localStorage.removeItem('chunkwise.sb.moved.' + SB.uid); } catch {}
+      location.reload();
+    } catch (e) { msg.textContent = 'Your account couldn’t be deleted: ' + ((e && e.message) || 'try again.'); msg.classList.add('bad'); go.disabled = inp.value.trim().toLowerCase() !== 'delete'; inp.disabled = false; }
+  } }, 'I’m sure');
+  inp.addEventListener('input', () => { go.disabled = inp.value.trim().toLowerCase() !== 'delete'; });
+  inp.addEventListener('keydown', ev => { if (ev.key === 'Enter' && !go.disabled) go.click(); });
+  openModal('Delete your account?', [el('div', { class: 'sbbox' },
+    el('p', { class: 'sbwarn', text: 'This will delete all your plans, preferences and snapshots, and can’t be undone.' }),
+    el('p', { text: `To delete the account for ${SB.email}, type delete below.` }), inp, msg,
+    el('div', { class: 'exact' }, el('button', { class: 'btn', onclick: closeModal }, 'Cancel'), go))]);
+  setTimeout(() => inp.focus(), 50);
 }
 
 async function boot() {
@@ -14558,7 +14882,6 @@ async function boot() {
     store.mode = 'local'; hideOverlay(); loadLocal();
   }
   renderRail(); setTool(view.tool);
-  setTimeout(maybeTour, 900);
 }
 boot();
 })();
