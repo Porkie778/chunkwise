@@ -1295,7 +1295,14 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 #app.cs .dock{grid-area:dock}
 
 /* top bar */
-#app.cs .topbar{height:48px;padding:0 12px;gap:8px}
+#app.cs .topbar{height:48px;padding:0 12px;gap:8px;display:flex;justify-content:space-between;width:100%;min-width:0;overflow:hidden}
+/* the bar runs the full width: the plan's name keeps its room, the search gives way first, Export stays at the far right */
+#app.cs .topbar>*,#app.cs .tb-title>*,#app.cs .tb-row2>*,#app.cs .tb-end>*{flex-shrink:0}
+#app.cs .planbtn{flex:0 0 auto;min-width:72px;max-width:min(260px,22vw)}
+#app.cs .savestate{flex:0 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+#app.cs .topbar .st-search{flex-shrink:1}
+#app.cs #exportBtn{margin-left:0}
+@media (max-width:1180px){#app.cs .savestate{display:none}}
 #app.cs .brand{order:1;gap:8px}
 #app.cs .brand svg.wordmark{display:none}
 #app.cs .brand-txt{display:inline;font:700 16px var(--f-ui);letter-spacing:-.01em}
@@ -1308,7 +1315,7 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 #app.cs #viewSeg{order:6}
 #app.cs #layersBtn{order:7}#app.cs #moreBtn{order:8}#app.cs #exportBtn{order:9}
 #app.cs :is(#tbPair,#symTools,.tb-sep,#objBtn,#vToggle){display:none!important}
-#app.cs .st-search{display:flex;align-items:center;gap:8px;margin:0 auto;width:min(360px,28vw);min-width:180px;height:34px;padding:0 8px 0 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);color:var(--ink-2);font-size:13.5px;text-align:left}
+#app.cs .st-search{display:flex;align-items:center;gap:8px;margin:0 auto;flex:1 1 360px;width:auto;max-width:440px;min-width:120px;height:34px;padding:0 8px 0 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel-2);color:var(--ink-2);font-size:13.5px;text-align:left}
 #app.cs .st-search:hover{background:var(--field)}
 #app.cs .st-search svg.i{width:17px;height:17px}
 #app.cs .st-search span{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
