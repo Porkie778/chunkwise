@@ -1754,6 +1754,7 @@ const sgn = n => (n > 0 ? '+' : n < 0 ? '−' : '') + Math.abs(n);
 const isMobile = () => matchMedia('(max-width: 820px)').matches;
 function fgFor(hex) { if (!COLOR_RE.test(hex)) return '#fff'; const [r, g, b] = hex2rgb(hex); return (0.299 * r + 0.587 * g + 0.114 * b) > 150 ? '#141a18' : '#ffffff'; }
 function lsGet(k) { try { const v = localStorage.getItem(k); return v ? JSON.parse(v) : null; } catch { return null; } }
+let MODELVER = 0, LMAP = null;   // edits so far, for the light map's cache
 function lsSet(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch { return false; } }
 function relTime(t) {
   if (!t) return '';
@@ -5165,7 +5166,7 @@ function syncBldTools() {
   if (p.tourDone) view.tourDone = true;
   if (['drag', 'tap'].includes(p.measureHow)) view.measureHow = p.measureHow;
   if (p.lightMap === false) view.lightMap = false;
-  if (p.light && typeof p.light === 'object') { view.light = { t: p.light.t, lm: p.light.lm, h: p.light.h, c: p.light.c }; lightOpt(); }
+  if (p.light && typeof p.light === 'object') { view.light = { t: p.light.t, lm: p.light.lm, h: p.light.h, c: p.light.c }; }   // lightOpt() checks it when it's first used
   if (p.flight && typeof p.flight === 'object') { const f = p.flight; view.flight = { kind: ['straight', 'l', 'spiral', 'ladder'].includes(f.kind) ? f.kind : 'straight', w: clampInt(f.w, 1, 4, 2), r: clampInt(f.r, 1, 4, 2), under: f.under === 'solid' ? 'solid' : 'open', dir: ['n', 'e', 's', 'w'].includes(f.dir) ? f.dir : 'n', turn: f.turn === 'l' ? 'l' : 'r', n1: clampInt(f.n1, 1, 60, 3), steps: f.steps === 'slabs' ? 'slabs' : 'stairs', walls: f.walls === 'well' ? 'well' : 'off', ups: Array.isArray(f.ups) ? f.ups.map(v => clampInt(v, 1, 32, 1)) : [1], mat: typeof f.mat === 'string' && BY_ID[f.mat] ? f.mat : null }; }
   if (p.pathOpt && typeof p.pathOpt === 'object') { const ok = v => typeof v === 'string' && (v.startsWith('mix:') || BY_ID[v]); view.pathOpt = { style: p.pathOpt.style === 'line' ? 'line' : 'curve', w: clampInt(p.pathOpt.w, 1, BRUSH_MAX, 3), block: ok(p.pathOpt.block) ? p.pathOpt.block : 'gravel', edge: !!p.pathOpt.edge, edgeBlock: ok(p.pathOpt.edgeBlock) ? p.pathOpt.edgeBlock : 'cobblestone' }; }
   if (['none', 'checker', 'stripes', 'herring', 'border'].includes(p.pattern)) view.pattern = p.pattern; if (typeof p.patBlock === 'string') view.patBlock = p.patBlock;   // a block id, or mix:<id>
@@ -6853,7 +6854,6 @@ function lightSideGroups() {
 }
 /* ---- the light map: block light worked out as the game does (each block one level less, stopped by solid blocks, through holes
    and stairwells between floors), read in the space you stand in over each floor block. With 1.18's rule, a mob can spawn where it is 0 */
-let MODELVER = 0, LMAP = null;
 const LX_LEVEL = { torch: 14, soul_torch: 10, lantern: 15, soul_lantern: 10 };
 const lightSolid = id => { const B = BY_ID[id]; return !!B && !B.shape && !B.h && !B.glass && blockKind3(B) === ''; };
 function lightMap() {
