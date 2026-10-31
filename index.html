@@ -5048,7 +5048,7 @@ function sizeKey(e) {
   setBrushSize(k, brushOf(k) + d); return true;
 }
 const WALL_LOOKS = [['same', 'Same as floor'], ['dark', 'Darker'], ['outline', 'Outlined'], ['hatch', 'Hatched']];
-const view = { z: 22, ox: 0, oy: 0, tool: 'shape', mode: 'draw', shapeKind: 'rect', selShape: 'rect', eraseMode: 'brush', zoneShape: 'rect', zoneOp: 'new', roofMode: 'pick', roofSel: [], roofPick: null, roofMulti: false, bhPick: null, roomSel: null, mix: null, altMix: null, pattern: 'none', patBlock: 'polished_andesite', penPat: 'none', penPatBlock: 'polished_andesite', postEvery: 0, postBlock: 'stripped_spruce_log', roofTab: 'shape', optOpen: false, brush: 1, eraseT: { blocks: true, paths: false, routes: false, zones: false }, railMode: 'all', groupLast: { nav: 'pointer', build: 'pencil', edit: 'select', plan: 'zone' }, lastBuild: 'pencil', selOp: 'new', drawOp: 'place', fill: 'solid', sizeMode: 'drag', w: 9, h: 9, lock: false, ratio: 1, block: 'oak_planks', altBlock: 'cobblestone', stamp: null, rot: 0, inspFor: null, expKind: 'litematica', expScope: 'all', uiMode: 'rail', flat2d: false, wallLook: 'same', railMin: false, ribbonTab: 'home', ribbonMin: false, setCat: null, roofWalls: true, roofStyled: false, rampOuter: false, fenceFill: 'base', fenceH: 2, extN: 1, wallThick: 1, wallStyle: null, cornerSw: true, doorType: 'std', archW: 3, archWAuto: true, archH: 4, archHAuto: true, doorStyle: 'plain', doorTrim: null, winStyle: 'plain', winTrim: null, fov: 70, povSens: 1, povKeys: null, doorW: 1, winAuto: true, winW: 2, winH: 2, winSill: 1, winGlass: 'pane', winDepth: 'outer',
+const view = { z: 22, ox: 0, oy: 0, tool: 'shape', mode: 'draw', shapeKind: 'rect', selShape: 'rect', eraseMode: 'brush', zoneShape: 'rect', zoneOp: 'new', roofMode: 'pick', roofSel: [], roofPick: null, roofMulti: false, bhPick: null, roomSel: null, mix: null, altMix: null, pattern: 'none', patBlock: 'polished_andesite', penPat: 'none', penPatBlock: 'polished_andesite', postEvery: 0, postBlock: 'stripped_spruce_log', roofTab: 'shape', optOpen: false, brush: 1, eraseT: { blocks: true, paths: false, routes: false, zones: false, lights: true }, railMode: 'all', groupLast: { nav: 'pointer', build: 'pencil', edit: 'select', plan: 'zone' }, lastBuild: 'pencil', selOp: 'new', drawOp: 'place', fill: 'solid', sizeMode: 'drag', w: 9, h: 9, lock: false, ratio: 1, block: 'oak_planks', altBlock: 'cobblestone', stamp: null, rot: 0, inspFor: null, expKind: 'litematica', expScope: 'all', uiMode: 'rail', flat2d: false, wallLook: 'same', railMin: false, ribbonTab: 'home', ribbonMin: false, setCat: null, roofWalls: true, roofStyled: false, rampOuter: false, fenceFill: 'base', fenceH: 2, extN: 1, wallThick: 1, wallStyle: null, cornerSw: true, doorType: 'std', archW: 3, archWAuto: true, archH: 4, archHAuto: true, doorStyle: 'plain', doorTrim: null, winStyle: 'plain', winTrim: null, fov: 70, povSens: 1, povKeys: null, doorW: 1, winAuto: true, winW: 2, winH: 2, winSill: 1, winGlass: 'pane', winDepth: 'outer',
   hover: null, ghost: null, preview: null, measure: null, selected: null, is3D: false, tab: 'floors', win: null, contig: true, wall: false, pencil: 'free', showMid: true, sideOpen: true, net: 'power', routeOp: 'place', circleKind: 'circle', polySides: 6, polyPoint: false, ghostAlpha: 0.35, bface: 'n', btop: false, lastRoof: null, favs: [], recents: [], blockSort: 'family', blockCat: '', bq: '',
   layers: { grid: true, chunks: false, origin: true, ghost: false, blocks: true, zones: true, multis: true, routes: true, anchors: true, notes: true, lights: true, labels: true, roofs: true, dims: true }, originStyle: 'block', zoneStyle: 'border', zoneAlpha: 0.28, recentColors: [], presets: [] };
 const mirror = { x: false, z: false, radial: 0, ax: 0.5, az: 0.5, placing: false };
@@ -5198,7 +5198,7 @@ function syncBldTools() {
   if (['new', 'add', 'sub'].includes(p.zoneOp)) view.zoneOp = p.zoneOp;
   if (['shape', 'fill', 'bld'].includes(p.roofTab)) view.roofTab = p.roofTab;
   if (Number.isFinite(p.brush)) view.brush = clamp(Math.round(p.brush), 1, BRUSH_MAX); if (Number.isFinite(p.penBrush)) view.penBrush = clamp(Math.round(p.penBrush), 1, BRUSH_MAX);
-  if (p.eraseT && typeof p.eraseT === 'object') for (const k of ['blocks', 'paths', 'routes', 'zones']) if (typeof p.eraseT[k] === 'boolean') view.eraseT[k] = p.eraseT[k];
+  if (p.eraseT && typeof p.eraseT === 'object') for (const k of ['blocks', 'paths', 'routes', 'zones', 'lights']) if (typeof p.eraseT[k] === 'boolean') view.eraseT[k] = p.eraseT[k];
   if (p.railMode === 'all' || p.railMode === 'groups') view.railMode = p.railMode; if (Number.isFinite(p.railW)) view.railW = clamp(p.railW, 56, 240);
   if (p.groupLast && typeof p.groupLast === 'object') for (const k in view.groupLast) if (typeof p.groupLast[k] === 'string') view.groupLast[k] = p.groupLast[k];
   if (typeof p.lastBuild === 'string') view.lastBuild = p.lastBuild;
@@ -6631,10 +6631,12 @@ function thicken(pts, x0, z0, x1, z1) {
 }
 function turnBlock() { const b = BY_ID[view.block]; if (!b || b.shape !== 'stairs') return; view.bface = ROT_CW[view.bface || 'n']; sideRerender(); }
 function flipBlockHalf() { const b = BY_ID[view.block]; if (!b || !b.shape || isFenceish(b)) return; view.btop = !view.btop; sideRerender(); }
-/* the Eraser removes whatever its toggles say: blocks, cable and pipe routes, zone areas */
+/* the Eraser removes whatever its toggles say: blocks, lights, cable and pipe routes, zone areas */
+const lightGoes = (q, k) => q.x + ',' + q.z === k || (q.m === 'wall' && lightWallK(q) === k);   // a light in the block, or a torch on its side
 function eraseCell(L, k) {
   const t = view.eraseT;
-  if (t.blocks) { setBlock(L, k, null); if (L.lights && L.lights.length && L.lights.some(q => q.x + ',' + q.z === k)) L.lights = L.lights.filter(q => q.x + ',' + q.z !== k); }
+  if (t.lights && L.lights && L.lights.length && L.lights.some(q => lightGoes(q, k))) L.lights = L.lights.filter(q => !lightGoes(q, k));
+  if (t.blocks) setBlock(L, k, null);
   else if (t.paths) {
     if (L.paths && L.paths.has(k) && !L.walls.has(k)) { setBlock(L, k, null); L.paths.delete(k); }
     // a doorway the path ran through loses the path floor it took
@@ -6651,7 +6653,7 @@ function pruneEmpty(L) {
 function commitCells(cells, op) {
   if (!cells || !cells.length) return;
   if (SELOPS.has(op)) { applySelOp(cells, op); return; }
-  const L = curLevel(); txBegin(op === 'erase' && view.tool === 'eraser' && !view.eraseT.blocks ? (view.eraseT.paths && !view.eraseT.routes && !view.eraseT.zones ? 'Erased path blocks' : view.eraseT.paths ? 'Erased paths, routes or zones' : 'Erased routes or zones') : null);
+  const L = curLevel(); txBegin(op === 'erase' && view.tool === 'eraser' && !view.eraseT.blocks ? (['lights', 'paths', 'routes', 'zones'].every(k => !view.eraseT[k] === (k !== 'lights')) ? 'Erased lights' : view.eraseT.paths && !view.eraseT.routes && !view.eraseT.zones ? 'Erased path blocks' : view.eraseT.paths ? 'Erased paths, routes or zones' : 'Erased routes or zones') : null);
   PAT = op === 'erase' ? null : patternMap(cells, { pen: penPatNow() });
   try {
     for (const [x, z, fx, fz, kd] of cells) paintCell(L, K(x, z), op, fx, fz, kd);
@@ -6854,13 +6856,19 @@ function lightRows(rr, o) {
   if (kind === 'lantern' && (o ? o.m : op.lm.lantern) === 'hang') rows.push(['Chain', stepBox('Chain length', o ? o.c : op.c, 0, 16, v => set('Changed a chain', q => { q.c = v; }))]);
   return rows;
 }
+function clearFloorLights() {
+  const L = curLevel(), n = L && L.lights ? L.lights.length : 0; if (!n) return;
+  txBegin(`Took out all ${n} lights`); L.lights = []; if (view.selected && view.selected.type === 'light') view.selected = null; txCommit(); renderInspector(); renderOptbar(); requestDraw();
+  toastUndo(`Took out ${n} light${n === 1 ? '' : 's'} from this floor.`);
+}
+const clearLightsBtn = () => { const n = (curLevel() && curLevel().lights || []).length; return n ? confirmBtn(el('button', { class: 'btn sm danger' }, icon('trash'), `Take out all ${n} on this floor`), clearFloorLights, 'Tap again to take them all out') : null; };
 function lightSideGroups() {
   const op = lightOpt(), kind = lightKind(op.t), rr = () => sideRerender(), out = [];
   out.push(vgroup('Light', keyName(keyOf('light')), ...vradio(LIGHTS.map(([v, n]) => [v, n, 'lt_' + v]), op.t, v => { op.t = v; rr(); })));
   if (kind !== 'torch') out.push(vgroup('Mounted', null, ...vradio(LIGHT_MOUNTS[kind].map(([v, n, d]) => [v, n, null, null, d]), op.lm[kind], v => { op.lm[kind] = v; rr(); })));
   if (kind === 'torch') out.push(vgroup('On walls', null, el('div', { class: 'orow2 wsz' }, el('span', { class: 'olbl2', text: 'Height' }), stepBox('Torch height', op.h, 1, 16, v => { op.h = v; rr(); }))));
   if (kind === 'lantern' && op.lm.lantern === 'hang') out.push(vgroup('Hanging', null, el('div', { class: 'orow2 wsz' }, el('span', { class: 'olbl2', text: 'Chain' }), stepBox('Chain length', op.c, 0, 16, v => { op.c = v; rr(); }))));
-  out.push(lightMapGroup(false), sugSideGroup(), ohint(lightHint(false)));
+  out.push(lightMapGroup(false), sugSideGroup()); if (clearLightsBtn()) out.push(vgroup('Remove', null, clearLightsBtn(), el('p', { class: 'ometa2', text: 'Or use the Eraser with Lights ticked.' }))); out.push(ohint(lightHint(false)));
   return out;
 }
 /* ---- the light map: block light worked out as the game does (each block one level less, stopped by solid blocks, through holes
@@ -9740,7 +9748,7 @@ function toolDown(p, e) {
       renderInspector(); renderObjectsIfOpen(); break;
     }
     case 'pencil': case 'shape': case 'bucket': case 'select': case 'eraser': {
-      if (G.tool === 'eraser' && !view.eraseT.blocks && !view.eraseT.paths && !view.eraseT.routes && !view.eraseT.zones) { toast('Choose what to erase under Erases first.'); G = null; break; }
+      if (G.tool === 'eraser' && !view.eraseT.blocks && !view.eraseT.paths && !view.eraseT.routes && !view.eraseT.zones && !view.eraseT.lights) { toast('Choose what to erase under Erases first.'); G = null; break; }
       G.op = effOp(e); G.how = toolHow();
       if (G.how === 'stroke') { G.cells = new Map(); if (!SELOPS.has(G.op)) G.txOpen = txBegin(); addStroke(x, z, x, z); }
       else if (G.how === 'line') updateLine();
@@ -11305,7 +11313,7 @@ function sideGroups() {
       out.push(vgroup('Erase with', null, ...vradio([['brush', 'Brush', 'eraser'], ['line', 'Line', 'line'], ['rect', 'Rectangle', 'rect'], ['circle', 'Circle', 'circle'], ['poly', 'Polygon', 'hex'], ['fill', 'Fill erase', 'bucket']], view.eraseMode, v => { view.eraseMode = v; view.ghost = null; sideRerender(); }), ...sidePolyKids()));
       if (view.eraseMode === 'brush' || view.eraseMode === 'line') out.push(vgroup('Brush size', '[ ]', el('div', { class: 'oddrow' }, brushStep('brush', sideRerender))));
       const et = (k, text, ic) => vtoggle(text, ic, view.eraseT[k], () => { view.eraseT[k] = !view.eraseT[k]; sideRerender(); });
-      out.push(vgroup('Erases', null, et('blocks', 'Blocks', 'solid'), et('paths', 'Path blocks only', 'path'), et('routes', 'Cable and pipe routes', 'route'), et('zones', 'Zone areas', 'zone'),
+      out.push(vgroup('Erases', null, et('blocks', 'Blocks', 'solid'), et('lights', 'Lights', 'light'), et('paths', 'Path blocks only', 'path'), et('routes', 'Cable and pipe routes', 'route'), et('zones', 'Zone areas', 'zone'),
         view.eraseT.paths && view.eraseT.blocks ? ohint('Blocks takes paths too. Turn Blocks off to erase only what the Path tool laid.') : null));
     }
     if (curShape()) {
@@ -11479,8 +11487,8 @@ function renderOptbarH(target) {
       const brushy = view.eraseMode === 'brush' || view.eraseMode === 'line';
       if (brushy) row('Brush size', brushStep('brush', rerender));
       const et = (k, text) => togBtn(text, view.eraseT[k], () => { view.eraseT[k] = !view.eraseT[k]; rerender(); });
-      row('Erases', et('blocks', 'Blocks'), et('paths', 'Paths'), et('routes', 'Routes'), et('zones', 'Zones'));
-      const what = ['blocks', 'paths', 'routes', 'zones'].filter(k => view.eraseT[k] && !(k === 'paths' && view.eraseT.blocks)).map(k => ({ blocks: 'Blocks', paths: 'Paths', routes: 'Routes', zones: 'Zones' })[k]);
+      row('Erases', et('blocks', 'Blocks'), et('lights', 'Lights'), et('paths', 'Paths'), et('routes', 'Routes'), et('zones', 'Zones'));
+      const what = ['blocks', 'lights', 'paths', 'routes', 'zones'].filter(k => view.eraseT[k] && !(k === 'paths' && view.eraseT.blocks)).map(k => ({ blocks: 'Blocks', lights: 'Lights', paths: 'Paths', routes: 'Routes', zones: 'Zones' })[k]);
       sumIcon = shIc[view.eraseMode]; sum.push(shText(view.eraseMode) + (brushy && view.brush > 1 ? ` ${view.brush}×${view.brush}` : ''), what.length ? what.join(', ') : 'Nothing selected');
     }
     if (curShape() === 'poly') polyRow();
@@ -11581,6 +11589,7 @@ function renderOptbarH(target) {
     for (const [lab, ...kids] of lightRows(rerender, null)) row(lab, ...kids);
     row('Levels', seg([[true, 'Show'], [false, 'Hide']], view.lightMap !== false, v => { view.lightMap = v; rerender(); }, 'Light levels'));
     for (const [lab, ...kids] of sugRows(rerender)) row(lab || 'Suggest', ...kids);
+    if (clearLightsBtn()) row('Remove', clearLightsBtn());
     const op = lightOpt(), k = lightKind(op.t); sumIcon = 'lt_' + op.t; sum.push(LIGHT_BY[op.t].n, k === 'torch' ? `${op.h} up on walls` : (LIGHT_MOUNTS[k].find(m => m[0] === op.lm[k]) || [])[1]); note = lightHint(true) + (view.lightMap !== false ? ' ' + lightMapGroup(true) : '');
   } else if (t === 'window') {
     const { hMax, sMax } = winLimits();
