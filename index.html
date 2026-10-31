@@ -5163,6 +5163,7 @@ function syncBldTools() {
   if (typeof p.stripPin === 'boolean') view.stripPin = p.stripPin; if (typeof p.postFit === 'boolean') view.postFit = p.postFit; if (p.drawPosts && typeof p.drawPosts === 'object') { const q = dePosts(p.drawPosts); if (q) view.drawPosts = { ...q, on: p.drawPosts.on === true }; }
   if (p.tourDone) view.tourDone = true;
   if (['drag', 'tap'].includes(p.measureHow)) view.measureHow = p.measureHow;
+  if (p.lightMap === false) view.lightMap = false;
   if (p.light && typeof p.light === 'object') { view.light = { t: p.light.t, lm: p.light.lm, h: p.light.h, c: p.light.c }; lightOpt(); }
   if (p.flight && typeof p.flight === 'object') { const f = p.flight; view.flight = { kind: ['straight', 'l', 'spiral', 'ladder'].includes(f.kind) ? f.kind : 'straight', w: clampInt(f.w, 1, 4, 2), r: clampInt(f.r, 1, 4, 2), under: f.under === 'solid' ? 'solid' : 'open', dir: ['n', 'e', 's', 'w'].includes(f.dir) ? f.dir : 'n', turn: f.turn === 'l' ? 'l' : 'r', n1: clampInt(f.n1, 1, 60, 3), steps: f.steps === 'slabs' ? 'slabs' : 'stairs', walls: f.walls === 'well' ? 'well' : 'off', ups: Array.isArray(f.ups) ? f.ups.map(v => clampInt(v, 1, 32, 1)) : [1], mat: typeof f.mat === 'string' && BY_ID[f.mat] ? f.mat : null }; }
   if (p.pathOpt && typeof p.pathOpt === 'object') { const ok = v => typeof v === 'string' && (v.startsWith('mix:') || BY_ID[v]); view.pathOpt = { style: p.pathOpt.style === 'line' ? 'line' : 'curve', w: clampInt(p.pathOpt.w, 1, BRUSH_MAX, 3), block: ok(p.pathOpt.block) ? p.pathOpt.block : 'gravel', edge: !!p.pathOpt.edge, edgeBlock: ok(p.pathOpt.edgeBlock) ? p.pathOpt.edgeBlock : 'cobblestone' }; }
@@ -5251,7 +5252,7 @@ function writePrefs() {
     prefPending = false;
     if (plan) prefs.views[plan.id] = { z: view.z, ox: view.ox, oy: view.oy, lid: curLid, w: W, h: H };
     prefs.lastPlan = plan && plan.id;
-    prefs.ui = { light: view.light || null, measureHow: view.measureHow || null, flight: view.flight || null, pathOpt: view.pathOpt || null, tourDone: !!view.tourDone, stripPin: !!view.stripPin, postFit: !!view.postFit, drawPosts: view.drawPosts || null, pattern: view.pattern, patBlock: view.patBlock, penPat: view.penPat, penPatBlock: view.penPatBlock, postEvery: view.postEvery, postBlock: view.postBlock, postOut: !!view.postOut, mix: view.mix, altMix: view.altMix, tool: view.tool, selOp: view.selOp, fill: view.fill, sizeMode: view.sizeMode, block: view.block, altBlock: view.altBlock, expKind: view.expKind, expScope: view.expScope, uiMode: view.uiMode, flat2d: !!view.flat2d, wallLook: view.wallLook, texWall: view.texWall || 'bevel', railMin: !!view.railMin, theme: view.theme || 'system', viewPin: view.viewPin || 'top', ribbonTab: view.ribbonTab, ribbonMin: !!view.ribbonMin, roofWalls: view.roofWalls !== false, cornerSw: !!view.cornerSw, fov: view.fov, povSens: view.povSens, povKeys: view.povKeys, keys: view.keys || null, cfg: view.cfg, bldTools: view.bldTools || null, doorW: view.doorW, extN: view.extN, fenceH: view.fenceH, fenceFill: view.fenceFill, wallThick: view.wallThick, wallStyle: view.wallStyle, roofStyled: !!view.roofStyled, rampOuter: !!view.rampOuter, doorType: view.doorType, archW: view.archW, archWAuto: view.archWAuto, archH: view.archH, archHAuto: view.archHAuto, doorStyle: view.doorStyle, doorTrim: view.doorTrim, winStyle: view.winStyle, winTrim: view.winTrim, winAuto: view.winAuto, winW: view.winW, winH: view.winH, winSill: view.winSill, winGlass: view.winGlass, w: view.w, h: view.h, lock: view.lock, ratio: view.ratio, layers: view.layers, originStyle: view.originStyle, zoneStyle: view.zoneStyle, zoneAlpha: view.zoneAlpha, recentColors: view.recentColors, contig: view.contig, wall: view.wall, pencil: view.pencil, showMid: view.showMid, sideOpen: view.sideOpen, shapeKind: view.shapeKind, selShape: view.selShape, eraseMode: view.eraseMode, zoneShape: view.zoneShape, zoneOp: view.zoneOp, roofTab: view.roofTab, brush: view.brush, penBrush: view.penBrush || 1, eraseT: view.eraseT, railMode: view.railMode, railW: view.railW || 56, groupLast: view.groupLast, lastBuild: view.lastBuild, net: view.net, routeOp: view.routeOp, circleKind: view.circleKind, polySides: view.polySides, polyPoint: view.polyPoint, ghostAlpha: view.ghostAlpha, favs: view.favs, recents: view.recents, blockSort: view.blockSort, blockCat: view.blockCat, blockMod: view.blockMod || '', blockDesc: !!view.blockDesc, blockIcons: view.blockIcons || 'list', dkOpen: view.dkOpen || null, flash: view.flash || 'standard', split: !!view.split, splitR: view.splitR || 0.5, splitSwap: !!view.splitSwap, homeSize: view.homeSize || 'l', blocksFloat: !!view.blocksFloat, floorsFloat: !!view.floorsFloat, expDig: view.expDig !== false, mobShadows: !!view.mobShadows, bface: view.bface, btop: view.btop, lastRoof: view.lastRoof, mirror: { x: mirror.x, z: mirror.z, radial: mirror.radial || 0, ax: mirror.ax, az: mirror.az }, povFx: view.povFx !== false, v3: pov.on && pov.saved ? { ...v3, ...pov.saved } : v3 };
+    prefs.ui = { light: view.light || null, lightMap: view.lightMap !== false, measureHow: view.measureHow || null, flight: view.flight || null, pathOpt: view.pathOpt || null, tourDone: !!view.tourDone, stripPin: !!view.stripPin, postFit: !!view.postFit, drawPosts: view.drawPosts || null, pattern: view.pattern, patBlock: view.patBlock, penPat: view.penPat, penPatBlock: view.penPatBlock, postEvery: view.postEvery, postBlock: view.postBlock, postOut: !!view.postOut, mix: view.mix, altMix: view.altMix, tool: view.tool, selOp: view.selOp, fill: view.fill, sizeMode: view.sizeMode, block: view.block, altBlock: view.altBlock, expKind: view.expKind, expScope: view.expScope, uiMode: view.uiMode, flat2d: !!view.flat2d, wallLook: view.wallLook, texWall: view.texWall || 'bevel', railMin: !!view.railMin, theme: view.theme || 'system', viewPin: view.viewPin || 'top', ribbonTab: view.ribbonTab, ribbonMin: !!view.ribbonMin, roofWalls: view.roofWalls !== false, cornerSw: !!view.cornerSw, fov: view.fov, povSens: view.povSens, povKeys: view.povKeys, keys: view.keys || null, cfg: view.cfg, bldTools: view.bldTools || null, doorW: view.doorW, extN: view.extN, fenceH: view.fenceH, fenceFill: view.fenceFill, wallThick: view.wallThick, wallStyle: view.wallStyle, roofStyled: !!view.roofStyled, rampOuter: !!view.rampOuter, doorType: view.doorType, archW: view.archW, archWAuto: view.archWAuto, archH: view.archH, archHAuto: view.archHAuto, doorStyle: view.doorStyle, doorTrim: view.doorTrim, winStyle: view.winStyle, winTrim: view.winTrim, winAuto: view.winAuto, winW: view.winW, winH: view.winH, winSill: view.winSill, winGlass: view.winGlass, w: view.w, h: view.h, lock: view.lock, ratio: view.ratio, layers: view.layers, originStyle: view.originStyle, zoneStyle: view.zoneStyle, zoneAlpha: view.zoneAlpha, recentColors: view.recentColors, contig: view.contig, wall: view.wall, pencil: view.pencil, showMid: view.showMid, sideOpen: view.sideOpen, shapeKind: view.shapeKind, selShape: view.selShape, eraseMode: view.eraseMode, zoneShape: view.zoneShape, zoneOp: view.zoneOp, roofTab: view.roofTab, brush: view.brush, penBrush: view.penBrush || 1, eraseT: view.eraseT, railMode: view.railMode, railW: view.railW || 56, groupLast: view.groupLast, lastBuild: view.lastBuild, net: view.net, routeOp: view.routeOp, circleKind: view.circleKind, polySides: view.polySides, polyPoint: view.polyPoint, ghostAlpha: view.ghostAlpha, favs: view.favs, recents: view.recents, blockSort: view.blockSort, blockCat: view.blockCat, blockMod: view.blockMod || '', blockDesc: !!view.blockDesc, blockIcons: view.blockIcons || 'list', dkOpen: view.dkOpen || null, flash: view.flash || 'standard', split: !!view.split, splitR: view.splitR || 0.5, splitSwap: !!view.splitSwap, homeSize: view.homeSize || 'l', blocksFloat: !!view.blocksFloat, floorsFloat: !!view.floorsFloat, expDig: view.expDig !== false, mobShadows: !!view.mobShadows, bface: view.bface, btop: view.btop, lastRoof: view.lastRoof, mirror: { x: mirror.x, z: mirror.z, radial: mirror.radial || 0, ax: mirror.ax, az: mirror.az }, povFx: view.povFx !== false, v3: pov.on && pov.saved ? { ...v3, ...pov.saved } : v3 };
     const keys = Object.keys(prefs.views); if (keys.length > 40) delete prefs.views[keys[0]];
     lsSet(LS_VIEW, prefs);
     syncSettings();
@@ -5521,6 +5522,7 @@ function setSaveState(s) {
   $('#saveState').textContent = store.readOnly ? '' : (map[s] ?? '');
 }
 function touch(lids, meta) {
+  MODELVER++;
   if (store.readOnly || !plan) return;
   THUMB.stale.add(plan.id);
   for (const id of lids) store.dirtyLevels.add(id);
@@ -6843,8 +6845,73 @@ function lightSideGroups() {
   if (kind !== 'torch') out.push(vgroup('Mounted', null, ...vradio(LIGHT_MOUNTS[kind].map(([v, n, d]) => [v, n, null, null, d]), op.lm[kind], v => { op.lm[kind] = v; rr(); })));
   if (kind === 'torch') out.push(vgroup('On walls', null, el('div', { class: 'orow2 wsz' }, el('span', { class: 'olbl2', text: 'Height' }), stepBox('Torch height', op.h, 1, 16, v => { op.h = v; rr(); }))));
   if (kind === 'lantern' && op.lm.lantern === 'hang') out.push(vgroup('Hanging', null, el('div', { class: 'orow2 wsz' }, el('span', { class: 'olbl2', text: 'Chain' }), stepBox('Chain length', op.c, 0, 16, v => { op.c = v; rr(); }))));
-  out.push(ohint(lightHint(false)));
+  out.push(lightMapGroup(false), ohint(lightHint(false)));
   return out;
+}
+/* ---- the light map: block light worked out as the game does (each block one level less, stopped by solid blocks, through holes
+   and stairwells between floors), read in the space you stand in over each floor block. With 1.18's rule, a mob can spawn where it is 0 */
+let MODELVER = 0, LMAP = null;
+const LX_LEVEL = { torch: 14, soul_torch: 10, lantern: 15, soul_lantern: 10 };
+const lightSolid = id => { const B = BY_ID[id]; return !!B && !B.shape && !B.h && !B.glass && blockKind3(B) === ''; };
+function lightMap() {
+  const L = plan && curLevel(), i = L ? levelIndex(curLid) : -1, key = MODELVER + '|' + curLid + '|' + curBld().id;
+  if (LMAP && LMAP.key === key) return LMAP;
+  const out = LMAP = { key, cells: new Map(), spawn: 0, dark: 0, n: 0 };
+  if (!L || i < 0 || roofLevel(L) || !L.blocks.size) return out;
+  const bb = levelBBox(L); if (!bb) return out;
+  const t = thickOf(i), fy = Math.round(baseY(i)), R = 15;
+  const x0 = bb.x0 - R, z0 = bb.z0 - R, y0 = fy - R, W = bb.x1 - bb.x0 + 1 + 2 * R, D = bb.z1 - bb.z0 + 1 + 2 * R, Hh = t + hOf(i) + 2 * R + 2;
+  if (W * D * Hh > 6e6) return out;
+  const N = W * D * Hh, solid = new Uint8Array(N), lv = new Uint8Array(N), q = new Int32Array(N); let qn = 0;
+  const idx = (x, y, z) => ((y - y0) * D + (z - z0)) * W + (x - x0), inside = (x, y, z) => x >= x0 && x < x0 + W && z >= z0 && z < z0 + D && y >= y0 && y < y0 + Hh;
+  const ex = collectExport('all', false);
+  for (const [k, id] of ex.cells) {
+    const a = k.indexOf(','), b = k.lastIndexOf(','), x = +k.slice(0, a), y = +k.slice(a + 1, b), z = +k.slice(b + 1);
+    if (!inside(x, y, z)) continue; const j = idx(x, y, z);
+    if (id.startsWith('lx:')) { const g = LX_LEVEL[id.split(':')[1]] || 0; if (g > lv[j]) { lv[j] = g; q[qn++] = j; } continue; }
+    if (lightSolid(id)) solid[j] = 1;
+    const g = LIGHT_LEVEL[id] || 0; if (g > lv[j]) { lv[j] = g; q[qn++] = j; }
+  }
+  const WD = W * D;
+  for (let h = 0; h < qn; h++) {
+    const j = q[h], n = lv[j] - 1; if (n <= 0) continue;
+    const x = j % W, z = ((j / W) | 0) % D, y = (j / WD) | 0;
+    if (x > 0) { const m = j - 1; if (!solid[m] && lv[m] < n) { lv[m] = n; q[qn++] = m; } }
+    if (x < W - 1) { const m = j + 1; if (!solid[m] && lv[m] < n) { lv[m] = n; q[qn++] = m; } }
+    if (z > 0) { const m = j - W; if (!solid[m] && lv[m] < n) { lv[m] = n; q[qn++] = m; } }
+    if (z < D - 1) { const m = j + W; if (!solid[m] && lv[m] < n) { lv[m] = n; q[qn++] = m; } }
+    if (y > 0) { const m = j - WD; if (!solid[m] && lv[m] < n) { lv[m] = n; q[qn++] = m; } }
+    if (y < Hh - 1) { const m = j + WD; if (!solid[m] && lv[m] < n) { lv[m] = n; q[qn++] = m; } }
+  }
+  // each floor block: the light where you'd stand on it, and whether a mob could spawn there
+  for (const k of L.blocks.keys()) {
+    if (L.walls.has(k)) continue; const [x, z] = parseK(k), y = fy + offAt(i, k) + t;
+    if (!inside(x, y, z) || !inside(x, y - 1, z)) continue; const j = idx(x, y, z);
+    if (solid[j]) continue;
+    const l = lv[j], sp = !l && solid[idx(x, y - 1, z)] && !(inside(x, y + 1, z) && solid[idx(x, y + 1, z)]);
+    out.cells.set(k, sp ? -1 : l); out.n++; if (!l) out.dark++; if (sp) out.spawn++;
+  }
+  return out;
+}
+/* the light level as a colour: dark blue at 0 up through teal and green to warm yellow at 15 */
+const LMAP_COL = l => { const t = l / 15, stops = [[0, [40, 52, 110]], [0.35, [40, 140, 170]], [0.6, [90, 180, 110]], [0.8, [230, 200, 80]], [1, [255, 170, 60]]]; let a = stops[0], b = stops[stops.length - 1]; for (let k = 1; k < stops.length; k++) if (t <= stops[k][0]) { a = stops[k - 1]; b = stops[k]; break; } const f = b[0] > a[0] ? (t - a[0]) / (b[0] - a[0]) : 0; return a[1].map((v, k) => Math.round(v + (b[1][k] - v) * f)); };
+function drawLightMap(c, X, Y, s, T, Wpx, Hpx) {
+  const M = lightMap(); if (!M.cells.size) return;
+  const w = X(1) - X(0), nums = w >= 16 * s;
+  if (nums) { c.font = `700 ${Math.round(clamp(w * 0.42, 8 * s, 15 * s))}px ui-sans-serif, system-ui, sans-serif`; c.textAlign = 'center'; c.textBaseline = 'middle'; }
+  for (const [k, l] of M.cells) {
+    const [x, z] = parseK(k), px = X(x), py = Y(z); if (px < -w || py < -w || px > Wpx || py > Hpx) continue;
+    if (l < 0) { c.fillStyle = 'rgba(214,52,52,.55)'; c.fillRect(px, py, w, w); c.strokeStyle = 'rgba(150,20,20,.8)'; c.lineWidth = Math.max(1, s); c.beginPath(); c.moveTo(px + w * 0.25, py + w * 0.25); c.lineTo(px + w * 0.75, py + w * 0.75); c.moveTo(px + w * 0.75, py + w * 0.25); c.lineTo(px + w * 0.25, py + w * 0.75); if (!nums) c.stroke(); }
+    else { const [r, g, b] = LMAP_COL(l); c.fillStyle = `rgba(${r},${g},${b},.5)`; c.fillRect(px, py, w, w); }
+    if (nums) { const v = l < 0 ? 0 : l; c.lineWidth = 3 * s; c.strokeStyle = 'rgba(0,0,0,.55)'; c.strokeText(String(v), px + w / 2, py + w / 2 + s); c.fillStyle = l < 0 ? '#ffd9d9' : '#fff'; c.fillText(String(v), px + w / 2, py + w / 2 + s); }
+  }
+  c.textAlign = 'start'; c.textBaseline = 'alphabetic';
+}
+function lightMapGroup(phone) {
+  const M = view.lightMap !== false ? lightMap() : null, rr = () => sideRerender();
+  const tg = phone ? null : vtoggle('Light levels', 'sun', view.lightMap !== false, () => { view.lightMap = view.lightMap === false; rr(); }, null, 'The block light over each floor block, as the game works it out. Red is where mobs can spawn (light 0)');
+  const txt = !M ? 'Turn on to see the light over each floor block.' : !M.n ? 'No open floor on this floor to measure.' : M.spawn ? `${M.spawn.toLocaleString()} block${M.spawn === 1 ? '' : 's'} where mobs can spawn, in red.` : 'Lit everywhere: no mobs can spawn on this floor.';
+  return phone ? txt : vgroup('Light map', null, tg, el('p', { class: 'ometa2', text: txt }));
 }
 function toggleWallsSel() {
   if (roofLevel(curLevel())) { toast('Roof floors are a single layer, so they have no walls.'); return; }
@@ -9222,6 +9289,7 @@ function paintScene(c, P) {
     c.fillStyle = T.paper; c.beginPath(); c.arc(cxp, cyp, r * 0.4, 0, Math.PI * 2); c.fill();
     labelQueue.push(() => pill(c, n.text || 'Note', cxp + r + 5 * s, cyp - 9 * s, T.panel, s, { fg: T.ink, border: T.ink }));
   }
+  if (live && view.tool === 'light' && view.lightMap !== false && !store.readOnly) drawLightMap(c, X, Y, s, T, Wpx, Hpx);
   // lights (this floor only)
   if (layers.lights !== false && L.lights && L.lights.length) for (const q of L.lights) { const px = X(q.x), py = Y(q.z); if (px < -60 || py < -60 || px > Wpx + 60 || py > Hpx + 60) continue; drawLightMark(c, X, Y, s, T, q); }
 
@@ -11345,7 +11413,8 @@ function renderOptbarH(target) {
     sumIcon = 'route'; sum.push(o.style === 'curve' ? 'Curve' : 'Straight', `${o.w} wide`, mixOfV(o.block) ? mixOfV(o.block).name + ' mix' : BY_ID[o.block] ? BY_ID[o.block].name : ''); note = pathHint();
   } else if (t === 'light') {
     for (const [lab, ...kids] of lightRows(rerender, null)) row(lab, ...kids);
-    const op = lightOpt(), k = lightKind(op.t); sumIcon = 'lt_' + op.t; sum.push(LIGHT_BY[op.t].n, k === 'torch' ? `${op.h} up on walls` : (LIGHT_MOUNTS[k].find(m => m[0] === op.lm[k]) || [])[1]); note = lightHint(true);
+    row('Levels', seg([[true, 'Show'], [false, 'Hide']], view.lightMap !== false, v => { view.lightMap = v; rerender(); }, 'Light levels'));
+    const op = lightOpt(), k = lightKind(op.t); sumIcon = 'lt_' + op.t; sum.push(LIGHT_BY[op.t].n, k === 'torch' ? `${op.h} up on walls` : (LIGHT_MOUNTS[k].find(m => m[0] === op.lm[k]) || [])[1]); note = lightHint(true) + (view.lightMap !== false ? ' ' + lightMapGroup(true) : '');
   } else if (t === 'window') {
     const { hMax, sMax } = winLimits();
     row('Size', seg([[true, 'Auto'], [false, 'Set size']], view.winAuto !== false, v => { view.winAuto = v; rerender(); }, 'Window size'));
@@ -14092,9 +14161,10 @@ function scnNoise(x, z, s) {
 }
 function scnFbm(x, z, s, oct = 4) { let t = 0, a = 1, n = 0, f = 1; for (let i = 0; i < oct; i++) { t += (scnNoise(x * f, z * f, s + i * 101) * 2 - 1) * a; n += a; a *= 0.5; f *= 2.03; } return t / n; }
 /* the textures for things that aren't blocks you build with: from your resource pack when it has them, otherwise drawn here */
-const SCN_PACK = { oak_leaves: ['oak_leaves', 0x77ab2f], birch_leaves: ['birch_leaves', 0x80a755], spruce_leaves: ['spruce_leaves', 0x619961], water: ['water_still', 0x3f76e4], short_grass: ['short_grass', 0x91bd59], fern: ['fern', 0x91bd59], poppy: ['poppy'], dandelion: ['dandelion'], cornflower: ['cornflower'], cactus_side: ['cactus_side'], cactus_top: ['cactus_top'] };
+const SCN_PACK = { lt_torch: ['torch'], lt_soul_torch: ['soul_torch'], lt_lantern: ['lantern'], lt_soul_lantern: ['soul_lantern'], lt_chain: ['chain'], lt_ichain: ['iron_chain'], oak_leaves: ['oak_leaves', 0x77ab2f], birch_leaves: ['birch_leaves', 0x80a755], spruce_leaves: ['spruce_leaves', 0x619961], water: ['water_still', 0x3f76e4], short_grass: ['short_grass', 0x91bd59], fern: ['fern', 0x91bd59], poppy: ['poppy'], dandelion: ['dandelion'], cornflower: ['cornflower'], cactus_side: ['cactus_side'], cactus_top: ['cactus_top'] };
 Object.values(SCN_PACK).forEach(([n]) => NEEDED.add(n));
 function scnPaint(name, g, S) {
+  if (name.startsWith('lt_')) { ltPaint(name, g, S); return; }
   const px = (x, y, c) => { g.fillStyle = c; g.fillRect(x * S / 16, y * S / 16, S / 16, S / 16); }, r = (x, y, k) => scnHash(x, y, k);
   if (name.endsWith('_leaves')) {
     const base = name.startsWith('birch') ? [104, 140, 64] : name.startsWith('spruce') ? [72, 112, 72] : [84, 132, 44];
@@ -14807,6 +14877,59 @@ function updateLightmap() {
   else t.image.data.set(data);
   t.needsUpdate = true;
 }
+/* ---- lights in 3D: Minecraft's own torch, lantern and chain models, built from boxes and flat planes in sixteenths of a block ----
+   Each element is [from, to, { face: uv }, rotation]; uv is [u0, v0, u1, v1] in pixels from the texture's top left */
+const LT_TORCH = [[[7, 0, 7], [9, 10, 9], { up: [7, 6, 9, 8], down: [7, 13, 9, 15] }], [[7, 0, 0], [9, 16, 16], { west: [0, 0, 16, 16], east: [0, 0, 16, 16] }], [[0, 0, 7], [16, 16, 9], { north: [0, 0, 16, 16], south: [0, 0, 16, 16] }]];
+const LT_LANTERN = (hang) => { const o = hang ? 1 : 0, hy = hang ? [10, 16] : [9, 11], hv = hang ? [1, 7] : [1, 3]; return [
+  [[5, o, 5], [11, 7 + o, 11], { north: [0, 2, 6, 9], south: [0, 2, 6, 9], east: [0, 2, 6, 9], west: [0, 2, 6, 9], up: [0, 9, 6, 15], down: [0, 9, 6, 15] }],
+  [[6, 7 + o, 6], [10, 9 + o, 10], { north: [1, 0, 5, 2], south: [1, 0, 5, 2], east: [1, 0, 5, 2], west: [1, 0, 5, 2], up: [1, 10, 5, 14] }],
+  [[6.5, hy[0], 8], [9.5, hy[1], 8], { north: [11, hv[0], 14, hv[1]], south: [11, hv[0], 14, hv[1]] }, 45],
+  [[8, hy[0], 6.5], [8, hy[1], 9.5], { west: [11, hv[0], 14, hv[1]], east: [11, hv[0], 14, hv[1]] }, 45]]; };
+const LT_CHAIN = [[[6.5, 0, 8], [9.5, 16, 8], { north: [0, 0, 3, 16], south: [0, 0, 3, 16] }, 45], [[8, 0, 6.5], [8, 16, 9.5], { west: [3, 0, 6, 16], east: [3, 0, 6, 16] }, 45]];
+const LT_FACE = {   // a face's corners from its bottom left round to its top left, as seen from outside
+  north: (a, b) => [[b[0], a[1], a[2]], [a[0], a[1], a[2]], [a[0], b[1], a[2]], [b[0], b[1], a[2]]],
+  south: (a, b) => [[a[0], a[1], b[2]], [b[0], a[1], b[2]], [b[0], b[1], b[2]], [a[0], b[1], b[2]]],
+  west: (a, b) => [[a[0], a[1], a[2]], [a[0], a[1], b[2]], [a[0], b[1], b[2]], [a[0], b[1], a[2]]],
+  east: (a, b) => [[b[0], a[1], b[2]], [b[0], a[1], a[2]], [b[0], b[1], a[2]], [b[0], b[1], b[2]]],
+  up: (a, b) => [[a[0], b[1], b[2]], [b[0], b[1], b[2]], [b[0], b[1], a[2]], [a[0], b[1], a[2]]],
+  down: (a, b) => [[a[0], a[1], a[2]], [b[0], a[1], a[2]], [b[0], a[1], b[2]], [a[0], a[1], b[2]]] };
+const LT_TURN = { e: 0, s: 1, w: 2, n: 3 };   // a wall torch's model faces east; the others turn clockwise from it
+/* the quads of one light's model, in world space: [tile, four corners, uv] */
+function lightQuads(m) {
+  const els = m.t === 'chain' ? LT_CHAIN : lightKind(m.t) === 'lantern' ? LT_LANTERN(m.m === 'hang') : LT_TORCH, tile = 'lt_' + (m.t === 'chain' ? (PACKTEX.has('iron_chain') ? 'ichain' : 'chain') : m.t), out = [];
+  const wall = m.m === 'wall', a = 22.5 * Math.PI / 180, ca = Math.cos(a), sa = Math.sin(a), turns = wall ? LT_TURN[m.f] || 0 : 0;
+  const xf = p => {
+    let [x, y, z] = p;
+    if (wall) { x -= 8; y += 3.5; const dx = x, dy = y - 3.5; x = dx * ca + dy * sa; y = 3.5 - dx * sa + dy * ca; }   // leant out from the wall
+    for (let r = 0; r < turns; r++) { const dx = x - 8, dz = z - 8; x = 8 - dz; z = 8 + dx; }
+    return [m.x + x / 16, m.y + y / 16, m.z + z / 16];
+  };
+  for (const [from, to, faces, rotY] of els) for (const f in faces) {
+    let pts = LT_FACE[f](from, to);
+    if (rotY) { const c = Math.cos(rotY * Math.PI / 180), s = Math.sin(rotY * Math.PI / 180); pts = pts.map(([x, y, z]) => { const dx = x - 8, dz = z - 8; return [8 + dx * c - dz * s, y, 8 + dx * s + dz * c]; }); }
+    out.push([tile, pts.map(xf), faces[f]]);
+  }
+  return out;
+}
+/* the textures, when the resource pack doesn't have them: a torch's stick and flame, a lantern's frame round its glow, chain links */
+function ltPaint(name, g, S) {
+  const px = (x, y, c, w = 1, h = 1) => { g.fillStyle = c; g.fillRect(x * S / 16, y * S / 16, w * S / 16, h * S / 16); };
+  g.clearRect(0, 0, S, S); const soul = name.includes('soul');
+  if (name.endsWith('torch')) {
+    const fl = soul ? ['#effeff', '#a3f5fc', '#45d8e6'] : ['#fffbe2', '#ffdf6e', '#ffaa2b'];
+    px(7, 6, fl[1]); px(8, 6, fl[0]); px(7, 7, fl[2]); px(8, 7, fl[1]);
+    for (let y = 8; y < 16; y++) { px(7, y, y === 8 ? '#43301a' : '#86653c'); px(8, y, y === 8 ? '#33240f' : '#634829'); }
+  } else if (name.endsWith('lantern')) {
+    const ir = '#383d44', ir2 = '#5a626c', gl = soul ? ['#e4fdff', '#86eefa', '#3ec4d4'] : ['#fff5cf', '#ffd263', '#eda23a'];
+    px(0, 2, ir, 6, 7); px(1, 3, gl[2], 4, 5); px(2, 4, gl[1], 2, 3); px(2, 5, gl[0], 2, 1); px(0, 2, ir2, 6, 1); px(0, 8, ir2, 6, 1);
+    px(0, 9, ir, 6, 6); px(1, 10, ir2, 4, 4); px(2, 11, '#2a2e33', 2, 2);
+    px(1, 0, ir2, 4, 1); px(1, 1, ir, 4, 1);
+    for (let y = 1; y < 8; y++) { px(11, y, ir); px(13, y, ir); } px(12, 1, ir); px(12, 7, ir);
+  } else for (const c0 of [0, 3]) for (let y = 0; y < 16; y++) {
+    if ((((y + (c0 ? 2 : 0)) >> 2) & 1)) { px(c0, y, '#3a3f46'); px(c0 + 2, y, '#3a3f46'); if (((y + (c0 ? 2 : 0)) & 3) === 0 || ((y + (c0 ? 2 : 0)) & 3) === 3) px(c0 + 1, y, '#6f7884'); }
+    else px(c0 + 1, y, '#58606b');
+  }
+}
 function voxelMeshes(buckets, B, lit, out, ground) {
   const { THREE } = three, mats = three.mats, pad = 2;
   const ox = B.minX - pad, oy = B.minY - pad, oz = B.minZ - pad, sx = B.maxX - B.minX + 1 + 2 * pad, sy = B.maxY - B.minY + 1 + 2 * pad, sz = B.maxZ - B.minZ + 1 + 2 * pad;
@@ -14842,10 +14965,11 @@ function voxelMeshes(buckets, B, lit, out, ground) {
     return [ss / 4, bs / 4];
   };
   // block light: flood out from each source, one level per block, stopped by solid blocks
-  let light = null;
-  if (lit && glow.some(v => v)) {
+  let light = null; const LM = three.lightModels || [], inV = m => m.x >= ox && m.x < ox + sx && m.y >= oy && m.y < oy + sy && m.z >= oz && m.z < oz + sz;
+  if (lit && (glow.some(v => v) || LM.some(m => m.lv))) {
     light = new Uint8Array(cell.length); const q = [];
     for (let i = 0; i < cell.length; i++) { const g = glow[cell[i]]; if (g) { light[i] = g; q.push(i); } }
+    for (const m of LM) { if (!m.lv || !inV(m)) continue; const i = at(m.x, m.y, m.z); if (kind[cell[i]] !== 1 && light[i] < m.lv) { light[i] = m.lv; q.push(i); } }
     for (let h = 0; h < q.length; h++) {
       const i = q[h], lv = light[i] - 1; if (lv <= 0) continue;
       const x = i % sx, z = ((i / sx) | 0) % sz, y = (i / SXZ) | 0;
@@ -14943,6 +15067,16 @@ function voxelMeshes(buckets, B, lit, out, ground) {
       }
     }
   }
+  // the lights' own models, both sides of every face, lit by their own flame
+  for (const m of LM) for (const [tile, pts, uv] of lightQuads(m)) {
+    const h = scnTile(tile), P = bucket(h.p, 'cut'), [tu, tv, tsz] = tileUV(h), UV = [[uv[0], uv[3]], [uv[2], uv[3]], [uv[2], uv[1]], [uv[0], uv[1]]];
+    const e1 = pts[1].map((v, k) => v - pts[0][k]), e2 = pts[3].map((v, k) => v - pts[0][k]), nn = [e1[1] * e2[2] - e1[2] * e2[1], e1[2] * e2[0] - e1[0] * e2[2], e1[0] * e2[1] - e1[1] * e2[0]], nl = Math.hypot(...nn) || 1;
+    for (const [ord, sg] of [[[0, 1, 2, 3], 1], [[3, 2, 1, 0], -1]]) {
+      const base = P.v; P.v += 4; tbox(P, h, 4);
+      for (const c of ord) { P.pos.push(...pts[c]); P.nrm.push(sg * nn[0] / nl, sg * nn[1] / nl, sg * nn[2] / nl); P.uv.push(tu + UV[c][0] / 16 * tsz, tv + (1 - UV[c][1] / 16) * tsz); if (lit) { P.col.push(1, 1, 1); P.sl.push(15); P.bl.push(-1); } }
+      P.idx.push(base, base + 1, base + 2, base, base + 2, base + 3);
+    }
+  }
   for (const P of per.values()) {
     if (!P.v) continue;
     const geo = new THREE.BufferGeometry();
@@ -14972,6 +15106,11 @@ function build3D(refit) {
   const cutY = view.cut3 == null ? Infinity : view.cut3; let fullY0 = Infinity, fullY1 = -Infinity;
   // light blocks set into a floor or ceiling take the place of the slab block there
   const lrep = new Map(); for (const B of plan.bldgs) withBld(B, () => { const top = topOf(); for (let i = 0; i <= top; i++) for (const [k, id] of lightCells(lv(i), i, Math.round(baseY(i) * v3.spread))) if (BY_ID[id]) lrep.set(k, id); });
+  // torches, lanterns and their chains, as models
+  const lmods = []; for (const B of plan.bldgs) withBld(B, () => { const top = topOf(); for (let i = 0; i <= top; i++) { const L = lv(i); if (!L || !L.lights || !L.lights.length || roofLevel(L)) continue; const y0 = Math.round(baseY(i) * v3.spread);
+    for (const q of L.lights) { const Bq = LIGHT_BY[q.t]; if (!Bq || Bq.kind === 'block') continue; const y = y0 + offAt(i, K(q.x, q.z)) + lightDY(i, q); if (y >= cutY) continue;
+      lmods.push({ x: q.x, y, z: q.z, t: q.t, m: q.m, f: q.f, lv: Bq.lv }); if (q.m === 'hang') for (let j = 1; j <= (q.c || 0) && y + j < cutY; j++) lmods.push({ x: q.x, y: y + j, z: q.z, t: 'chain', m: 'chain', lv: 0 }); } } });
+  three.lightModels = lmods;
   const add = (b, x, y, z, own) => { if (!b) return; if (!own && lrep.size && lrep.has(x + ',' + y + ',' + z)) return; if (y < fullY0) fullY0 = y; if (y > fullY1) fullY1 = y; if (y >= cutY) return; let a = buckets.get(b); if (!a) { a = []; buckets.set(b, a); } a.push(x, y, z); inc(x, y, z); if (x < BB.minX) BB.minX = x; if (x > BB.maxX) BB.maxX = x; if (y < BB.minY) BB.minY = y; if (y > BB.maxY) BB.maxY = y; if (z < BB.minZ) BB.minZ = z; if (z > BB.maxZ) BB.maxZ = z; };
   const track = o => { three.disposables.push(o); return o; };
   const shade = o => { if (lit && three.canShadow) { o.castShadow = true; o.receiveShadow = true; } return o; };
