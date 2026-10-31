@@ -10113,7 +10113,8 @@ function flatWall(c, look, px, py, w, h) {
   if (look === 'outline') { const lw = Math.max(1, Math.round(w * 0.12)); c.strokeStyle = 'rgba(0,0,0,.62)'; c.lineWidth = lw; c.strokeRect(px + lw / 2, py + lw / 2, w - lw, h - lw); return; }
   if (look === 'hatch') {
     c.save(); c.beginPath(); c.rect(px, py, w, h); c.clip(); c.strokeStyle = 'rgba(0,0,0,.5)'; c.lineWidth = Math.max(1, w * 0.09); c.beginPath();
-    const st = Math.max(3, w / 3); for (let k = -h; k < w; k += st) { c.moveTo(px + k, py + h); c.lineTo(px + k + h, py); }
+    // the lines sit on one diagonal grid across the whole plan (x + y a multiple of the step), so they run on unbroken from one wall block into the next
+    const st = Math.max(3, w / 3), base = px + py + h; for (let k = Math.ceil((base - h - st) / st) * st - base; k < w + st; k += st) { c.moveTo(px + k - 1, py + h + 1); c.lineTo(px + k + h + 1, py - 1); }
     c.stroke(); c.restore();
   }
 }
