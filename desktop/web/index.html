@@ -1380,7 +1380,7 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 .dk-ib:disabled{opacity:.35;pointer-events:none}
 .dk-roofrow .dk-fn{font-weight:500;font-style:italic}
 .dk-roofrow:not(.on) .dk-fb{height:30px}
-.dk-chips{display:grid;grid-template-columns:1fr;gap:8px}
+.dk-chips{display:grid;grid-template-columns:1fr;gap:8px}.dk-tile.choosing{box-shadow:0 0 0 2px var(--accent)}.blockcard.dimc{cursor:pointer;opacity:.75}.blockcard.alt.on{opacity:1;border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--panel)}
 .dk-tiles{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;gap:6px}.dk-swapc{align-self:center}.dk-tile{align-content:start}.dk-tiles.dimmed{opacity:.55}
 .dk-tile{display:grid;justify-items:center;gap:3px;min-width:0;padding:10px 6px 8px;border:1px solid var(--line);border-radius:10px;background:var(--panel);text-align:center}
 .dk-tile.on{border:2px solid var(--ink);padding:9px 5px 7px}.dk-tile:hover{background:var(--panel-2)}
@@ -5985,6 +5985,7 @@ function slotShow(active) {
 }
 function useMix(id) {
   const m = mixById(id); if (!m) return;
+  if (pickingAlt()) { view.altMix = id; view.altBlock = m.parts[0][0]; pairChanged(); renderPanel(); savePrefs(); dockSig = ''; renderDock(); toast(`Secondary: the ${m.name}${/\bmix$/i.test(m.name) ? '' : ' mix'}.`); return; }
   view.mix = id; view.block = m.parts[0][0];
   if (!['pencil', 'shape', 'bucket', 'paste', 'select'].includes(view.tool)) setTool(['pencil', 'shape', 'bucket'].includes(view.lastBuild) ? view.lastBuild : 'pencil');
   renderPanel(); renderOptbar(); renderSelbar(); savePrefs(); updateHoverGhost(); requestDraw();
@@ -10281,14 +10282,14 @@ function dockBlocks() {
   const A = slotShow(true), B = slotShow(false), onR = onRoof(), sk = keyName(keyOf('swapBlocks')), rk = onR ? dkRoofChips() : null;
   const kb = k => { const n = keyOf(k); return n ? el('kbd', { text: keyName(n) }) : null; };
   // Primary and Secondary as two tiles, the swap between them
-  const tile = (S, primary) => el('button', { class: 'dk-tile' + (primary ? ' on' : ''), 'aria-pressed': String(primary),
+  const tile = (S, primary) => el('button', { class: 'dk-tile' + (primary ? ' on' : '') + (view.win === 'blocks' && !!view.pickAlt !== primary ? ' choosing' : ''), 'aria-pressed': String(primary),
     title: primary ? `Primary ${S.mix ? 'mix' : 'block'}: ${S.name}. All blocks changes it` : `Secondary ${S.mix ? 'mix' : 'block'}: ${S.name}. Click to choose another; ${sk === '—' ? 'the arrows swap' : sk + ' swaps'} it with Primary`,
-    onclick: ev => { if (primary) toggleWin('blocks'); else pickSecondary(ev.currentTarget); } },
+    onclick: () => { if (primary) { if (view.win === 'blocks' && !view.pickAlt) closeWin(); else pickPrimary(); } else if (view.win === 'blocks' && view.pickAlt) closeWin(); else pickSecondary(); } },
     el('span', { class: 'dk-tpic' }, slotImg(S)), el('small', { text: primary ? 'Primary' : 'Secondary' }), el('b', { text: S.name }), S.mix ? el('span', { class: 'dk-tsub', text: S.sub }) : null);
   const rec = view.recents.filter(id => BY_ID[id]).slice(0, 12);
   return [
     rk ? dkSec('Roof', null, el('div', { class: 'dk-chips' }, ...rk)) : null,
-    dkSec('Primary and Secondary', el('button', { class: 'dk-btn', title: 'Search every block and choose Primary', onclick: () => toggleWin('blocks') }, icon('search'), 'All blocks'),
+    dkSec('Block palette', el('button', { class: 'dk-btn', title: 'Search every block and choose Primary', onclick: () => toggleWin('blocks') }, icon('search'), 'All blocks'),
       el('div', { class: 'dk-tiles' + (onR ? ' dimmed' : ''), title: onR ? 'The Roof tool uses the roof blocks above. Primary and Secondary are for drawing floors and walls' : null },
         tile(A, true), el('div', { class: 'dk-swapc' }, el('button', { class: 'dk-swap', title: 'Swap Primary and Secondary', 'aria-label': 'Swap Primary and Secondary', onclick: swapSlots }, icon('swap')), kb('swapBlocks'),
           el('button', { class: 'dk-swap dk-def', title: `Defaults: ${BY_ID[view.cfg.nf.fb].name} as Primary, ${BY_ID[view.cfg.nf.wb].name} as Secondary`, 'aria-label': 'Back to the default blocks', onclick: resetBlocks }, icon('defblocks')), kb('resetBlocks')), tile(B, false)),
@@ -11270,12 +11271,10 @@ function toggleWall(quiet) {
   if (!quiet) toast(view.wall ? `Wall mode on · drawing walls with ${slotShow(true).name}.` : `Wall mode off · drawing plain blocks with ${slotShow(true).name}.`);
 }
 /* swaps Primary and Secondary, whatever the tool */
-/* the Secondary block's own picker: choosing in it changes Secondary and leaves Primary as it is */
-function pickSecondary(anchor) {
-  if (store.readOnly) return;
-  const v = view.altMix ? 'mix:' + view.altMix : (BY_ID[view.altBlock] ? view.altBlock : view.block);
-  openBlockPick(anchor, { value: v, aria: 'Secondary block', mixes: !!plan, onPick: x => { if (!x) return; setSlotV(true, x); if (!x.startsWith('mix:')) { const id = baseOf(x); view.recents = [id, ...view.recents.filter(q => q !== id)].slice(0, 12); } pairChanged(); savePrefs(); renderTopTools(); dockSig = ''; renderDock(); if (view.win === 'blocks') renderPanel(); } });
-}
+/* All blocks chooses for Primary, or for Secondary when you open it from the Secondary block; the card that's being chosen for is highlighted */
+const pickingAlt = () => !!view.pickAlt && view.win === 'blocks';
+function pickSecondary() { if (store.readOnly) return; view.pickAlt = true; if (view.win === 'blocks') renderPanel(); else openWin('blocks'); dockSig = ''; renderDock(); }
+function pickPrimary() { view.pickAlt = false; if (view.win === 'blocks') { renderPanel(); dockSig = ''; renderDock(); } else openWin('blocks'); }
 function swapSlots() {
   if (store.readOnly) return;
   swapPair(); pairChanged(); swapFlash();
@@ -12009,7 +12008,9 @@ function floorMenu(btn, l, i) {
 function setBlockChoice(id) {
   const pk = BY_ID[id]; if (!pk) return;
   if (pk.shape && id.includes('~')) { view.bface = pk.f; view.btop = !!pk.top; }   // picking up a placed stair keeps its facing
-  id = baseOf(id); view.block = id; view.mix = null; view.recents = [id, ...view.recents.filter(x => x !== id)].slice(0, 12);
+  id = baseOf(id);
+  if (pickingAlt()) { view.altBlock = id; view.altMix = null; view.recents = [id, ...view.recents.filter(x => x !== id)].slice(0, 12); pairChanged(); renderPanel(); savePrefs(); dockSig = ''; renderDock(); if (isMobile()) closeSheet(); return; }
+  view.block = id; view.mix = null; view.recents = [id, ...view.recents.filter(x => x !== id)].slice(0, 12);
   if (!['pencil', 'shape', 'bucket', 'paste', 'select'].includes(view.tool)) setTool(['pencil', 'shape', 'bucket'].includes(view.lastBuild) ? view.lastBuild : 'pencil');
   renderPanel(); renderOptbar(); renderSelbar(); savePrefs(); updateHoverGhost(); requestDraw();
   if (isMobile()) closeSheet();
@@ -12182,13 +12183,13 @@ function renderBlocksTab(body) {
   const b = BY_ID[view.block] || BLOCKS[0], fav = view.favs.includes(b.id), parts = [];
   // the two blocks side by side: the one you are choosing for is highlighted; tap the other to choose for it instead
   const pcard = (() => { const A = slotShow(true); return A.mix
-      ? el('div', { class: 'blockcard on' }, slotImg(A, true),
+      ? el('div', { class: 'blockcard' + (view.pickAlt ? ' dimc' : ' on'), onclick: ev => { if (view.pickAlt && !ev.target.closest('button')) pickPrimary(); } }, slotImg(A, true),
         el('div', { style: 'min-width:0;flex:1' }, el('div', { class: 'bslot', text: `${slotName(view.wall)} mix` }), el('div', { class: 'bn', text: A.name })),
         el('button', { class: 'ib sm', title: 'Back to a single block', 'aria-label': 'Stop using the mix', onclick: () => { view.mix = null; renderAll(); savePrefs(); } }, icon('x')))
-      : el('div', { class: 'blockcard on' }, el('img', { src: SWATCH[b.id], alt: '' }),
+      : el('div', { class: 'blockcard' + (view.pickAlt ? ' dimc' : ' on'), onclick: ev => { if (view.pickAlt && !ev.target.closest('button')) pickPrimary(); } }, el('img', { src: SWATCH[b.id], alt: '' }),
         el('div', { style: 'min-width:0;flex:1' }, el('div', { class: 'bslot', text: `${slotName(view.wall)} block` }), el('div', { class: 'bn', text: b.name }), el('code', { text: b.id })),
         el('button', { class: 'star' + (fav ? ' on' : ''), 'aria-pressed': String(fav), title: fav ? 'Remove from favourites' : 'Add to favourites', 'aria-label': fav ? 'Remove from favourites' : 'Add to favourites', onclick: () => toggleFav(b.id) }, icon(fav ? 'starOn' : 'star'))); })();
-  const scard = (() => { const B = slotShow(false); return el('button', { class: 'blockcard alt', title: `Choose the ${slotName(!view.wall).toLowerCase()} ${B.mix ? 'mix' : 'block'}. X swaps it with Primary`, onclick: ev => pickSecondary(ev.currentTarget) }, slotImg(B, true),
+  const scard = (() => { const B = slotShow(false); return el('button', { class: 'blockcard alt' + (view.pickAlt ? ' on' : ''), title: `Choose the ${slotName(!view.wall).toLowerCase()} ${B.mix ? 'mix' : 'block'}. X swaps it with Primary`, onclick: () => pickSecondary() }, slotImg(B, true),
       el('div', { style: 'min-width:0;flex:1' }, el('div', { class: 'bslot', text: slotName(!view.wall) }), el('div', { class: 'bn', text: B.name })), icon('chev')); })();
   parts.push(el('div', { class: 'bpair', role: 'group', 'aria-label': 'Primary and Secondary blocks' }, pcard, scard));
   // presets and mixes: a mix is a weighted blend, painted like a block
@@ -12291,7 +12292,7 @@ function placeWin() {
   if (back) back.hidden = !fl;
 }
 function toggleWinFloat() { const tab = view.win; if (tab === 'blocks') view.blocksFloat = !view.blocksFloat; else if (tab === 'floors') view.floorsFloat = !view.floorsFloat; else return; savePrefs(); placeWin(); renderPanel(); }
-function closeWin() { if (!view.win) return; view.win = null; $('#panel').classList.remove('open', 'float'); { const bk = $('#winBack'); if (bk) bk.hidden = true; } renderWinButtons(); syncPaneling(); if (plan) renderInspector(); }
+function closeWin() { if (!view.win) return; if (view.win === 'blocks' && view.pickAlt) { view.pickAlt = false; dockSig = ''; setTimeout(renderDock, 0); } view.win = null; $('#panel').classList.remove('open', 'float'); { const bk = $('#winBack'); if (bk) bk.hidden = true; } renderWinButtons(); syncPaneling(); if (plan) renderInspector(); }
 function toggleWin(tab) { if (view.win === tab) closeWin(); else openWin(tab); }
 function renderWinButtons() {
   const o = $('#objBtn'); if (o) o.setAttribute('aria-expanded', String(view.win === 'objects'));
