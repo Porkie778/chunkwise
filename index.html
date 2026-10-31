@@ -1661,7 +1661,10 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
   /* 3D: no drawing tools, just the view's own controls */
   #app:has(#view3d:not([hidden])) :is(.rail,.optbar,#tbPair,.mcol){display:none!important}
   #app:has(#view3d:not([hidden])) .v3bar{bottom:calc(14px + env(safe-area-inset-bottom,0px))}
-  #app:has(#view3d:not([hidden])) .v3pins{top:calc(68px + env(safe-area-inset-top,0px))}
+  #app:has(#view3d:not([hidden])) .v3pins{top:calc(74px + env(safe-area-inset-top,0px))!important}
+  .v3t-r{display:none!important}
+  #app #v3tog .v3t-a{display:inline!important}
+  .fs-name small{display:none}
 }
 /* All tools: every tool in a sheet, grouped */
 .tsheet-back{position:fixed;inset:0;z-index:58;background:rgba(10,14,13,.42);animation:tsfade .16s ease}
@@ -1698,6 +1701,11 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
   --f-ui:"CW Minecraft","Silkscreen",system-ui,sans-serif;--f-display:"CW Minecraft","Silkscreen",monospace;--f-mono:"CW Minecraft","JetBrains Mono",ui-monospace,monospace;
   --bev:inset 2px 2px 0 #fff,inset -2px -2px 0 #555;--bevg:inset 2px 2px 0 #7fcf5a,inset -2px -2px 0 #163a0d;--ins:inset 2px 2px 0 #373737,inset -2px -2px 0 #fff}
 :root[data-skin="mc"] body{background:#2d2d2d}
+:root[data-skin="mc"] :is(body,button,input,select,textarea,span,p,div,label,a,b,strong,li,td,th,output,summary,h4){font-size:var(--mcfs)!important;line-height:1.3}
+:root[data-skin="mc"] :is(small,kbd,code,.kbd,.sltag,.rtab *,.rgrp *,.olbl *,.acc-lbl *,.insp-kind *,.mlabel *,.dk-h h3 *,.insp-meta,.ometa2,.ohint,.setnote,.olbl,.rgrp span,.rtab,.acc-lbl,.ts-lbl,.mlabel,.insp-kind,.qhead,.fy,.sub,.savestate,.hint,.statusbar,.statusbar *,.fs-name small,.pk-info,.exnote,.histnote,.dk-h h3,.setsub){font-size:var(--mcfs-s)!important}
+:root[data-skin="mc"] :is(h1,h2,h3,.whead h2,.ts-head h2){font-size:var(--mcfs-l)!important}
+:root[data-skin="mc"] *{font-synthesis:none;-webkit-font-smoothing:none;font-smooth:never;text-rendering:optimizeSpeed}
+
 :root[data-skin="mc"] *,:root[data-skin="mc"] *::before,:root[data-skin="mc"] *::after{border-radius:0!important}
 :root[data-skin="mc"] :is(.btn,.ib.tg,.qchip,.acc-tog,.ddrop,.wdrop,.blockpick,.v3pin,.campill,.oblock,.dk-tile,.mpill,.mcol,.fstrip,.tsheet .ts-t,.prpick){border:2px solid #000;box-shadow:var(--bev)}
 :root[data-skin="mc"] :is(.seg,select.pick,.field,.num,input[type=search],.rbp-q){border:2px solid #000;background:var(--field);box-shadow:var(--ins);color:#1b1b1b}
@@ -10696,6 +10704,14 @@ function setTheme(t) { view.theme = t; applyTheme(); savePrefs(); }
 /* the look of the whole app: Studio as it is, Blueprint (dark blue drafting) or Minecraft (the game's grey bevelled menus) */
 const SKINS = [['studio', 'Studio', 'Clean and neutral, light or dark'], ['blueprint', 'Blueprint', 'Dark blue drafting paper with cyan lines'], ['mc', 'Minecraft', 'The game’s grey bevelled menus and pixel type']];
 function applySkin() { const k = SKINS.some(q => q[0] === view.skin) ? view.skin : 'studio', d = document.documentElement; if (k === 'studio') d.removeAttribute('data-skin'); else d.setAttribute('data-skin', k); }
+/* the Minecraft font's pixels are a tenth of its size: the sizes where they land on whole screen pixels, nearest above the ones we want */
+function mcFontSizes() {
+  const d = window.devicePixelRatio || 1, r = document.documentElement.style, crisp = min => +(Math.ceil(min * d / 10 - 1e-6) * 10 / d).toFixed(3) + 'px';
+  // on a 1× screen the sharp sizes are 10 and 20 pixels: too small and too big for the menus, so they take 15 there
+  if (d < 1.2) { r.setProperty('--mcfs', '15px'); r.setProperty('--mcfs-s', '10px'); r.setProperty('--mcfs-l', '20px'); return; }
+  r.setProperty('--mcfs', crisp(13)); r.setProperty('--mcfs-s', crisp(9.5)); r.setProperty('--mcfs-l', crisp(16));
+}
+mcFontSizes(); try { matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`).addEventListener('change', mcFontSizes); } catch {}
 function setSkin(k) { view.skin = k; applySkin(); savePrefs(); requestDraw(); if (three) { applyLighting(); if (show3D()) build3D(false); } }
 /* Blueprint draws the plan in flat colour, and 3D as flat blue solids with cyan edges, unlit, on its own navy */
 const bpSkin = () => document.documentElement.getAttribute('data-skin') === 'blueprint';
