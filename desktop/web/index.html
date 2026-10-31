@@ -1487,6 +1487,8 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 .exmlist{max-height:240px;overflow-y:auto;padding:4px 6px}
 .exm{display:flex;align-items:center;gap:9px;min-height:26px;font-size:13px;padding:0 4px}
 .exm img{width:18px;height:18px;image-rendering:pixelated;border-radius:3px;flex:none}
+.exm .exdot{width:12px;height:12px;margin:0 3px;border-radius:50%;flex:none;box-shadow:0 0 0 1px rgba(0,0,0,.35),0 0 6px 1px currentColor}
+.ltsides{display:grid;grid-template-columns:repeat(3,auto);gap:6px;padding:4px 10px 10px;justify-content:center;align-items:center}.ltsides .btn{justify-content:center}.ltsides .btn.on{border-color:var(--danger,#d64545);color:var(--danger,#d64545)}.ltwall{width:30px;height:30px;border-radius:4px;background:repeating-linear-gradient(45deg,var(--ink-3,#888) 0 2px,transparent 2px 6px);border:1.5px solid var(--ink,#333);justify-self:center}
 .exmn{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .exm b{font:600 13px var(--f-mono,monospace);text-align:right}
 .exm i{font:500 11.5px var(--f-mono,monospace);font-style:normal;color:var(--ink-2);min-width:58px;text-align:right}
@@ -1769,6 +1771,7 @@ const ICONS = {
   vmore: '<circle cx="10" cy="4.5" r=".9" fill="currentColor"/><circle cx="10" cy="10" r=".9" fill="currentColor"/><circle cx="10" cy="15.5" r=".9" fill="currentColor"/>',
   infoi: '<circle cx="10" cy="10" r="7.4"/><path d="M10 9.2v5"/><circle cx="10" cy="6.3" r=".55" fill="currentColor"/>',
   pointer: '<path d="M5 3l10.5 6.6-4.6 1.2-2.3 4.6z"/>',
+  light: '<path d="M10 9.6v7.9"/><path d="M10 2.4c-2.3 2.5-2.7 4.3-1 6.2h2c1.7-1.9 1.3-3.7-1-6.2z"/><path d="M4.2 5.2l1.3.9M15.8 5.2l-1.3.9M3.6 9.6h1.5M16.4 9.6h-1.5"/>',
   roof: '<path d="M2 10.5L10 4l8 6.5"/><path d="M4.5 8.6V16h11V8.6"/>',
   floors: '<rect x="4" y="3" width="12" height="4" rx="1"/><rect x="4" y="8" width="12" height="4" rx="1"/><rect x="4" y="13" width="12" height="4" rx="1"/>',
   rGable: '<path d="M3.5 16V9.5L10 4l6.5 5.5V16z"/><path d="M8 16v-4h4v4"/>',
@@ -3594,7 +3597,7 @@ let plan = null, curLid = null;
 const NET_COLORS = ['#f59f00', '#7048e8', '#1c7ed6', '#12b886', '#e03131', '#e64980', '#82c91e', '#fd7e14', '#15aabf', '#868e96'];
 const defaultNetworks = () => [{ id: 'power', name: 'Power', color: '#f59f00' }, { id: 'me', name: 'ME network', color: '#7048e8' }, { id: 'fluid', name: 'Fluids', color: '#1c7ed6' }, { id: 'gas', name: 'Gases', color: '#12b886' }];
 const netById = id => plan && plan.networks.find(n => n.id === id);
-function newLevel(name, height = 5, id) { return { id: id || uid('l'), name, height, rock: 0, thick: 1, cavity: false, cables: false, roof: false, roofSpec: null, bh: [], mix: new Map(), rev: 0, blocks: new Map(), walls: new Set(), wstyle: new Map(), zones: [], multis: [], notes: [], openings: [], dims: [], flights: [], routes: new Map(), paths: new Set(), oposts: new Set(), pk: new Map(), wh: new Map(), bands: new Set() }; }
+function newLevel(name, height = 5, id) { return { id: id || uid('l'), name, height, rock: 0, thick: 1, cavity: false, cables: false, roof: false, roofSpec: null, bh: [], mix: new Map(), rev: 0, blocks: new Map(), walls: new Set(), wstyle: new Map(), zones: [], multis: [], notes: [], openings: [], dims: [], flights: [], routes: new Map(), paths: new Set(), oposts: new Set(), pk: new Map(), wh: new Map(), bands: new Set(), lights: [] }; }
 /* 3D ground around the build, saved with each plan */
 const GROUND_BLOCKS = ['grass_block', 'dirt', 'coarse_dirt', 'rooted_dirt', 'podzol', 'mycelium', 'moss_block', 'mud', 'clay', 'sand', 'red_sand', 'gravel', 'snow_block', 'stone', 'deepslate', 'terracotta', 'netherrack', 'soul_sand', 'soul_soil', 'end_stone'];
 const deTerrain = x => ({ block: x && typeof x.block === 'string' && BY_ID[x.block] ? x.block : null, margin: clampInt(x == null || x.margin == null ? NaN : x.margin, 0, 64, 16) });
@@ -3733,6 +3736,7 @@ function findObj(s) {
   if (s.type === 'zone') return L.zones.find(z => z.id === s.id) || null;
   if (s.type === 'multi') return L.multis.find(m => m.id === s.id) || null;
   if (s.type === 'note') return L.notes.find(n => n.id === s.id) || null;
+  if (s.type === 'light') return (L.lights || []).find(q => q.id === s.id) || null;
   if (s.type === 'opening') return (L.openings || []).find(o => o.id === s.id) || null;
   if (s.type === 'flight') return (L.flights || []).find(f => f.id === s.id) || null;
   if (s.type === 'route') { const set = L.routes.get(s.net), net = netById(s.net); return set && net && set.has(K(s.x, s.z)) ? { net, set, x: s.x, z: s.z } : null; }
@@ -4913,7 +4917,7 @@ function serLevel(l) {
     zones: l.zones.map(z => ({ id: z.id, name: z.name, color: z.color, cells: encodeCells(z.cells) })),
     multis: l.multis.map(m => ({ id: m.id, stamp: m.stamp, x: m.x, z: m.z, rot: m.rot, label: m.label, dy: m.dy || 0, color: m.color || null })),
     wh: (() => { const by = {}; for (const [k, h] of l.wh || []) if (l.walls.has(k)) (by[h] = by[h] || new Set()).add(k); const o = {}; for (const h in by) o[h] = encodeCells(by[h]); return o; })(),
-    walls: encodeCells(l.walls), wstyle: (() => { const by = {}; for (const [k, st] of l.wstyle || []) (by[st] = by[st] || new Set()).add(k); const o = {}; for (const st in by) o[st] = encodeCells(by[st]); return o; })(), notes: l.notes.map(n => ({ id: n.id, x: n.x, z: n.z, text: n.text })), openings: (l.openings || []).map(o => ({ id: o.id, kind: o.kind, x: o.x, z: o.z, ax: o.ax, w: o.w, h: o.h, sill: o.sill, glass: o.glass, dp: o.dp || 1, out: o.out || 1, style: o.style || 'plain', trim: o.trim || null, dt: o.dt || null, gd: o.gd === 'full' || o.gd === 'inner' ? o.gd : undefined })), dims: (l.dims || []).map(d => ({ id: d.id, ax: d.ax, a: d.a, b: d.b, ra: d.ra, rb: d.rb, off: d.off, div: d.div, read: d.read && d.read !== 'len' ? d.read : undefined })),
+    walls: encodeCells(l.walls), wstyle: (() => { const by = {}; for (const [k, st] of l.wstyle || []) (by[st] = by[st] || new Set()).add(k); const o = {}; for (const st in by) o[st] = encodeCells(by[st]); return o; })(), notes: l.notes.map(n => ({ id: n.id, x: n.x, z: n.z, text: n.text })), lights: (l.lights || []).map(q => ({ ...q })), openings: (l.openings || []).map(o => ({ id: o.id, kind: o.kind, x: o.x, z: o.z, ax: o.ax, w: o.w, h: o.h, sill: o.sill, glass: o.glass, dp: o.dp || 1, out: o.out || 1, style: o.style || 'plain', trim: o.trim || null, dt: o.dt || null, gd: o.gd === 'full' || o.gd === 'inner' ? o.gd : undefined })), dims: (l.dims || []).map(d => ({ id: d.id, ax: d.ax, a: d.a, b: d.b, ra: d.ra, rb: d.rb, off: d.off, div: d.div, read: d.read && d.read !== 'len' ? d.read : undefined })),
     flights: (l.flights || []).map(f => ({ ...f })), paths: encodeCells([...(l.paths || [])].filter(k => l.blocks.has(k))), oposts: encodeCells([...(l.oposts || [])].filter(k => l.blocks.has(k))), pk: [...(l.pk || [])].filter(([k]) => l.blocks.has(k)).map(([k, e]) => [k, ...e]), bands: encodeCells([...(l.bands || [])].filter(k => l.blocks.has(k))), pg: (() => { const by = {}; for (const [k, g] of l.pg || []) if (l.walls.has(k)) (by[g] = by[g] || new Set()).add(k); const o = {}; for (const g in by) o[g] = encodeCells(by[g]); return o; })(),
     routes: [...l.routes].filter(([, set]) => set.size).map(([net, set]) => ({ net, cells: encodeCells(set) })) };
 }
@@ -4928,6 +4932,7 @@ function deLevel(id, d) {
     wh: (() => { const m = new Map(); if (d.wh && typeof d.wh === 'object') for (const [h, cells] of Object.entries(d.wh)) { const v = clampInt(h, 1, 64, 0); if (v) for (const k of decodeCells(str(cells))) m.set(k, v); } return m; })(),   // plain walls set to their own height
     wstyle: (() => { const m = new Map(); if (d.wstyle && typeof d.wstyle === 'object') for (const [st0, cells] of Object.entries(d.wstyle)) { const st = normWS(st0); if (st) for (const k of decodeCells(str(cells))) m.set(k, st); } return m; })(),
     notes: (Array.isArray(d.notes) ? d.notes : []).filter(n => n && typeof n === 'object').map(n => ({ id: SEG_RE.test(str(n.id)) ? n.id : uid('n'), x: clampInt(n.x, -1e6, 1e6, 0), z: clampInt(n.z, -1e6, 1e6, 0), text: str(n.text, 'Note').slice(0, 80) })),
+    lights: (Array.isArray(d.lights) ? d.lights : []).slice(0, 20000).map(deLight).filter(Boolean),
     openings: (Array.isArray(d.openings) ? d.openings : []).slice(0, 2000).map(deOpening).filter(Boolean),
     dims: (Array.isArray(d.dims) ? d.dims : []).slice(0, 2000).map(deDim).filter(Boolean),
     flights: (Array.isArray(d.flights) ? d.flights : []).slice(0, 200).map(deFlight).filter(Boolean),
@@ -5033,7 +5038,7 @@ function sizeKey(e) {
 const WALL_LOOKS = [['same', 'Same as floor'], ['dark', 'Darker'], ['outline', 'Outlined'], ['hatch', 'Hatched']];
 const view = { z: 22, ox: 0, oy: 0, tool: 'shape', mode: 'draw', shapeKind: 'rect', selShape: 'rect', eraseMode: 'brush', zoneShape: 'rect', zoneOp: 'new', roofMode: 'pick', roofSel: [], roofPick: null, roofMulti: false, bhPick: null, roomSel: null, mix: null, altMix: null, pattern: 'none', patBlock: 'polished_andesite', penPat: 'none', penPatBlock: 'polished_andesite', postEvery: 0, postBlock: 'stripped_spruce_log', roofTab: 'shape', optOpen: false, brush: 1, eraseT: { blocks: true, paths: false, routes: false, zones: false }, railMode: 'all', groupLast: { nav: 'pointer', build: 'pencil', edit: 'select', plan: 'zone' }, lastBuild: 'pencil', selOp: 'new', drawOp: 'place', fill: 'solid', sizeMode: 'drag', w: 9, h: 9, lock: false, ratio: 1, block: 'oak_planks', altBlock: 'cobblestone', stamp: null, rot: 0, inspFor: null, expKind: 'litematica', expScope: 'all', uiMode: 'rail', flat2d: false, wallLook: 'same', railMin: false, ribbonTab: 'home', ribbonMin: false, setCat: null, roofWalls: true, roofStyled: false, rampOuter: false, fenceFill: 'base', fenceH: 2, extN: 1, wallThick: 1, wallStyle: null, cornerSw: true, doorType: 'std', archW: 3, archWAuto: true, archH: 4, archHAuto: true, doorStyle: 'plain', doorTrim: null, winStyle: 'plain', winTrim: null, fov: 70, povSens: 1, povKeys: null, doorW: 1, winAuto: true, winW: 2, winH: 2, winSill: 1, winGlass: 'pane', winDepth: 'outer',
   hover: null, ghost: null, preview: null, measure: null, selected: null, is3D: false, tab: 'floors', win: null, contig: true, wall: false, pencil: 'free', showMid: true, sideOpen: true, net: 'power', routeOp: 'place', circleKind: 'circle', polySides: 6, polyPoint: false, ghostAlpha: 0.35, bface: 'n', btop: false, lastRoof: null, favs: [], recents: [], blockSort: 'family', blockCat: '', bq: '',
-  layers: { grid: true, chunks: false, origin: true, ghost: false, blocks: true, zones: true, multis: true, routes: true, anchors: true, notes: true, labels: true, roofs: true, dims: true }, originStyle: 'block', zoneStyle: 'border', zoneAlpha: 0.28, recentColors: [], presets: [] };
+  layers: { grid: true, chunks: false, origin: true, ghost: false, blocks: true, zones: true, multis: true, routes: true, anchors: true, notes: true, lights: true, labels: true, roofs: true, dims: true }, originStyle: 'block', zoneStyle: 'border', zoneAlpha: 0.28, recentColors: [], presets: [] };
 const mirror = { x: false, z: false, radial: 0, ax: 0.5, az: 0.5, placing: false };
 const v3 = { upTo: false, spread: 1, walls: true, light: false, tod: 12, gamma: 1, sunMoon: true, smooth: true, scn: null, rock: true, roofs: true, dims: true, smoothTex: true, clouds: true };
 const ZMIN = 2, ZMAX = 96;
@@ -5046,7 +5051,7 @@ const prefs = lsGet(LS_VIEW) || {};
 const KEY_ACTIONS = [
   ['pointer', 'Pick', 'v'], ['pan', 'Pan', 'h'], ['pencil', 'Pencil', 'b'], ['line', 'Pencil: line', ''], ['shape', 'Shape', 'u'], ['circle', 'Shape: circle', ''],
   ['bucket', 'Fill', 'g'], ['path', 'Path', ''], ['select', 'Select', 'm'], ['eraser', 'Eraser', 'e'], ['extend', 'Extend up', ''],
-  ['stair', 'Stairs', ''], ['door', 'Doorway', ''], ['window', 'Window', ''], ['roof', 'Roof', ''], ['zone', 'Zone', 'z'], ['stamp', 'Multiblock', 'k'], ['route', 'Cable and pipe routes', 'p'],
+  ['stair', 'Stairs', ''], ['door', 'Doorway', ''], ['window', 'Window', ''], ['light', 'Lights', 'l'], ['roof', 'Roof', ''], ['zone', 'Zone', 'z'], ['stamp', 'Multiblock', 'k'], ['route', 'Cable and pipe routes', 'p'],
   ['note', 'Note', 'n'], ['anchor', 'Anchor pin', 'a'], ['measure', 'Ruler', 'r'],
   ['swapBlocks', 'Swap the Primary and Secondary blocks', 'x', 'act'], ['wallMode', 'Wall mode on / off', 'w', 'act'], ['resetBlocks', 'Primary and Secondary back to the defaults', 'd', 'act'], ['fillMode', 'Fill: solid, frame or room', 'f', 'act'], ['turn', 'Turn a stair, multiblock or selection', 'q', 'act'], ['flipHalf', 'Upside-down stair or top slab', 't', 'act'], ['viewMode', 'Switch 2D, 3D and split view', 'y', 'act']];
 const SHAPE_CYCLES = {
@@ -5159,6 +5164,7 @@ function syncBldTools() {
   if (typeof p.stripPin === 'boolean') view.stripPin = p.stripPin; if (typeof p.postFit === 'boolean') view.postFit = p.postFit; if (p.drawPosts && typeof p.drawPosts === 'object') { const q = dePosts(p.drawPosts); if (q) view.drawPosts = { ...q, on: p.drawPosts.on === true }; }
   if (p.tourDone) view.tourDone = true;
   if (['drag', 'tap'].includes(p.measureHow)) view.measureHow = p.measureHow;
+  if (p.light && typeof p.light === 'object') { view.light = { t: p.light.t, lm: p.light.lm, h: p.light.h, c: p.light.c }; lightOpt(); }
   if (p.flight && typeof p.flight === 'object') { const f = p.flight; view.flight = { kind: ['straight', 'l', 'spiral', 'ladder'].includes(f.kind) ? f.kind : 'straight', w: clampInt(f.w, 1, 4, 2), r: clampInt(f.r, 1, 4, 2), under: f.under === 'solid' ? 'solid' : 'open', dir: ['n', 'e', 's', 'w'].includes(f.dir) ? f.dir : 'n', turn: f.turn === 'l' ? 'l' : 'r', n1: clampInt(f.n1, 1, 60, 3), steps: f.steps === 'slabs' ? 'slabs' : 'stairs', walls: f.walls === 'well' ? 'well' : 'off', ups: Array.isArray(f.ups) ? f.ups.map(v => clampInt(v, 1, 32, 1)) : [1], mat: typeof f.mat === 'string' && BY_ID[f.mat] ? f.mat : null }; }
   if (p.pathOpt && typeof p.pathOpt === 'object') { const ok = v => typeof v === 'string' && (v.startsWith('mix:') || BY_ID[v]); view.pathOpt = { style: p.pathOpt.style === 'line' ? 'line' : 'curve', w: clampInt(p.pathOpt.w, 1, BRUSH_MAX, 3), block: ok(p.pathOpt.block) ? p.pathOpt.block : 'gravel', edge: !!p.pathOpt.edge, edgeBlock: ok(p.pathOpt.edgeBlock) ? p.pathOpt.edgeBlock : 'cobblestone' }; }
   if (['none', 'checker', 'stripes', 'herring', 'border'].includes(p.pattern)) view.pattern = p.pattern; if (typeof p.patBlock === 'string') view.patBlock = p.patBlock;   // a block id, or mix:<id>
@@ -5232,7 +5238,7 @@ function syncBldTools() {
   view.archW = clampInt(p.archW, 1, 16, 3); view.archH = clampInt(p.archH, 1, 16, 4); if (typeof p.archWAuto === 'boolean') view.archWAuto = p.archWAuto; if (typeof p.archHAuto === 'boolean') view.archHAuto = p.archHAuto;
   if (DOOR_STYLES.some(d => d[0] === p.doorStyle)) view.doorStyle = p.doorStyle; if (WIN_STYLES.some(d => d[0] === p.winStyle)) view.winStyle = p.winStyle;
   if (typeof p.doorTrim === 'string' && BY_ID[p.doorTrim]) view.doorTrim = p.doorTrim; if (typeof p.winTrim === 'string' && BY_ID[p.winTrim]) view.winTrim = p.winTrim;
-  if (!['pointer', 'pan', 'pencil', 'shape', 'bucket', 'select', 'eraser', 'zone', 'stamp', 'anchor', 'note', 'route', 'measure', 'roof', 'door', 'window', 'extend', 'stair', 'path'].includes(view.tool)) view.tool = 'shape';
+  if (!['pointer', 'pan', 'pencil', 'shape', 'bucket', 'select', 'eraser', 'zone', 'stamp', 'anchor', 'note', 'route', 'measure', 'roof', 'door', 'window', 'extend', 'stair', 'path', 'light'].includes(view.tool)) view.tool = 'shape';
   prefs.views = prefs.views && typeof prefs.views === 'object' ? prefs.views : {};
 })();
 let prefTimer = null;
@@ -5246,7 +5252,7 @@ function writePrefs() {
     prefPending = false;
     if (plan) prefs.views[plan.id] = { z: view.z, ox: view.ox, oy: view.oy, lid: curLid, w: W, h: H };
     prefs.lastPlan = plan && plan.id;
-    prefs.ui = { measureHow: view.measureHow || null, flight: view.flight || null, pathOpt: view.pathOpt || null, tourDone: !!view.tourDone, stripPin: !!view.stripPin, postFit: !!view.postFit, drawPosts: view.drawPosts || null, pattern: view.pattern, patBlock: view.patBlock, penPat: view.penPat, penPatBlock: view.penPatBlock, postEvery: view.postEvery, postBlock: view.postBlock, postOut: !!view.postOut, mix: view.mix, altMix: view.altMix, tool: view.tool, selOp: view.selOp, fill: view.fill, sizeMode: view.sizeMode, block: view.block, altBlock: view.altBlock, expKind: view.expKind, expScope: view.expScope, uiMode: view.uiMode, flat2d: !!view.flat2d, wallLook: view.wallLook, texWall: view.texWall || 'bevel', railMin: !!view.railMin, theme: view.theme || 'system', viewPin: view.viewPin || 'top', ribbonTab: view.ribbonTab, ribbonMin: !!view.ribbonMin, roofWalls: view.roofWalls !== false, cornerSw: !!view.cornerSw, fov: view.fov, povSens: view.povSens, povKeys: view.povKeys, keys: view.keys || null, cfg: view.cfg, bldTools: view.bldTools || null, doorW: view.doorW, extN: view.extN, fenceH: view.fenceH, fenceFill: view.fenceFill, wallThick: view.wallThick, wallStyle: view.wallStyle, roofStyled: !!view.roofStyled, rampOuter: !!view.rampOuter, doorType: view.doorType, archW: view.archW, archWAuto: view.archWAuto, archH: view.archH, archHAuto: view.archHAuto, doorStyle: view.doorStyle, doorTrim: view.doorTrim, winStyle: view.winStyle, winTrim: view.winTrim, winAuto: view.winAuto, winW: view.winW, winH: view.winH, winSill: view.winSill, winGlass: view.winGlass, w: view.w, h: view.h, lock: view.lock, ratio: view.ratio, layers: view.layers, originStyle: view.originStyle, zoneStyle: view.zoneStyle, zoneAlpha: view.zoneAlpha, recentColors: view.recentColors, contig: view.contig, wall: view.wall, pencil: view.pencil, showMid: view.showMid, sideOpen: view.sideOpen, shapeKind: view.shapeKind, selShape: view.selShape, eraseMode: view.eraseMode, zoneShape: view.zoneShape, zoneOp: view.zoneOp, roofTab: view.roofTab, brush: view.brush, penBrush: view.penBrush || 1, eraseT: view.eraseT, railMode: view.railMode, railW: view.railW || 56, groupLast: view.groupLast, lastBuild: view.lastBuild, net: view.net, routeOp: view.routeOp, circleKind: view.circleKind, polySides: view.polySides, polyPoint: view.polyPoint, ghostAlpha: view.ghostAlpha, favs: view.favs, recents: view.recents, blockSort: view.blockSort, blockCat: view.blockCat, blockMod: view.blockMod || '', blockDesc: !!view.blockDesc, blockIcons: view.blockIcons || 'list', dkOpen: view.dkOpen || null, flash: view.flash || 'standard', split: !!view.split, splitR: view.splitR || 0.5, splitSwap: !!view.splitSwap, homeSize: view.homeSize || 'l', blocksFloat: !!view.blocksFloat, floorsFloat: !!view.floorsFloat, expDig: view.expDig !== false, mobShadows: !!view.mobShadows, bface: view.bface, btop: view.btop, lastRoof: view.lastRoof, mirror: { x: mirror.x, z: mirror.z, radial: mirror.radial || 0, ax: mirror.ax, az: mirror.az }, povFx: view.povFx !== false, v3: pov.on && pov.saved ? { ...v3, ...pov.saved } : v3 };
+    prefs.ui = { light: view.light || null, measureHow: view.measureHow || null, flight: view.flight || null, pathOpt: view.pathOpt || null, tourDone: !!view.tourDone, stripPin: !!view.stripPin, postFit: !!view.postFit, drawPosts: view.drawPosts || null, pattern: view.pattern, patBlock: view.patBlock, penPat: view.penPat, penPatBlock: view.penPatBlock, postEvery: view.postEvery, postBlock: view.postBlock, postOut: !!view.postOut, mix: view.mix, altMix: view.altMix, tool: view.tool, selOp: view.selOp, fill: view.fill, sizeMode: view.sizeMode, block: view.block, altBlock: view.altBlock, expKind: view.expKind, expScope: view.expScope, uiMode: view.uiMode, flat2d: !!view.flat2d, wallLook: view.wallLook, texWall: view.texWall || 'bevel', railMin: !!view.railMin, theme: view.theme || 'system', viewPin: view.viewPin || 'top', ribbonTab: view.ribbonTab, ribbonMin: !!view.ribbonMin, roofWalls: view.roofWalls !== false, cornerSw: !!view.cornerSw, fov: view.fov, povSens: view.povSens, povKeys: view.povKeys, keys: view.keys || null, cfg: view.cfg, bldTools: view.bldTools || null, doorW: view.doorW, extN: view.extN, fenceH: view.fenceH, fenceFill: view.fenceFill, wallThick: view.wallThick, wallStyle: view.wallStyle, roofStyled: !!view.roofStyled, rampOuter: !!view.rampOuter, doorType: view.doorType, archW: view.archW, archWAuto: view.archWAuto, archH: view.archH, archHAuto: view.archHAuto, doorStyle: view.doorStyle, doorTrim: view.doorTrim, winStyle: view.winStyle, winTrim: view.winTrim, winAuto: view.winAuto, winW: view.winW, winH: view.winH, winSill: view.winSill, winGlass: view.winGlass, w: view.w, h: view.h, lock: view.lock, ratio: view.ratio, layers: view.layers, originStyle: view.originStyle, zoneStyle: view.zoneStyle, zoneAlpha: view.zoneAlpha, recentColors: view.recentColors, contig: view.contig, wall: view.wall, pencil: view.pencil, showMid: view.showMid, sideOpen: view.sideOpen, shapeKind: view.shapeKind, selShape: view.selShape, eraseMode: view.eraseMode, zoneShape: view.zoneShape, zoneOp: view.zoneOp, roofTab: view.roofTab, brush: view.brush, penBrush: view.penBrush || 1, eraseT: view.eraseT, railMode: view.railMode, railW: view.railW || 56, groupLast: view.groupLast, lastBuild: view.lastBuild, net: view.net, routeOp: view.routeOp, circleKind: view.circleKind, polySides: view.polySides, polyPoint: view.polyPoint, ghostAlpha: view.ghostAlpha, favs: view.favs, recents: view.recents, blockSort: view.blockSort, blockCat: view.blockCat, blockMod: view.blockMod || '', blockDesc: !!view.blockDesc, blockIcons: view.blockIcons || 'list', dkOpen: view.dkOpen || null, flash: view.flash || 'standard', split: !!view.split, splitR: view.splitR || 0.5, splitSwap: !!view.splitSwap, homeSize: view.homeSize || 'l', blocksFloat: !!view.blocksFloat, floorsFloat: !!view.floorsFloat, expDig: view.expDig !== false, mobShadows: !!view.mobShadows, bface: view.bface, btop: view.btop, lastRoof: view.lastRoof, mirror: { x: mirror.x, z: mirror.z, radial: mirror.radial || 0, ax: mirror.ax, az: mirror.az }, povFx: view.povFx !== false, v3: pov.on && pov.saved ? { ...v3, ...pov.saved } : v3 };
     const keys = Object.keys(prefs.views); if (keys.length > 40) delete prefs.views[keys[0]];
     lsSet(LS_VIEW, prefs);
     syncSettings();
@@ -5319,7 +5325,7 @@ function startSettingsSync(db, id) {
 /* ================= history ================= */
 function metaSnap() {
   return JSON.stringify({ bldgs: plan.bldgs.map(b => ({ id: b.id, name: b.name, order: b.order, ground: b.ground, ...(b.icon ? { icon: b.icon } : {}), ...(b.posts ? { posts: b.posts } : {}), ...(b.pgroups && Object.keys(b.pgroups).length ? { pgroups: b.pgroups } : {}) })), mixes: plan.mixes || [], stamps: plan.stamps, anchors: plan.anchors, networks: plan.networks, terrain: plan.terrain,
-    lv: [...plan.levels.values()].map(l => ({ id: l.id, name: l.name, height: l.height, rock: l.rock || 0, thick: l.thick || 1, cavity: !!l.cavity, cables: !!l.cables, roof: !!l.roof, roofSpec: l.roofSpec || null, bh: l.bh || [], zones: l.zones.map(z => ({ id: z.id, name: z.name, color: z.color, cells: [...z.cells] })), multis: l.multis, notes: l.notes, openings: l.openings || [], dims: l.dims || [], flights: l.flights || [], paths: [...(l.paths || [])], oposts: [...(l.oposts || [])], pk: [...(l.pk || [])], wh: [...(l.wh || [])], bands: [...(l.bands || [])], pg: [...(l.pg || [])], routes: [...l.routes].map(([n, set]) => [n, [...set]]) })) });
+    lv: [...plan.levels.values()].map(l => ({ id: l.id, name: l.name, height: l.height, rock: l.rock || 0, thick: l.thick || 1, cavity: !!l.cavity, cables: !!l.cables, roof: !!l.roof, roofSpec: l.roofSpec || null, bh: l.bh || [], zones: l.zones.map(z => ({ id: z.id, name: z.name, color: z.color, cells: [...z.cells] })), multis: l.multis, notes: l.notes, lights: l.lights || [], openings: l.openings || [], dims: l.dims || [], flights: l.flights || [], paths: [...(l.paths || [])], oposts: [...(l.oposts || [])], pk: [...(l.pk || [])], wh: [...(l.wh || [])], bands: [...(l.bands || [])], pg: [...(l.pg || [])], routes: [...l.routes].map(([n, set]) => [n, [...set]]) })) });
 }
 function restoreMeta(json) {
   const m = JSON.parse(json);
@@ -5334,6 +5340,7 @@ function restoreMeta(json) {
     l.zones = d.zones.map(z => ({ id: z.id, name: z.name, color: z.color, cells: new Set(z.cells), ver: ++zoneVer }));
     l.multis = d.multis.map(x => ({ ...x }));
     l.notes = (d.notes || []).map(x => ({ ...x }));
+    l.lights = (d.lights || []).map(x => ({ ...x }));
     l.openings = (d.openings || []).map(deOpening).filter(Boolean);
     l.dims = (d.dims || []).map(deDim).filter(Boolean);
     l.flights = (d.flights || []).map(deFlight).filter(Boolean);
@@ -5377,6 +5384,7 @@ function setBlock(L, key, val) {
   if (L.pk && L.pk.size && !POSTING && L.pk.delete(key) && L.bands) L.bands.delete(key);
   if (val == null && L.pg && L.pg.size && !POSTING) L.pg.delete(key);
   if (val == null && L.wh && L.wh.size) L.wh.delete(key);
+  if (val == null && prev != null && L.lights && L.lights.length) dropWallLights(L, key);
   if (tx) { const tk = L.id + '|' + key; if (!tx.blocks.has(tk)) tx.blocks.set(tk, { lid: L.id, key, before: prev }); }
   if (val == null) L.blocks.delete(key); else L.blocks.set(key, val);
 }
@@ -5741,6 +5749,7 @@ function duplicateLevel(lid) {
   l.zones = src.zones.map(z => ({ id: uid('z'), name: z.name, color: z.color, cells: new Set(z.cells), ver: ++zoneVer }));
   l.multis = src.multis.map(m => ({ ...m, id: uid('m') }));
   l.notes = src.notes.map(n => ({ ...n, id: uid('n') }));
+  l.lights = (src.lights || []).map(q => ({ ...q, id: uid('g') }));
   l.openings = (src.openings || []).map(o => ({ ...o, id: uid('o') }));
   l.flights = (src.flights || []).map(f => ({ ...f, id: uid('f'), cut: [] }));
   l.routes = new Map([...src.routes].map(([n, set]) => [n, new Set(set)]));
@@ -5795,6 +5804,7 @@ function copyLevelShifted(S, dx, dz, name) {
   N.zones = S.zones.map(z => ({ id: uid('z'), name: z.name, color: z.color, cells: new Set([...z.cells].map(sh)), ver: ++zoneVer }));
   N.multis = S.multis.map(m => ({ ...m, id: uid('m'), x: m.x + dx, z: m.z + dz }));
   N.notes = S.notes.map(n => ({ ...n, id: uid('n'), x: n.x + dx, z: n.z + dz }));
+  N.lights = (S.lights || []).map(q => ({ ...q, id: uid('g'), x: q.x + dx, z: q.z + dz }));
   N.openings = (S.openings || []).map(o => ({ ...o, id: uid('o'), x: o.x + dx, z: o.z + dz }));
   N.flights = (S.flights || []).map(f => ({ ...f, id: uid('f'), x: f.x + dx, z: f.z + dz, cut: f.cut.map(([k, b, rel]) => { const [x, z] = parseK(k); return [K(x + dx, z + dz), b, rel || 1]; }) }));
   N.routes = new Map([...S.routes].map(([n, set]) => [n, new Set([...set].map(sh))]));
@@ -5849,6 +5859,7 @@ function splitToBuilding() {
     const S = lv(i), N = newLevel(S.name, S.height);
     Object.assign(N, { rock: S.rock || 0, thick: S.thick || 1, cavity: !!S.cavity, cables: !!S.cables, roof: !!S.roof });
     plan.levels.set(N.id, N); nb.order.push(N.id);
+    const lin = (S.lights || []).filter(q => keys.has(K(q.x, q.z)) || (q.m === 'wall' && keys.has(lightWallK(q))));
     for (const k of keys) {
       if (!S.blocks.has(k)) continue;
       setBlock(N, k, S.blocks.get(k)); if (S.walls.has(k)) setWall(N, k, true); const st = S.wstyle && S.wstyle.get(k); if (st) setWStyle(N, k, st);
@@ -5862,6 +5873,7 @@ function splitToBuilding() {
     const mIn = m => { const st = stampById(m.stamp); if (!st) return false; const fp = footprint(st, m.rot); for (let dx = 0; dx < fp.w; dx++) for (let dz = 0; dz < fp.h; dz++) if (!keys.has(K(m.x + dx, m.z + dz))) return false; return true; };
     N.multis = S.multis.filter(mIn); S.multis = S.multis.filter(m => !mIn(m));
     N.notes = S.notes.filter(n => keys.has(K(n.x, n.z))); S.notes = S.notes.filter(n => !keys.has(K(n.x, n.z)));
+    N.lights = lin.map(q => ({ ...q })); S.lights = (S.lights || []).filter(q => !lin.includes(q)); pruneLights(N); pruneLights(S);
     for (const [net, set] of S.routes) { const mv = [...set].filter(k => keys.has(k)); if (!mv.length) continue; N.routes.set(net, new Set(mv)); for (const k of mv) set.delete(k); }
     // a roof goes with the part it covered: the new building's floor gets the same roof
     if (S.roofSpec) {
@@ -6399,12 +6411,13 @@ function stretchBuilding(B, ax, side, cut, d) {
       }
       const paths = L.paths ? mapSet(L.paths) : null, pg = new Map();
       for (const [k, g] of L.pg || []) { const nk = mapK(k); if (nk) pg.set(nk, g); const [x, z] = parseK(k); if ((ax === 'x' ? x : z) === src) for (const q of gap) pg.set(atP(x, z, q), g); }
+      const lts0 = (L.lights || []).slice();
       for (const k of [...L.blocks.keys()]) if (!cells.has(k)) setBlock(L, k, null);
       for (const [k, [b, w, st, mx]] of cells) { setBlock(L, k, b); setWall(L, k, w); setWStyle(L, k, st); setMix(L, k, mx); }
       if (paths) L.paths = paths; L.pg = pg;
       L.zones = L.zones.map(z => ({ ...z, cells: mapSet(z.cells), ver: ++zoneVer }));
       L.routes = new Map([...L.routes].map(([n, set]) => [n, mapSet(set)]));
-      L.multis = L.multis.map(mapObj).filter(Boolean); L.notes = L.notes.map(mapObj).filter(Boolean);
+      L.multis = L.multis.map(mapObj).filter(Boolean); L.notes = L.notes.map(mapObj).filter(Boolean); L.lights = lts0.map(mapObj).filter(Boolean); pruneLights(L);
       L.openings = (L.openings || []).filter(o => openingCells(o).every(c => mapK(c))).map(mapObj);
       L.flights = (L.flights || []).map(f => { const r = mapObj(f); return r && { ...r, cut: f.cut.map(([k, b, rel]) => [mapK(k) || k, b, rel || 1]) }; }).filter(Boolean);
       L.dims = (L.dims || []).map(dm => { const m = p => { const q = mapP(p); return q == null ? (side > 0 ? cut + d : cut - d) : q; }; return dm.ax === ax ? { ...dm, a: m(dm.a), b: m(dm.b) } : { ...dm, ra: m(dm.ra), rb: m(dm.rb) }; });
@@ -6608,7 +6621,7 @@ function flipBlockHalf() { const b = BY_ID[view.block]; if (!b || !b.shape || is
 /* the Eraser removes whatever its toggles say: blocks, cable and pipe routes, zone areas */
 function eraseCell(L, k) {
   const t = view.eraseT;
-  if (t.blocks) setBlock(L, k, null);
+  if (t.blocks) { setBlock(L, k, null); if (L.lights && L.lights.length && L.lights.some(q => q.x + ',' + q.z === k)) L.lights = L.lights.filter(q => q.x + ',' + q.z !== k); }
   else if (t.paths) {
     if (L.paths && L.paths.has(k) && !L.walls.has(k)) { setBlock(L, k, null); L.paths.delete(k); }
     // a doorway the path ran through loses the path floor it took
@@ -6643,6 +6656,198 @@ function createNote(x, z) {
   const L = curLevel(), ex = L.notes.find(n => n.x === x && n.z === z);
   if (ex) { view.selected = { type: 'note', id: ex.id }; renderInspector(); requestDraw(); objBarRename(); return; }
   txBegin('Added a note'); const n = { id: uid('n'), x, z, text: 'Note' }; L.notes.push(n); view.selected = { type: 'note', id: n.id }; txCommit(); renderInspector(); objBarRename();
+}
+/* ================= lights =================
+   L.lights: [{ id, x, z, t, m, f, h, c }], on their own layer over the blocks. x, z is the cell the light is in and t its type. m is how
+   it is mounted: 'floor' standing on the floor, 'wall' a torch on the side of the wall block behind it (f is the way it faces, away from
+   that wall, and h how many blocks above the floor it is), 'hang' a lantern hung from the ceiling on c chains, 'slab' a light block set
+   into the floor and 'ceil' one set into the ceiling */
+const LIGHTS = [['torch', 'Torch', 14, '#ffb347', 'torch'], ['soul_torch', 'Soul torch', 10, '#5fd6e0', 'torch'], ['lantern', 'Lantern', 15, '#ffc65c', 'lantern'], ['soul_lantern', 'Soul lantern', 10, '#62d3dd', 'lantern'],
+  ['glowstone', 'Glowstone', 15, '#f2d16b', 'block'], ['sea_lantern', 'Sea lantern', 15, '#bfe3dd', 'block'], ['ochre_froglight', 'Ochre froglight', 15, '#f4e6a3', 'block'], ['verdant_froglight', 'Verdant froglight', 15, '#cfeacb', 'block'], ['pearlescent_froglight', 'Pearlescent froglight', 15, '#f0dfe6', 'block']];
+const LIGHT_BY = Object.fromEntries(LIGHTS.map(([id, n, lv, col, kind]) => [id, { id, n, lv, col, kind }]));
+const LIGHT_MOUNTS = { torch: [['floor', 'Standing', 'On the floor'], ['wall', 'On a wall', 'On the side of a wall block']], lantern: [['floor', 'Standing', 'On the floor'], ['hang', 'Hanging', 'From the ceiling on a chain']], block: [['floor', 'On the floor', 'A block standing on the floor'], ['slab', 'In the floor', 'In place of a floor block'], ['ceil', 'In the ceiling', 'In place of a ceiling block']] };
+const lightKind = t => (LIGHT_BY[t] || LIGHT_BY.torch).kind;
+const flipF = (f, ax) => ax === 'x' ? ({ e: 'w', w: 'e' }[f] || f) : ({ n: 's', s: 'n' }[f] || f);
+const lightWallK = q => K(q.x - DV4[q.f][0], q.z - DV4[q.f][1]);
+const sameLight = (a, b) => a.x === b.x && a.z === b.z && a.m === b.m && (a.m !== 'wall' || a.f === b.f);
+const lightName = q => { const B = LIGHT_BY[q.t] || LIGHT_BY.torch; return B.n + ({ wall: ' on a wall', hang: ', hanging', slab: ' in the floor', ceil: ' in the ceiling' }[q.m] || ''); };
+const lightRGBA = (hex, a) => { const n = parseInt(hex.slice(1), 16); return `rgba(${n >> 16},${(n >> 8) & 255},${n & 255},${a})`; };
+// each type's own icon, in its colour: a torch, a lantern or a block
+for (const [id, , , col, kind] of LIGHTS) ICONS['lt_' + id] = kind === 'torch' ? `<path d="M10 9.5v8" stroke-width="2.2"/><path d="M10 2.6c-2.2 2.4-2.6 4.1-1 5.9h2c1.6-1.8 1.2-3.5-1-5.9z" fill="${col}" stroke="${col}"/>`
+  : kind === 'lantern' ? `<path d="M10 1.8v2.4"/><rect x="5.8" y="4.6" width="8.4" height="2.2" rx=".6"/><rect x="6.6" y="6.8" width="6.8" height="8.4" rx="1" fill="${col}"/><path d="M5.8 15.4h8.4"/>`
+  : `<rect x="3.5" y="3.5" width="13" height="13" rx="1.6" fill="${col}"/><path d="M7 7h2.4M10.8 10.6h2.4M7 13h2" opacity=".55"/>`;
+function deLight(o) {
+  if (!o || typeof o !== 'object' || !LIGHT_BY[o.t]) return null;
+  const ms = LIGHT_MOUNTS[LIGHT_BY[o.t].kind].map(m => m[0]), m = ms.includes(o.m) ? o.m : ms[0];
+  const r = { id: SEG_RE.test(str(o.id)) ? o.id : uid('g'), x: clampInt(o.x, -1e6, 1e6, 0), z: clampInt(o.z, -1e6, 1e6, 0), t: o.t, m };
+  if (m === 'wall') { r.f = DV4[o.f] ? o.f : 's'; r.h = clampInt(o.h, 1, 64, 2); }
+  if (m === 'hang') r.c = clampInt(o.c, 0, 63, 1);
+  return r;
+}
+/* the Light tool's own choices: the type, how lanterns and light blocks go in, a wall torch's height and a lantern's chain */
+function lightOpt() {
+  const o = view.light && typeof view.light === 'object' ? view.light : (view.light = {});
+  if (!LIGHT_BY[o.t]) o.t = 'torch';
+  if (!o.lm || typeof o.lm !== 'object') o.lm = {};
+  if (!['floor', 'hang'].includes(o.lm.lantern)) o.lm.lantern = 'hang';
+  if (!['floor', 'slab', 'ceil'].includes(o.lm.block)) o.lm.block = 'ceil';
+  o.h = clampInt(o.h, 1, 16, 2); o.c = clampInt(o.c, 0, 16, 1);
+  return o;
+}
+/* how far above the floor's own Y a light sits: wall torches h blocks up, a hanging lantern under its chain, light blocks in the slab's
+   top layer or the ceiling just over the room */
+function lightDY(i, q) {
+  const t = thickOf(i), H = hAt(i, K(q.x, q.z));
+  return q.m === 'slab' ? t - 1 : q.m === 'ceil' ? t + H : q.m === 'hang' ? t + H - 1 - (q.c || 0) : q.m === 'wall' ? t + (q.h || 2) - 1 : t;
+}
+/* a light's blocks, keyed x,y,z from the floor's Y: light blocks by their own id, torches, lanterns and chains as lx: ids for the export */
+function lightCells(L, i, y) {
+  const out = new Map(); if (!L || !L.lights || !L.lights.length || roofLevel(L)) return out;
+  for (const q of L.lights) {
+    const B = LIGHT_BY[q.t]; if (!B) continue;
+    const yo = y + offAt(i, K(q.x, q.z)), dy = lightDY(i, q), at = (d, id) => out.set(q.x + ',' + (yo + d) + ',' + q.z, id);
+    if (B.kind === 'block') at(dy, q.t);
+    else if (B.kind === 'torch') at(dy, 'lx:' + q.t + (q.m === 'wall' ? ':' + q.f : ''));
+    else { at(dy, 'lx:' + q.t + (q.m === 'hang' ? ':h' : '')); if (q.m === 'hang') for (let j = 1; j <= (q.c || 0); j++) at(dy + j, 'lx:chain'); }
+  }
+  return out;
+}
+/* the Minecraft block state for a torch, lantern or chain */
+function lightState(id) {
+  const [, t, a] = id.split(':');
+  if (t === 'chain') return { name: verNum(view.cfg.mcVer) >= verNum('1.21.9') ? 'iron_chain' : 'chain', props: { axis: 'y', waterlogged: 'false' } };
+  if (t === 'torch' || t === 'soul_torch') return a ? { name: t === 'torch' ? 'wall_torch' : 'soul_wall_torch', props: { facing: DIR_NAME[a] } } : { name: t, props: null };
+  return { name: t, props: { hanging: String(a === 'h'), waterlogged: 'false' } };
+}
+/* a light needs open space, and a wall torch the wall block behind it */
+const lightOK = (L, q) => !isWallAt(L, q.x, q.z) && (q.m !== 'wall' || L.walls.has(lightWallK(q)) && L.blocks.has(lightWallK(q)));
+function pruneLights(L) { if (L && L.lights && L.lights.length) { const n = L.lights.length; L.lights = L.lights.filter(q => lightOK(L, q)); if (L.lights.length !== n && view.selected && view.selected.type === 'light' && !findObj(view.selected)) view.selected = null; } }
+/* a wall block taken away takes the torches on it */
+function dropWallLights(L, k) {
+  if (!L.lights.some(q => q.m === 'wall' && lightWallK(q) === k)) return;
+  L.lights = L.lights.filter(q => !(q.m === 'wall' && lightWallK(q) === k));
+}
+const lightOpenSides = (L, x, z) => DIR4.filter(f => !isWallAt(L, x + DV4[f][0], z + DV4[f][1]));
+/* where a click puts a light: on a wall, a torch goes on the open side nearest the pointer, facing out; anything else goes in the block clicked */
+function lightTarget(L, x, z, sub, side) {
+  const o = lightOpt(), kind = lightKind(o.t);
+  if (isWallAt(L, x, z)) {
+    if (kind !== 'torch') return { why: `${LIGHT_BY[o.t].n.replace(/^./, ch => ch.toUpperCase())} can’t go on a wall. Click the floor beside it.` };
+    const sides = lightOpenSides(L, x, z); if (!sides.length) return { why: 'That wall has no open side for a torch.' };
+    let f = side && sides.includes(side) ? side : null;
+    if (!f) { const u = (sub ? sub[0] : 0.5) - 0.5, v = (sub ? sub[1] : 0.5) - 0.5, sc = d => DV4[d][0] * u + DV4[d][1] * v; f = sides.reduce((a, b) => sc(b) > sc(a) ? b : a); }
+    return { x: x + DV4[f][0], z: z + DV4[f][1], t: o.t, m: 'wall', f, h: o.h };
+  }
+  const m = kind === 'torch' ? 'floor' : o.lm[kind];
+  return { x, z, t: o.t, m, ...(m === 'hang' ? { c: o.c } : {}) };
+}
+/* a light and its mirrored copies when symmetry is on: a torch turns to face its own wall */
+function lightCopies(q) {
+  if (!mirror.x && !mirror.z && !mirror.radial) return [q];
+  return mirrorExpand([[q.x, q.z]]).map(([x, z, fx, fz]) => {
+    let f = q.f;
+    if (f) { if (mirror.radial) { if (fx & 1) f = flipF(f, 'x'); for (let r = fx >> 1; r > 0; r--) f = ROT_CW[f]; } else { if (fx) f = flipF(f, 'x'); if (fz) f = flipF(f, 'z'); } }
+    return { ...q, x, z, ...(f ? { f } : {}) };
+  });
+}
+/* the light already there where a click lands: one in the block clicked, or the torch on the side of the wall clicked */
+function lightHere(L, x, z, tg) {
+  const ls = L.lights || [];
+  return ls.find(q => q.x === x && q.z === z) || (tg && !tg.why && ls.find(q => sameLight(q, tg))) || null;
+}
+function placeLight(x, z, sub, side) {
+  const L = curLevel(); if (!L) return;
+  if (roofLevel(L)) { toast('Roof floors can’t hold lights. Pick the floor below.'); return; }
+  if (!L.lights) L.lights = [];
+  const tg = lightTarget(L, x, z, sub, side), on = lightHere(L, x, z, side ? tg : (isWallAt(L, x, z) ? tg : null));
+  // clicking a light takes it out, with its mirrored copies
+  if (on) {
+    const gone = new Set(lightCopies(on).map(c => L.lights.find(q => sameLight(q, c))).filter(Boolean));
+    txBegin(gone.size > 1 ? `Took out ${gone.size} lights` : `Took out a ${lightName(on).toLowerCase()}`);
+    L.lights = L.lights.filter(q => !gone.has(q)); if (view.selected && view.selected.type === 'light' && !findObj(view.selected)) view.selected = null;
+    txCommit(); renderInspector(); requestDraw(); return;
+  }
+  if (tg.why) { toast(tg.why); return; }
+  const adds = lightCopies(tg).filter(q => lightOK(L, q) && !L.lights.some(p => sameLight(p, q))).map(q => deLight({ ...q, id: uid('g') })).filter(Boolean);
+  if (!adds.length) return;
+  txBegin(adds.length > 1 ? `Placed ${adds.length} lights` : `Placed a ${lightName(adds[0]).toLowerCase()}`);
+  L.lights.push(...adds); txCommit(); requestDraw();
+}
+/* on a phone, a wall tapped with more than one open side asks which side the torch goes on */
+function lightTap(x, z, mouse, e) {
+  const L = curLevel(); if (!L) return;
+  if (!mouse && e && isWallAt(L, x, z) && lightKind(lightOpt().t) === 'torch' && !roofLevel(L)) {
+    const sides = lightOpenSides(L, x, z);
+    if (sides.length > 1) { lightSidePop(x, z, e.clientX, e.clientY, sides); return; }
+  }
+  placeLight(x, z, HSUB);
+}
+function lightSidePop(x, z, cx, cy, sides) {
+  const L = curLevel(), has = f => (L.lights || []).some(q => q.m === 'wall' && q.f === f && q.x === x + DV4[f][0] && q.z === z + DV4[f][1]);
+  ctxAnchor.style.left = cx + 'px'; ctxAnchor.style.top = (cy + 14) + 'px';
+  const btn = f => sides.includes(f) ? el('button', { class: 'btn sm' + (has(f) ? ' on' : ''), title: has(f) ? 'Take this torch out' : null, onclick: () => { closePopover(); placeLight(x, z, null, f); } }, icon({ n: 'arrU', e: 'arrR', s: 'arrD', w: 'arrL' }[f]), DIR_NAME[f][0].toUpperCase() + DIR_NAME[f].slice(1)) : el('span');
+  openPopover(ctxAnchor, [el('div', { class: 'mlabel', text: 'Which side of the wall?' }), el('div', { class: 'ltsides' }, el('span'), btn('n'), el('span'), btn('w'), el('span', { class: 'ltwall' }), btn('e'), el('span'), btn('s'), el('span'))]);
+}
+function lightGhost(x, z) {
+  const L = curLevel(); if (!L || roofLevel(L)) return null;
+  const tg = lightTarget(L, x, z, HSUB), on = lightHere(L, x, z, isWallAt(L, x, z) ? tg : null);
+  if (on) return { kind: 'light', erase: true, ls: lightCopies(on).map(c => (L.lights || []).find(q => sameLight(q, c))).filter(Boolean) };
+  if (tg.why) return null;
+  return { kind: 'light', ls: lightCopies(tg).filter(q => lightOK(L, q)) };
+}
+/* a light on the plan: a dot in its colour (a square for a light block), with its glow; a wall torch sits against its wall with a
+   stick to the side it's on, a hanging lantern has a ring for its chain, and a block in the ceiling a dashed edge */
+function drawLightMark(c, X, Y, s, T, q, ghost, erase) {
+  const B = LIGHT_BY[q.t]; if (!B) return;
+  const px = X(q.x), py = Y(q.z), w = X(q.x + 1) - px; let cx0 = px + w / 2, cy0 = py + w / 2;
+  const r = clamp(w * 0.2, 2.5 * s, 9 * s);
+  if (q.m === 'wall' && DV4[q.f]) {
+    const [dx, dz] = DV4[q.f], ex = cx0 - dx * w / 2, ey = cy0 - dz * w / 2;
+    cx0 -= dx * w * 0.16; cy0 -= dz * w * 0.16;
+    c.strokeStyle = ghost ? 'rgba(107,74,42,.6)' : '#6b4a2a'; c.lineWidth = Math.max(1.5 * s, w * 0.09); c.lineCap = 'round';
+    c.beginPath(); c.moveTo(cx0, cy0); c.lineTo(ex, ey); c.stroke(); c.lineCap = 'butt';
+  }
+  if (!ghost && w > 8 * s) { const g = c.createRadialGradient(cx0, cy0, r * 0.4, cx0, cy0, r * 3); g.addColorStop(0, lightRGBA(B.col, 0.45)); g.addColorStop(1, lightRGBA(B.col, 0)); c.fillStyle = g; c.beginPath(); c.arc(cx0, cy0, r * 3, 0, Math.PI * 2); c.fill(); }
+  c.globalAlpha = ghost ? 0.72 : 1; c.fillStyle = B.col; c.strokeStyle = T.ink; c.lineWidth = Math.max(1, 1.2 * s);
+  if (B.kind === 'block') {
+    const h = r * 1.1; c.beginPath(); c.rect(cx0 - h, cy0 - h, 2 * h, 2 * h); c.fill();
+    if (q.m === 'ceil') c.setLineDash([2.5 * s, 2 * s]); c.stroke(); c.setLineDash([]);
+    if (q.m === 'slab') { c.beginPath(); c.moveTo(cx0 - h, cy0 + h * 0.4); c.lineTo(cx0 + h, cy0 + h * 0.4); c.stroke(); }
+  } else {
+    c.beginPath(); c.arc(cx0, cy0, r, 0, Math.PI * 2); c.fill(); c.stroke();
+    if (B.kind === 'lantern') { c.beginPath(); c.arc(cx0, cy0, r * 0.42, 0, Math.PI * 2); c.stroke(); }
+    if (q.m === 'hang') { c.beginPath(); c.setLineDash([2 * s, 2 * s]); c.arc(cx0, cy0, r * 1.6, 0, Math.PI * 2); c.stroke(); c.setLineDash([]); }
+  }
+  if (erase) { c.strokeStyle = '#d64545'; c.lineWidth = 2 * s; c.beginPath(); c.arc(cx0, cy0, r * 1.9, 0, Math.PI * 2); c.stroke(); }
+  c.globalAlpha = 1;
+}
+const lightHint = phone => {
+  const k = lightKind(lightOpt().t), C = phone ? 'Tap' : 'Click';
+  return (k === 'torch' ? `${C} a wall to put a torch on its side, facing out${phone ? '' : ' (the side nearest the pointer)'}, or the floor to stand one up.` : k === 'lantern' ? `${C} the floor to ${lightOpt().lm.lantern === 'hang' ? 'hang a lantern from the ceiling above it' : 'stand a lantern there'}.` : `${C} the floor to put a light block ${({ floor: 'on it', slab: 'into the floor there', ceil: 'into the ceiling above it' })[lightOpt().lm.block]}.`)
+    + ` ${C} a light to take it out; Pick one to change it.`;
+};
+/* the choices for a light: for the Light tool when o is null, or for the light o that's picked */
+function lightRows(rr, o) {
+  const op = lightOpt(), t = o ? o.t : op.t, kind = lightKind(t), rows = [];
+  const set = (label, fn) => {
+    if (!o) { fn(op); rr(); return; }
+    txBegin(label); fn(o); const n = deLight(o); for (const k of Object.keys(o)) delete o[k]; Object.assign(o, n); pruneLights(curLevel()); txCommit(); renderInspector(); requestDraw();
+  };
+  rows.push(['Light', segSelect(LIGHTS.map(([v, n]) => [v, n]), t, v => set('Changed a light', q => { q.t = v; if (o && lightKind(v) !== kind && q.m === 'wall') q.m = 'floor'; }), 'Light type')]);
+  if (kind !== 'torch') rows.push(['Mounted', seg(LIGHT_MOUNTS[kind].map(([v, n, d]) => [v, n, null, d]), o ? o.m : op.lm[kind], v => set('Changed how a light is mounted', q => { if (o) q.m = v; else q.lm[kind] = v; }), 'Mounted')]);
+  else if (o) rows.push(['Mounted', el('span', { class: 'insp-meta', text: o.m === 'wall' ? `On a wall, facing ${DIR_NAME[o.f]}` : 'Standing on the floor' })]);
+  if (kind === 'torch' && (!o || o.m === 'wall')) rows.push([o ? 'Height' : 'On walls', stepBox('Torch height', o ? o.h : op.h, 1, 16, v => set('Moved a torch', q => { q.h = v; }))]);
+  if (kind === 'lantern' && (o ? o.m : op.lm.lantern) === 'hang') rows.push(['Chain', stepBox('Chain length', o ? o.c : op.c, 0, 16, v => set('Changed a chain', q => { q.c = v; }))]);
+  return rows;
+}
+function lightSideGroups() {
+  const op = lightOpt(), kind = lightKind(op.t), rr = () => sideRerender(), out = [];
+  out.push(vgroup('Light', keyName(keyOf('light')), ...vradio(LIGHTS.map(([v, n]) => [v, n, 'lt_' + v]), op.t, v => { op.t = v; rr(); })));
+  if (kind !== 'torch') out.push(vgroup('Mounted', null, ...vradio(LIGHT_MOUNTS[kind].map(([v, n, d]) => [v, n, null, null, d]), op.lm[kind], v => { op.lm[kind] = v; rr(); })));
+  if (kind === 'torch') out.push(vgroup('On walls', null, el('div', { class: 'orow2 wsz' }, el('span', { class: 'olbl2', text: 'Height' }), stepBox('Torch height', op.h, 1, 16, v => { op.h = v; rr(); }))));
+  if (kind === 'lantern' && op.lm.lantern === 'hang') out.push(vgroup('Hanging', null, el('div', { class: 'orow2 wsz' }, el('span', { class: 'olbl2', text: 'Chain' }), stepBox('Chain length', op.c, 0, 16, v => { op.c = v; rr(); }))));
+  out.push(ohint(lightHint(false)));
+  return out;
 }
 function toggleWallsSel() {
   if (roofLevel(curLevel())) { toast('Roof floors are a single layer, so they have no walls.'); return; }
@@ -6690,7 +6895,8 @@ function clipFromSel() {
   if (!sel.size) return null;
   const bb = selGeo().bb, L = curLevel(), cells = [];
   for (const k of sel) { const b = L.blocks.get(k); if (!b) continue; const [x, z] = parseK(k); const pe = L.pk && L.pk.get(k); cells.push([x - bb.x0, z - bb.z0, b, L.walls.has(k) ? 1 : 0, (L.wstyle && L.wstyle.get(k)) || null, (L.mix && L.mix.get(k)) || null, pe && pe[3] !== 'w' ? 1 : 0, (L.pg && L.pg.get(k)) || null]); }
-  return cells.length ? { w: bb.w, h: bb.h, cells, x0: bb.x0, z0: bb.z0 } : null;
+  const lights = (L.lights || []).filter(q => sel.has(K(q.x, q.z)) || (q.m === 'wall' && sel.has(lightWallK(q)))).map(q => [q.x - bb.x0, q.z - bb.z0, { ...q }]);
+  return cells.length ? { w: bb.w, h: bb.h, cells, x0: bb.x0, z0: bb.z0, lights } : null;
 }
 function copySel() {
   const c = clipFromSel(); if (!c) { toast('There are no blocks in the selection to copy.'); return; }
@@ -6699,7 +6905,7 @@ function copySel() {
 }
 function moveSel() {
   const c = clipFromSel(); if (!c) { toast('There are no blocks in the selection to move.'); return; }
-  clip = c; floating.srcLid = curLid; floating.lifted = new Set(c.cells.map(([dx, dz]) => K(c.x0 + dx, c.z0 + dz)));
+  clip = c; floating.srcLid = curLid; floating.lifted = new Set(c.cells.map(([dx, dz]) => K(c.x0 + dx, c.z0 + dz))); floating.liftIds = new Set(c.lights.map(([, , q]) => q.id));
   startFloat(true, c.x0, c.z0);
 }
 function pasteClip() {
@@ -6710,8 +6916,8 @@ function pasteClip() {
 function startFloat(move, x, z) {
   cancelGesture();
   if (view.tool !== 'paste') floating.prevTool = view.tool;
-  if (!move) floating.lifted = null;
-  Object.assign(floating, { active: true, move, x, z, ver: 0, clip: { w: clip.w, h: clip.h, cells: clip.cells.map(c => c.slice()) } });
+  if (!move) { floating.lifted = null; floating.liftIds = null; }
+  Object.assign(floating, { active: true, move, x, z, ver: 0, clip: { w: clip.w, h: clip.h, cells: clip.cells.map(c => c.slice()), lights: (clip.lights || []).map(([dx, dz, q]) => [dx, dz, { ...q }]) } });
   view.tool = 'paste'; view.selected = null; view.ghost = floatGhost();
   cv.classList.remove('arrow', 'grab');
   renderRail(); renderOptbar(); renderSelbar(); renderInspector(); requestDraw();
@@ -6723,6 +6929,9 @@ function placeFloat() {
   if (f.move && f.lifted) { const S = plan.levels.get(f.srcLid); if (S) for (const k of f.lifted) setBlock(S, k, null); }
   const noWalls = roofLevel(L), PB = curBld(); for (const [dx, dz, b, w, ws, mx, , g] of f.clip.cells) { const k = K(f.x + dx, f.z + dz); setBlock(L, k, b); setWall(L, k, !!w && !noWalls); setWStyle(L, k, w && !noWalls && ws ? ws : null); setMix(L, k, mx && mixById(mx) ? mx : null);
     if (!L.pg) L.pg = new Map(); if (w && g && (g === 'none' || (PB && PB.pgroups && PB.pgroups[g]))) L.pg.set(k, g); else L.pg.delete(k); }
+  if (f.move && f.liftIds && f.liftIds.size) { const S = plan.levels.get(f.srcLid); if (S && S.lights) S.lights = S.lights.filter(q => !f.liftIds.has(q.id)); }
+  if (f.clip.lights && f.clip.lights.length && !noWalls) { if (!L.lights) L.lights = []; for (const [dx, dz, q] of f.clip.lights) { const n = deLight({ ...q, id: uid('g'), x: f.x + dx, z: f.z + dz }); if (n && !L.lights.some(p => sameLight(p, n))) L.lights.push(n); } }
+  pruneLights(L);
   sel = new Set(f.clip.cells.map(([dx, dz]) => K(f.x + dx, f.z + dz))); selChanged();
   txCommit();
   if (f.move) { endFloat(false); toastUndo(`Moved ${nb} blocks.`); }
@@ -6735,6 +6944,7 @@ function endFloat(cancel) {
 }
 function transformFloat(kind) {
   const c = floating.clip; if (!c) return; floating.ver = (floating.ver || 0) + 1;
+  if (c.lights) c.lights = c.lights.map(([dx, dz, q]) => kind === 'rot' ? [c.h - 1 - dz, dx, q.f ? { ...q, f: ROT_CW[q.f] } : q] : kind === 'fx' ? [c.w - 1 - dx, dz, q.f ? { ...q, f: flipF(q.f, 'x') } : q] : [dx, c.h - 1 - dz, q.f ? { ...q, f: flipF(q.f, 'z') } : q]);
   if (kind === 'rot') { c.cells = c.cells.map(([dx, dz, b, ...r]) => [c.h - 1 - dz, dx, rotId(b, 1), ...r]); [c.w, c.h] = [c.h, c.w]; }
   else if (kind === 'fx') c.cells = c.cells.map(([dx, dz, b, ...r]) => [c.w - 1 - dx, dz, flipId(b, 'x'), ...r]);
   else c.cells = c.cells.map(([dx, dz, b, ...r]) => [dx, c.h - 1 - dz, flipId(b, 'z'), ...r]);
@@ -6765,6 +6975,7 @@ function transformSel(kind) {
   }
   const name = SEL_XF.find(q => q[0] === kind)[1];
   txBegin(name.replace(/ 90°| ×2| ½/, '') + ' the selection');
+  const lin = (L.lights || []).filter(q => sel.has(K(q.x, q.z)) || (q.m === 'wall' && sel.has(lightWallK(q))));
   for (const k of sel) if (L.blocks.has(k)) setBlock(L, k, null);
   const noWalls = roofLevel(L);
   for (const [k, [b, wl, ws, mx]] of out) { if (!b) continue; setBlock(L, k, b); setWall(L, k, !!wl && !noWalls); setWStyle(L, k, wl && !noWalls && ws ? ws : null); setMix(L, k, mx && mixById(mx) ? mx : null); }
@@ -6797,6 +7008,13 @@ function transformSel(kind) {
       return nf;
     });
   }
+  // lights inside go with it, torches turning to face their walls
+  if (lin.length) {
+    const fT = f => !f ? f : kind === 'rot' ? ROT_CW[f] : kind === 'rotL' ? CCW4[f] : kind === 'fx' ? flipF(f, 'x') : kind === 'fz' ? flipF(f, 'z') : f;
+    const moved = lin.map(q => { const dx = q.x - x0, dz = q.z - z0, [px, pz] = kind === 'up' ? [2 * dx, 2 * dz] : kind === 'down' ? [dx >> 1, dz >> 1] : pos(dx, dz); return { ...q, x: nx0 + px, z: nz0 + pz, ...(q.f ? { f: fT(q.f) } : {}) }; });
+    L.lights = (L.lights || []).filter(q => !lin.includes(q)).concat(moved);
+  }
+  pruneLights(L);
   sel = new Set(out.keys()); selChanged(); txCommit(); renderAll();
   toastUndo(`${name.replace(/ 90°/, '')}${lost ? `. ${lost} doorway${lost === 1 ? ' or window was' : 's and windows were'} left out` : ''}.`);
 }
@@ -7183,11 +7401,11 @@ function openCellMenu(x, z, cx, cy) {
   if (hit) {
     view.selected = hit; renderInspector(); requestDraw(); renderObjectsIfOpen();
     const o = findObj(hit);
-    const title = hit.type === 'zone' ? `Zone · ${o.name}` : hit.type === 'multi' ? `Multiblock · ${o.label || (stampById(o.stamp) || {}).name || ''}` : hit.type === 'anchor' ? `Anchor · ${o.label}` : hit.type === 'note' ? `Note · ${o.text}` : `Route · ${o.net.name}`;
+    const title = hit.type === 'zone' ? `Zone · ${o.name}` : hit.type === 'multi' ? `Multiblock · ${o.label || (stampById(o.stamp) || {}).name || ''}` : hit.type === 'anchor' ? `Anchor · ${o.label}` : hit.type === 'note' ? `Note · ${o.text}` : hit.type === 'light' ? lightName(o) : `Route · ${o.net.name}`;
     items.push(el('div', { class: 'mlabel', text: title }));
     if (!ro) {
       if (hit.type === 'multi') items.push(mi('rotate', 'Rotate', rotateSelectedMulti), mi('up', 'Raise one block', () => shiftSelectedMulti(1)), mi('down', 'Lower one block', () => shiftSelectedMulti(-1)));
-      items.push(mi('pencil', hit.type === 'route' ? 'Rename network' : hit.type === 'note' ? 'Edit text' : 'Rename', objBarRename), mi('tune', 'All details', openObjCard));
+      if (hit.type !== 'light') items.push(mi('pencil', hit.type === 'route' ? 'Rename network' : hit.type === 'note' ? 'Edit text' : 'Rename', objBarRename)); items.push(mi('tune', 'All details', openObjCard));
       items.push(confirmBtn(el('button', { class: 'mi danger' }, icon('trash'), hit.type === 'route' ? 'Delete this run' : 'Delete'), () => { closePopover(); deleteSelectedObj(); }, 'Tap again to delete'));
     }
   }
@@ -8601,6 +8819,7 @@ function deleteSelectedObj() {
   const s = view.selected, o = findObj(s); if (!o) return;
   if (s.type === 'flight') { view.selected = null; deleteFlight(o.id); renderInspector(); return; }
   if (s.type === 'opening') { const what = o.kind === 'door' ? 'doorway' : 'window'; txBegin(`Filled in a ${what}`); curLevel().openings = curLevel().openings.filter(q => q.id !== o.id); view.selected = null; txCommit(); renderInspector(); requestDraw(); toastUndo(`${what[0].toUpperCase() + what.slice(1)} filled back in.`); return; }
+  if (s.type === 'light') { txBegin(`Took out a ${lightName(o).toLowerCase()}`); curLevel().lights = curLevel().lights.filter(q => q.id !== o.id); view.selected = null; txCommit(); renderInspector(); requestDraw(); toastUndo(`Took out the ${lightName(o).toLowerCase()}.`); return; }
   const what = { anchor: o.box ? 'area pin' : 'anchor', zone: 'zone', multi: 'multiblock', note: 'note', route: 'route run', dim: 'dimension' }[s.type];
   if (s.type === 'dim') { txBegin('Deleted a dimension'); curLevel().dims = curLevel().dims.filter(d => d.id !== o.id); view.selected = null; txCommit(); toastUndo(`Deleted the ${dimLen(o)}-block dimension.`); return; }
   const nm = s.type === 'zone' ? o.name : s.type === 'note' ? o.text : s.type === 'route' ? o.net.name : o.label;
@@ -8632,6 +8851,7 @@ function rotateSelectedMulti() { const s = view.selected, o = findObj(s); if (!o
 function hitTest(x, z) {
   const L = curLevel();
   if (view.layers.anchors) { for (const a of plan.anchors) if (!a.box && a.x === x && a.z === z) return { type: 'anchor', id: a.id }; for (let i = plan.anchors.length - 1; i >= 0; i--) { const a = plan.anchors[i]; if (a.box && x >= a.x && x < a.x + a.w && z >= a.z && z < a.z + a.h) return { type: 'anchor', id: a.id }; } }
+  if (view.layers.lights !== false && L.lights) for (let i = L.lights.length - 1; i >= 0; i--) if (L.lights[i].x === x && L.lights[i].z === z) return { type: 'light', id: L.lights[i].id };
   if (view.layers.notes) for (let i = L.notes.length - 1; i >= 0; i--) if (L.notes[i].x === x && L.notes[i].z === z) return { type: 'note', id: L.notes[i].id };
   if (view.layers.routes) for (let i = plan.networks.length - 1; i >= 0; i--) { const net = plan.networks[i], set = L.routes.get(net.id); if (set && set.has(K(x, z))) return { type: 'route', id: `r:${net.id}:${x}:${z}`, net: net.id, x, z }; }
   if (view.layers.multis) for (let i = L.multis.length - 1; i >= 0; i--) {
@@ -8648,6 +8868,7 @@ function levelBBox(L, withAnchors) {
   for (const zn of L.zones) { const g = zoneGeo(zn)._bb; if (g) { inc(g.x0, g.z0); inc(g.x1, g.z1); } }
   for (const m of L.multis) { const st = stampById(m.stamp); if (!st) continue; const fp = footprint(st, m.rot); inc(m.x, m.z); inc(m.x + fp.w - 1, m.z + fp.h - 1); }
   for (const n of L.notes) inc(n.x, n.z);
+  for (const q of L.lights || []) inc(q.x, q.z);
   for (const set of L.routes.values()) for (const k of set) { const [x, z] = parseK(k); inc(x, z); }
   if (withAnchors) for (const a of plan.anchors) { inc(a.x, a.z); if (a.box) inc(a.x + a.w - 1, a.z + a.h - 1); }
   return x0 === Infinity ? null : { x0, z0, x1, z1 };
@@ -8674,8 +8895,8 @@ let drawQueued = false;
 function requestDraw() { dockSoon(); if (drawQueued) return; drawQueued = true; requestAnimationFrame(() => { drawQueued = false; draw(); }); }
 const toWorld = (sx, sy) => [(sx - view.ox) / view.z, (sy - view.oy) / view.z];
 /* PSUB: which half of its block the pointer is in, so an even-sized brush or shape centres on the grid corner nearest the pointer */
-let PSUB = [0, 0];
-const cellAt = (sx, sy) => { const [wx, wz] = toWorld(sx, sy), x = Math.floor(wx), z = Math.floor(wz); PSUB = [wx - x >= 0.5 ? 1 : 0, wz - z >= 0.5 ? 1 : 0]; return [x, z]; };
+let PSUB = [0, 0], HSUB = [0.5, 0.5];
+const cellAt = (sx, sy) => { const [wx, wz] = toWorld(sx, sy), x = Math.floor(wx), z = Math.floor(wz); HSUB = [wx - x, wz - z]; PSUB = [wx - x >= 0.5 ? 1 : 0, wz - z >= 0.5 ? 1 : 0]; return [x, z]; };
 /* the first offset of a run n long round the pointer's block: odd sizes centre on the block, even ones on the nearest corner */
 const evenLo = (n, s) => n % 2 ? -((n - 1) >> 1) : -n / 2 + s;
 function updateAnts() {
@@ -9004,6 +9225,8 @@ function paintScene(c, P) {
     c.fillStyle = T.paper; c.beginPath(); c.arc(cxp, cyp, r * 0.4, 0, Math.PI * 2); c.fill();
     labelQueue.push(() => pill(c, n.text || 'Note', cxp + r + 5 * s, cyp - 9 * s, T.panel, s, { fg: T.ink, border: T.ink }));
   }
+  // lights (this floor only)
+  if (layers.lights !== false && L.lights && L.lights.length) for (const q of L.lights) { const px = X(q.x), py = Y(q.z); if (px < -60 || py < -60 || px > Wpx + 60 || py > Hpx + 60) continue; drawLightMark(c, X, Y, s, T, q); }
 
   if (live) {
     // selected object highlight
@@ -9013,7 +9236,7 @@ function paintScene(c, P) {
       if (view.selected.type === 'multi') { const st = stampById(so.stamp); if (st) { const fp = footprint(st, so.rot); c.strokeRect(X(so.x) - s, Y(so.z) - s, X(so.x + fp.w) - X(so.x) + 2 * s, Y(so.z + fp.h) - Y(so.z) + 2 * s); } }
       else if (view.selected.type === 'zone') { const g = zoneGeo(so); c.beginPath(); for (const sg of g._segs) { c.moveTo(X(sg[0]), Y(sg[1])); c.lineTo(X(sg[2]), Y(sg[3])); } c.stroke(); }
       else if (view.selected.type === 'anchor' && so.box) c.strokeRect(X(so.x) - 2 * s, Y(so.z) - 2 * s, X(so.x + so.w) - X(so.x) + 4 * s, Y(so.z + so.h) - Y(so.z) + 4 * s);
-      else if (view.selected.type === 'anchor' || view.selected.type === 'note') { const w = X(so.x + 1) - X(so.x); c.beginPath(); c.arc(X(so.x) + w / 2, Y(so.z) + w / 2, Math.max(w * 0.7, 16 * s), 0, Math.PI * 2); c.stroke(); }
+      else if (view.selected.type === 'anchor' || view.selected.type === 'note' || view.selected.type === 'light') { const w = X(so.x + 1) - X(so.x); c.beginPath(); c.arc(X(so.x) + w / 2, Y(so.z) + w / 2, Math.max(w * 0.7, 16 * s), 0, Math.PI * 2); c.stroke(); }
       // resize circles on a zone picked with Pick
       if ((view.selected.type === 'zone' || (view.selected.type === 'anchor' && so.box)) && view.tool === 'pointer' && !store.readOnly) {
         const bb = view.selected.type === 'zone' ? zoneGeo(so)._bb : { x0: so.x, z0: so.z, x1: so.x + so.w - 1, z1: so.z + so.h - 1 }, r = (isMobile() ? 7 : 5.5) * s;
@@ -9040,10 +9263,12 @@ function paintScene(c, P) {
     // previews
     for (const pv of [view.preview, view.ghost]) {
       if (!pv) continue;
+      if (pv.kind === 'light') { for (const q of pv.ls) drawLightMark(c, X, Y, s, T, q, true, pv.erase); continue; }
       if (pv.kind === 'abox') { const [bx, bz, bw, bh] = pv.box; const px = X(bx), py = Y(bz), pw = X(bx + bw) - px, ph = Y(bz + bh) - py; c.globalAlpha = 0.9; hatchRect(c, px, py, pw, ph, T.anchor, s); c.globalAlpha = 1; c.strokeStyle = T.anchor; c.lineWidth = 2 * s; c.strokeRect(px + s, py + s, pw - 2 * s, ph - 2 * s); pill(c, `Area ${bw} × ${bh}`, px, py, T.anchor, s, { above: true }); continue; }
       if (pv.kind === 'paste') {
         const cl = pv.clip; c.globalAlpha = 0.78;
         for (const [dx, dz, b] of cl.cells) drawCell(pv.x + dx, pv.z + dz, b);
+        for (const [dx, dz, q] of cl.lights || []) drawLightMark(c, X, Y, s, T, { ...q, x: pv.x + dx, z: pv.z + dz }, true);
         c.globalAlpha = 1; c.strokeStyle = T.accent; c.lineWidth = 2 * s; c.setLineDash([5 * s, 3 * s]);
         c.strokeRect(X(pv.x) + s, Y(pv.z) + s, X(pv.x + cl.w) - X(pv.x) - 2 * s, Y(pv.z + cl.h) - Y(pv.z) - 2 * s); c.setLineDash([]);
         pill(c, `${cl.cells.length.toLocaleString()} blocks · ${cl.w} × ${cl.h}`, X(pv.x), Y(pv.z), T.accent, s, { above: true });
@@ -9226,6 +9451,7 @@ function updateHoverGhost(e) {
   if (G || !view.hover || store.readOnly) return;
   const [x, z] = view.hover;
   if ((view.tool === 'door' || view.tool === 'window') && hoverIsMouse) { const r = planOpening(view.tool, x, z), ex = curLevel() && openingMap(curLevel()).get(K(x, z)); view.ghost = ex ? { kind: 'brush', op: 'erase', cells: openingCells(ex).map(parseK) } : r.o ? { kind: 'brush', cells: openingCells(r.o).map(parseK) } : null; return; }
+  if (view.tool === 'light') { view.ghost = hoverIsMouse ? lightGhost(x, z) : null; return; }
   if (view.tool === 'stair' && !store.readOnly) { const L = curLevel(), on = flightAt(L, x, z); view.ghost = on || !hoverIsMouse ? null : { kind: 'flight', f: planFlight(x, z) }; return; }
   if (view.tool === 'path' && !store.readOnly) { view.ghost = hoverIsMouse || (view.pathPts && view.pathPts.length) ? pathGhost(...(hoverIsMouse ? [x, z] : [])) : null; return; }
   if (view.tool === 'roof' && view.roofMode !== 'pick' && onRoof()) { view.ghost = view.roofMode === 'erase' ? { kind: 'brush', op: 'erase', cells: roofBrushCells(x, z) } : { kind: 'brush', cells: roofBrushCells(x, z) }; return; }
@@ -9279,7 +9505,7 @@ function toolDown(p, e) {
       const rs = !hit && !store.readOnly ? pickRoomAt(L0, x, z) : null;
       view.roomSel = rs ? { lid: L0.id, ...rs } : null;
       view.selected = hit;
-      if (hit && (hit.type === 'multi' || hit.type === 'note' || hit.type === 'anchor') && !store.readOnly) { const m = findObj(hit); if (m) { G.move = { m, x0: m.x, z0: m.z }; G.txOpen = txBegin(hit.type === 'multi' ? 'Moved a multiblock' : hit.type === 'anchor' ? 'Moved a marker' : 'Moved a note'); } }
+      if (hit && (hit.type === 'multi' || hit.type === 'note' || hit.type === 'anchor' || (hit.type === 'light' && (findObj(hit) || {}).m !== 'wall')) && !store.readOnly) { const m = findObj(hit); if (m) { G.move = { m, x0: m.x, z0: m.z }; G.txOpen = txBegin(hit.type === 'multi' ? 'Moved a multiblock' : hit.type === 'anchor' ? 'Moved a marker' : hit.type === 'light' ? 'Moved a light' : 'Moved a note'); } }
       renderInspector(); renderObjectsIfOpen(); break;
     }
     case 'pencil': case 'shape': case 'bucket': case 'select': case 'eraser': {
@@ -9292,7 +9518,7 @@ function toolDown(p, e) {
     }
     case 'paste': floating.x = x - ((floating.clip.w - 1) >> 1); floating.z = z - ((floating.clip.h - 1) >> 1); if (fitSnapOn(e)) [floating.x, floating.z] = postFitSnap(floating.x, floating.z); view.ghost = floatGhost(); break;
     case 'stair': { const on = flightAt(curLevel(), x, z); if (on) { G.pickFlight = on.id; view.ghost = null; } else view.ghost = { kind: 'flight', f: planFlight(x, z) }; break; }
-    case 'path': break;
+    case 'path': case 'light': break;
     case 'zone': G.zop = e && e.shiftKey ? 'add' : e && e.altKey ? 'sub' : view.zoneOp; updateZoneRect(); break;
     case 'stamp': view.ghost = stampGhost(x, z); if (!view.ghost) { toast('Create a multiblock first in the Objects panel.'); G = null; } break;
     case 'measure': {
@@ -9399,6 +9625,7 @@ function toolUp(p, e) {
       break;
     }
     case 'note': if (!g.moved) createNote(x, z); break;
+    case 'light': if (!g.moved) lightTap(x, z, mouse, e); if (mouse) updateHoverGhost(e); break;
     case 'stair': {
       if (g.pickFlight) { view.flightSel = view.flightSel === g.pickFlight && !g.moved ? null : g.pickFlight; renderOptbar(); requestDraw(); break; }
       const f = planFlight(g.start[0], g.start[1], g.moved ? x : null, g.moved ? z : null); view.ghost = null; commitFlight(f, null); if (mouse) updateHoverGhost(e); break;
@@ -9597,13 +9824,13 @@ const TOOL_GROUPS = [
   { id: 'nav', name: 'Navigate', tools: [['pointer', 'Pick', 'Pick an object', 'V'], ['pan', 'Pan', 'Pan', 'H']] },
   { id: 'build', name: 'Build', tools: [['pencil', 'Pencil', 'Pencil and line', 'B'], ['shape', 'Shape', 'Shape: rectangle, circle, polygon', 'M'], ['bucket', 'Fill', 'Fill', 'G'], ['path', 'Path', 'Paths', 'J']] },
   { id: 'edit', name: 'Edit', tools: [['select', 'Select', 'Select', 'S'], ['eraser', 'Eraser', 'Eraser', 'E'], ['extend', 'Extend', 'Extend up', 'X']] },
-  { id: 'plan', name: 'Plan', tools: [['stair', 'Stairs', 'Staircases and ladders', 'Q'], ['door', 'Door', 'Doorway', 'D'], ['window', 'Window', 'Window', 'I'], ['roof', 'Roof', 'Roof designer', 'O'], ['zone', 'Zone', 'Zone', 'Z'], ['stamp', 'Multi', 'Multiblock', 'K'], ['route', 'Route', 'Cable and pipe routes', 'P'], ['note', 'Note', 'Note', 'N'], ['anchor', 'Pin', 'Anchor pin', 'A'], ['measure', 'Ruler', 'Measure', 'U']] },
+  { id: 'plan', name: 'Plan', tools: [['stair', 'Stairs', 'Staircases and ladders', 'Q'], ['door', 'Door', 'Doorway', 'D'], ['window', 'Window', 'Window', 'I'], ['light', 'Light', 'Lights', 'L'], ['roof', 'Roof', 'Roof designer', 'O'], ['zone', 'Zone', 'Zone', 'Z'], ['stamp', 'Multi', 'Multiblock', 'K'], ['route', 'Route', 'Cable and pipe routes', 'P'], ['note', 'Note', 'Note', 'N'], ['anchor', 'Pin', 'Anchor pin', 'A'], ['measure', 'Ruler', 'Measure', 'U']] },
 ];
 /* the Plan tools in their sections, each with a divider between: what finishes a building first, then areas, services and notes */
-const PLAN_SECTIONS = [['Features', ['stair', 'door', 'window', 'roof']], ['Zoning', ['zone', 'stamp']], ['Services', ['route']], ['Noting', ['note', 'anchor', 'measure']]];
+const PLAN_SECTIONS = [['Features', ['stair', 'door', 'window', 'light', 'roof']], ['Zoning', ['zone', 'stamp']], ['Services', ['route']], ['Noting', ['note', 'anchor', 'measure']]];
 const TOOL_DEFS = TOOL_GROUPS.flatMap(g => g.tools); toolDefsReady = true; syncToolKeys();
 const GROUP_OF = {}; TOOL_GROUPS.forEach(g => g.tools.forEach(d => { GROUP_OF[d[0]] = g.id; }));
-const EDIT_TOOLS = new Set(['extend', 'pencil', 'shape', 'bucket', 'select', 'eraser', 'zone', 'stamp', 'anchor', 'note', 'route', 'roof', 'door', 'window', 'stair', 'path']);
+const EDIT_TOOLS = new Set(['extend', 'pencil', 'shape', 'bucket', 'select', 'eraser', 'zone', 'stamp', 'anchor', 'note', 'route', 'roof', 'door', 'window', 'stair', 'path', 'light']);
 const MOBILE_TOOLS = ['pointer', 'pencil', 'shape', 'bucket', 'select', 'eraser'];
 const toolDef = id => TOOL_DEFS.find(d => d[0] === id);
 function groupShown(g) { if (isMobile() && g.id === 'plan' && (view.tool === 'stair' || view.tool === 'path')) return toolDef(view.tool); const on = GROUP_OF[view.tool] === g.id ? view.tool : view.groupLast[g.id]; return g.tools.find(d => d[0] === on) || g.tools[0]; }
@@ -10127,9 +10354,9 @@ const STUDIO_RAIL = [
   ['Navigate', [['pointer', 'Inspect'], ['pan', 'Pan']]],
   ['Draw', [['pencil', 'Pencil'], ['shape', 'Shape'], ['bucket', 'Fill']]],
   ['Edit', [['select', 'Select area'], ['eraser', 'Eraser'], ['extend', 'Extend up'], ['@fr', 'Replace']]],
-  ['Structure', [['stair', 'Stairs'], ['door', 'Door'], ['window', 'Window'], ['roof', 'Roof']]],
+  ['Structure', [['stair', 'Stairs'], ['door', 'Door'], ['window', 'Window'], ['light', 'Lights'], ['roof', 'Roof']]],
   ['Plan', [['zone', 'Room zone'], ['stamp', 'Prefab'], ['route', 'Route'], ['note', 'Note'], ['anchor', 'Marker'], ['measure', 'Ruler']]]];
-const STUDIO_NAME = { pointer: 'Inspect', pan: 'Pan', pencil: 'Pencil', shape: 'Shape', bucket: 'Fill', path: 'Path', select: 'Select area', eraser: 'Eraser', extend: 'Extend up', stair: 'Stairs', door: 'Door', window: 'Window', roof: 'Roof', zone: 'Room zone', stamp: 'Prefab', route: 'Route', note: 'Note', anchor: 'Marker', measure: 'Ruler', paste: 'Paste' };
+const STUDIO_NAME = { pointer: 'Inspect', pan: 'Pan', pencil: 'Pencil', shape: 'Shape', bucket: 'Fill', path: 'Path', select: 'Select area', eraser: 'Eraser', extend: 'Extend up', stair: 'Stairs', door: 'Door', window: 'Window', light: 'Lights', roof: 'Roof', zone: 'Room zone', stamp: 'Prefab', route: 'Route', note: 'Note', anchor: 'Marker', measure: 'Ruler', paste: 'Paste' };
 function buildStudioRail(rail) {
   const keyFor = id => (toolDef(id) || [])[3] || '', min = !!view.railMin;
   $('#app').classList.toggle('railmin', min); railTipInit();
@@ -10260,7 +10487,7 @@ function dockNorm() {
 function dockSignature() {
   if (!plan) return ''; const L = curLevel(); if (!L) return '';
   const P = dockNorm(), rh = roofHost();
-  return [plan.name, curLid, L.rev, L.blocks.size, L.height, L.thick, L.cavity, cntOf(L.zones), cntOf(L.notes), cntOf(L.routes), cntOf(L.multis), cntOf(plan.anchors),
+  return [plan.name, curLid, L.rev, L.blocks.size, L.height, L.thick, L.cavity, cntOf(L.zones), cntOf(L.notes), cntOf(L.lights || []), cntOf(L.routes), cntOf(L.multis), cntOf(plan.anchors),
     plan.bldgs.map(b => b.id + b.name).join(), plan.order.map((_, k) => { const l = lv(k); return l.id + l.name + l.height + l.thick + (l.roof ? 'r' : '') + (l.roofSpec ? JSON.stringify(l.roofSpec) : ''); }).join(),
     view.block, view.altBlock, view.mix, view.altMix, view.wall, view.recents.slice(0, 6).join(), JSON.stringify(view.layers), view.originStyle, store.readOnly, view.win, view.is3D, view.tool, onRoof(),
     (plan.mixes || []).map(m => m.id + m.name + JSON.stringify(m.parts) + m.fill).join(), (view.presets || []).map(p => p.id + p.name).join(),
@@ -10509,7 +10736,7 @@ function dockObjects() {
 }
 const DK_LAYER = { routes: 'Cable and pipe', ghost: 'Ghost below', multis: 'Multiblocks', roofs: 'Roof outlines' };
 function dockLayers() {
-  const ks = ['grid', 'chunks', 'blocks', 'zones', 'multis', 'routes', 'anchors', 'notes', 'labels', 'roofs', 'dims', 'ghost'];
+  const ks = ['grid', 'chunks', 'blocks', 'zones', 'multis', 'routes', 'anchors', 'notes', 'lights', 'labels', 'roofs', 'dims', 'ghost'];
   const chk = k => el('label', { class: 'dk-chk', title: LAYER_INFO && LAYER_INFO[k] ? LAYER_INFO[k] : null }, el('input', { type: 'checkbox', checked: view.layers[k] ? true : null, onchange: ev => setLayer(k, ev.target.checked) }), (DK_LAYER[k] || LAYER_NAMES[k]));
   return dkSec('Layers', null, el('div', { class: 'dk-layers' }, ...ks.map(chk)),
     el('div', { class: 'dk-origin' }, chk('origin'), el('div', { class: 'dk-seg', role: 'group', 'aria-label': 'Centre marker style' },
@@ -10894,6 +11121,7 @@ function sideGroups() {
   }
   else if (t === 'door' && !ro) out.push(...doorSideGroups());
   else if (t === 'window' && !ro) out.push(...winSideGroups());
+  else if (t === 'light' && !ro) out.push(...lightSideGroups());
   else if (t === 'stair' && !ro) out.push(...flightSideGroups());
   else if (t === 'path' && !ro) out.push(...pathSideGroups());
   else if (t === 'note') out.push(ohint('Click anywhere to add a note. Use Pick to move or edit notes.'));
@@ -10974,7 +11202,7 @@ function renderOptbarH(target) {
     floating.move ? el('button', { class: 'btn sm', onclick: () => endFloat(true) }, 'Cancel move') : el('button', { class: 'btn sm primary', onclick: () => endFloat(false) }, 'Done'),
     hint('Drag to position, lift to drop. Change floor to drop it on another one.'));
   const info = text => flat(el('span', { class: 'hint wrap', text }));
-  const hasOpts = t === 'measure' || (BLOCK_TOOLS.has(t) && !ro) || (t === 'zone' && !ro) || t === 'stamp' || (t === 'route' && !ro && plan) || (t === 'roof' && !ro) || ((t === 'door' || t === 'window' || t === 'extend' || t === 'stair' || t === 'path') && !ro);
+  const hasOpts = t === 'measure' || (BLOCK_TOOLS.has(t) && !ro) || (t === 'zone' && !ro) || t === 'stamp' || (t === 'route' && !ro && plan) || (t === 'roof' && !ro) || ((t === 'door' || t === 'window' || t === 'extend' || t === 'stair' || t === 'path' || t === 'light') && !ro);
   if (!hasOpts) {
     if (t === 'note') return info('Tap anywhere to add a note. Use Pick to move or edit notes.');
     if (t === 'anchor') return info('Tap a block to pin an anchor, or drag to pin an area. Pins show on every floor. Tap a pin again to remove it.');
@@ -11118,6 +11346,9 @@ function renderOptbarH(target) {
     for (const [lab, ...kids] of pathOptRows()) row(lab, ...kids);
     if (n) acts.push(el('button', { class: 'btn sm primary', onclick: layPath }, icon('route'), 'Lay it'), el('button', { class: 'btn sm', onclick: cancelPath }, 'Stop'));
     sumIcon = 'route'; sum.push(o.style === 'curve' ? 'Curve' : 'Straight', `${o.w} wide`, mixOfV(o.block) ? mixOfV(o.block).name + ' mix' : BY_ID[o.block] ? BY_ID[o.block].name : ''); note = pathHint();
+  } else if (t === 'light') {
+    for (const [lab, ...kids] of lightRows(rerender, null)) row(lab, ...kids);
+    const op = lightOpt(), k = lightKind(op.t); sumIcon = 'lt_' + op.t; sum.push(LIGHT_BY[op.t].n, k === 'torch' ? `${op.h} up on walls` : (LIGHT_MOUNTS[k].find(m => m[0] === op.lm[k]) || [])[1]); note = lightHint(true);
   } else if (t === 'window') {
     const { hMax, sMax } = winLimits();
     row('Size', seg([[true, 'Auto'], [false, 'Set size']], view.winAuto !== false, v => { view.winAuto = v; rerender(); }, 'Window size'));
@@ -11589,8 +11820,8 @@ function renderSelbar() {
   $('#inspector').classList.toggle('lift', !$('#inspector').hidden);
 }
 /* the action bar that floats beside a selected zone, multiblock, note, anchor or route; the full card opens only when asked */
-const OBJ_KINDS = { zone: 'Zone', multi: 'Multiblock', anchor: 'Anchor', note: 'Note', route: 'Route', dim: 'Dimension', opening: 'Opening', flight: 'Stairs' };
-const objName = (s, o) => s.type === 'opening' ? (o.kind === 'door' ? 'Doorway' : 'Window') : s.type === 'flight' ? (o.kind === 'ladder' ? 'Ladder' : flightKindName(o.kind) + ' stairs') : s.type === 'zone' ? o.name : s.type === 'note' ? o.text : s.type === 'route' ? o.net.name : s.type === 'multi' ? (o.label || (stampById(o.stamp) || {}).name || 'Multiblock') : o.label;
+const OBJ_KINDS = { zone: 'Zone', multi: 'Multiblock', anchor: 'Anchor', note: 'Note', route: 'Route', dim: 'Dimension', opening: 'Opening', flight: 'Stairs', light: 'Light' };
+const objName = (s, o) => s.type === 'light' ? lightName(o) : s.type === 'opening' ? (o.kind === 'door' ? 'Doorway' : 'Window') : s.type === 'flight' ? (o.kind === 'ladder' ? 'Ladder' : flightKindName(o.kind) + ' stairs') : s.type === 'zone' ? o.name : s.type === 'note' ? o.text : s.type === 'route' ? o.net.name : s.type === 'multi' ? (o.label || (stampById(o.stamp) || {}).name || 'Multiblock') : o.label;
 function setObjName(s, o, v) { if (s.type === 'zone') o.name = v; else if (s.type === 'note') o.text = v; else if (s.type === 'route') o.net.name = v.slice(0, 32); else o.label = v; }
 function objColor(s, o) { if (s.type === 'zone') return o.color; if (s.type === 'route') return o.net.color; if (s.type === 'multi') { const st = stampById(o.stamp); return st ? multiColor(o, st) : null; } return null; }
 function openObjCard() { const s = view.selected; if (!s) return; view.inspFor = s.id; renderInspector(); }
@@ -11637,7 +11868,7 @@ function renderObjBar() {
     bar.dataset.obj = s.id; bar.hidden = false; placeObjBar(); return;
   }
   const b = (ic, label, fn, extra) => el('button', { class: 'ib sm', title: label, 'aria-label': label, onclick: ev => fn(ev.currentTarget), ...(extra || {}) }, icon(ic));
-  if (s.type === 'opening' || s.type === 'flight') {
+  if (s.type === 'opening' || s.type === 'flight' || s.type === 'light') {
     bar.replaceChildren(el('span', { class: 'obtitle' }, el('span', { class: 'obkind', text: objName(s, o) })), el('span', { class: 'obsep' }), b('tune', 'All details', openObjCard),
       confirmBtn(el('button', { class: 'ib sm danger', title: s.type === 'opening' ? 'Fill it in' : 'Take it out', 'aria-label': 'Delete' }, icon('trash')), deleteSelectedObj, 'Delete?'));
     bar.dataset.obj = s.id; bar.hidden = false; placeObjBar(); return;
@@ -11785,7 +12016,7 @@ function renderInspector0() {
   if (!s) view.inspFor = null;
   // on a computer, what Pick picks shows its properties in the panel straight away; on a phone the quick bar's All details opens it
   const dock = !isMobile(), auto = dock && view.tool === 'pointer' && !view.is3D;
-  if (auto && s && o && ['zone', 'multi', 'anchor', 'note', 'route', 'opening', 'flight'].includes(s.type)) view.inspFor = s.id;
+  if (auto && s && o && ['zone', 'multi', 'anchor', 'note', 'route', 'opening', 'flight', 'light'].includes(s.type)) view.inspFor = s.id;
   box.classList.toggle('dock', dock); box.classList.toggle('beside', dock && !!view.win && view.win !== 'floors');
   renderObjBar();
   if (dock && view.tool !== 'pointer' && !store.readOnly) { box.hidden = true; box.replaceChildren(); box.dataset.obj = ''; return; }
@@ -11800,10 +12031,14 @@ function renderInspector0() {
     box.replaceChildren(head(g.kind === 'room' ? 'Room' : 'Wall'), ...roomRows()); return;
   }
   // a doorway, window or staircase
-  if (o && (s.type === 'opening' || s.type === 'flight') && (store.readOnly || view.inspFor === s.id) && !view.is3D) {
+  if (o && (s.type === 'opening' || s.type === 'flight' || s.type === 'light') && (store.readOnly || view.inspFor === s.id) && !view.is3D) {
     box.hidden = false; box.dataset.obj = s.id; box.classList.remove('lift');
     const parts = [head(objName(s, o))], ro = store.readOnly;
-    if (s.type === 'opening') {
+    if (s.type === 'light') {
+      const B = LIGHT_BY[o.t]; parts.push(el('div', { class: 'insp-meta', text: `Light level ${B.lv}${o.m === 'wall' ? ` · ${o.h} up` : o.m === 'hang' ? ` · ${o.c} chain${o.c === 1 ? '' : 's'}` : ''} · X ${o.x}, Z ${o.z}` }));
+      if (!ro) { for (const [lab, ...kids] of lightRows(null, o)) parts.push(el('div', { class: 'prow' }, el('span', { class: 'insp-lbl', text: lab }), el('div', { class: 'pkids' }, ...kids.filter(Boolean))));
+        parts.push(el('div', { class: 'insp-actions' }, confirmBtn(el('button', { class: 'btn sm danger' }, icon('trash'), 'Take it out'), deleteSelectedObj, 'Tap again to take it out'))); }
+    } else if (s.type === 'opening') {
       parts.push(el('div', { class: 'insp-meta', text: `${o.w} wide × ${o.h} high${o.kind === 'window' ? `, ${o.sill} up` : ''}${(o.dp || 1) > 1 ? ` · through a wall ${o.dp} thick` : ''} · X ${o.x}, Z ${o.z}` }));
       if (!ro) { parts.push(...openingRows(o)); parts.push(el('div', { class: 'insp-actions' }, confirmBtn(el('button', { class: 'btn sm danger' }, icon('trash'), 'Fill it in'), deleteSelectedObj, 'Tap again to fill it in'))); }
     } else {
@@ -12659,6 +12894,7 @@ function planVoxels(P) {
       for (const m of L.multis) { const st = stampById(m.stamp); if (!st) continue; const fp = footprint(st, m.rot), my = y + offAt(i, K(m.x, m.z)) + t + (m.dy || 0); for (const [dx, dz, b] of fp.cells) if (b) add(b, m.x + dx, my, m.z + dz); }
       if (rb) { const ry = y + roofBase(i); for (const [k, b] of rb.cells) { const a = k.indexOf(','), c2 = k.lastIndexOf(','); add(b, +k.slice(0, a), ry + +k.slice(a + 1, c2), +k.slice(c2 + 1)); } }
     } });
+    for (const B of plan.bldgs) withBld(B, () => { for (let i = Math.max(0, plan.ground); i < plan.order.length; i++) for (const [k, id] of lightCells(lv(i), i, Math.round(baseY(i)))) if (BY_ID[id]) cells.set(k, id); });
   } finally { plan = prev; Object.assign(v3, keep); view.cut3 = cut; }
   return cells;
 }
@@ -12750,7 +12986,7 @@ const LAYER_INFO = {
   grid: 'Thin lines around every block, once you zoom in close enough.', chunks: 'Bolder lines every 16 blocks, matching Minecraft’s chunks.',
   ghost: 'The floor below, faded under this one, so walls and shafts line up.', blocks: 'The blocks you’ve drawn. Turn off to see only zones, notes and routes.',
   zones: 'Coloured areas you’ve marked out, like rooms or farms.', multis: 'Footprints of the multiblocks you’ve placed.', routes: 'Power, ME, fluid and gas lines.',
-  anchors: 'Pins that show on every floor, for lining things up.', notes: 'Your notes on the plan.', labels: 'Names on zones, multiblocks and roofs.', roofs: 'The dashed outline of each floor’s roof.' };
+  anchors: 'Pins that show on every floor, for lining things up.', notes: 'Your notes on the plan.', lights: 'Torches, lanterns and light blocks placed with the Light tool, on the floor you’re on.', labels: 'Names on zones, multiblocks and roofs.', roofs: 'The dashed outline of each floor’s roof.' };
 const SET_CATS = [
   ['files', 'Files & updates', 'download', 'Where plans and texture packs are kept on this PC, and the app’s version.', 'desk'],
   ['view', 'Appearance', 'layers', 'How the app and the 2D plan look, and what the plan shows. These follow you to your other devices.'],
@@ -12845,7 +13081,7 @@ function settingsRows(cat) {
     rows.push(setChecks([['set-hovername', 'Block names on hover', C.hoverName, v => { C.hoverName = v; savePrefs(); renderCoords(); }, 'Name the block under the cursor next to its coordinates, with its mix if it has one.'],
       !isMobile() && ['set-cornersw', 'Swatches in the corner', !!view.cornerSw, v => { view.cornerSw = v; savePrefs(); renderTopTools(); if (ribbonOn()) renderRibbon(); }, 'Your Primary and Secondary blocks in the bottom-left corner of the plan, like Photoshop’s colours: Primary in front, Secondary behind. Click Secondary to swap them.']]));
     rows.push(el('h4', { class: 'setsub', text: 'Show on the plan' }));
-    rows.push(setChecks(['grid', 'chunks', 'origin', 'blocks', 'zones', 'multis', 'routes', 'anchors', 'notes', 'labels', 'roofs', 'ghost'].map(k => ['set-' + k, LAYER_NAMES[k], view.layers[k], v => { view.layers[k] = v; requestDraw(); savePrefs(); if (ribbonOn()) renderRibbon(); if (k === 'ghost') again(); }, LAYER_INFO[k]])));
+    rows.push(setChecks(['grid', 'chunks', 'origin', 'blocks', 'zones', 'multis', 'routes', 'anchors', 'notes', 'lights', 'labels', 'roofs', 'ghost'].map(k => ['set-' + k, LAYER_NAMES[k], view.layers[k], v => { view.layers[k] = v; requestDraw(); savePrefs(); if (ribbonOn()) renderRibbon(); if (k === 'ghost') again(); }, LAYER_INFO[k]])));
     rows.push(el('h4', { class: 'setsub', text: 'Look' }));
     if (view.layers.ghost) rows.push(setRow('Ghost strength', 'How strongly the floor below shows through.', setRange('ghostAlpha', 0.1, 0.8, 0.05, view.ghostAlpha, v => { view.ghostAlpha = v; requestDraw(); savePrefs(); }, v => Math.round(v * 100) + '%', 'Ghost strength')));
     rows.push(setRow('Grid strength', 'How strong the block grid looks.', setRange('set-grida', 0.2, 3, 0.1, C.gridA, v => { C.gridA = v; requestDraw(); savePrefs(); }, v => Math.round(v * 100) + '%', 'Grid strength')));
@@ -12978,7 +13214,7 @@ function openMoreMenu(btn) {
 const kk = (...a) => a.filter(x => keyOf(x)).map(x => keyName(keyOf(x))).join(' ');
 const shortcutGroups = () => shortcutRaw().map(([t, rows]) => [t, rows.filter(r => r[0] !== '')]);
 const shortcutRaw = () => [
-  ['Tools', [[kk('pointer', 'pan'), 'Pick, pan'], [kk('pencil', 'line'), 'Pencil'], [kk('shape', 'circle'), 'Shape'], [kk('bucket', 'path'), 'Fill, path'], [kk('select', 'eraser', 'extend'), 'Select, eraser, extend up'], [kk('stair', 'door', 'window', 'roof'), 'Stairs, doorway, window, roof'], [kk('zone', 'stamp', 'route'), 'Zone, multiblock, route'], [kk('note', 'anchor', 'measure'), 'Note, anchor, measure']]],
+  ['Tools', [[kk('pointer', 'pan'), 'Pick, pan'], [kk('pencil', 'line'), 'Pencil'], [kk('shape', 'circle'), 'Shape'], [kk('bucket', 'path'), 'Fill, path'], [kk('select', 'eraser', 'extend'), 'Select, eraser, extend up'], [kk('stair', 'door', 'window', 'light', 'roof'), 'Stairs, doorway, window, lights, roof'], [kk('zone', 'stamp', 'route'), 'Zone, multiblock, route'], [kk('note', 'anchor', 'measure'), 'Note, anchor, measure']]],
   ['Drawing', [[kk('swapBlocks'), 'Swap the Primary and Secondary blocks'], [kk('wallMode'), 'Wall mode on / off'], [kk('resetBlocks'), 'Primary and Secondary back to the defaults'], [kk('fillMode'), 'Fill: solid, frame or room'], [`Shift + a tool's key`, 'Change that tool’s shape: pencil (freehand, line, path), shape, select, eraser, zone'], ['Shift while drawing', 'Keep a shape 1:1: a square, a circle'], ['Alt while drawing', 'Erase instead of place'], [kk('turn'), 'Turn the stair you are placing, or a multiblock'], [kk('flipHalf'), 'Upside-down stair or top-half slab'], ['[ / ]', 'Brush size smaller / bigger (Pencil, Eraser, Path, roof brush)'], ['[ ]  with a shape', 'Size across; Alt: down; Shift: both; Shift+Alt: square'], ['Right-click', 'Pick a block (with its facing), or quick actions']]],
   ['Wall heights', [['Ctrl+click a wall', 'With Inspect: pick that wall block to set its height'], ['Ctrl+Shift+click', 'Add or take off more wall blocks, anywhere (drag to sweep over several)'], ['Esc', 'Done']]],
   ['Editing', [['Shift / Alt while selecting', 'Add / subtract (both: intersect)'], [`${kk('turn')} / Shift+${kk('turn')}`, 'Turn the selection right / left'], ['Ctrl+C / Ctrl+X / Ctrl+V', 'Copy, move, paste blocks'], ['Enter', 'Fill the selection, build up what Extend picked, or lay a path'], ['Delete', 'Erase the selection or the picked object'], ['Ctrl+Z / Ctrl+Shift+Z', 'Undo / redo'], ['Right-click undo', 'Undo history'], ['Ctrl+D or Esc', 'Deselect']]],
@@ -13073,7 +13309,7 @@ function openColorPicker(anchor, o) {
 
 /* ================= command palette (Ctrl/⌘+K) ================= */
 const pal = { back: null, input: null, list: null, items: [], shown: [], idx: 0 };
-const LAYER_NAMES = { grid: 'Block grid', chunks: 'Chunk lines', origin: 'Centre marker', ghost: 'Ghost of floor below', blocks: 'Blocks', zones: 'Zones', multis: 'Multiblocks', routes: 'Cable and pipe routes', anchors: 'Anchors', notes: 'Notes', labels: 'Labels', roofs: 'Roof outlines', dims: 'Dimensions' };
+const LAYER_NAMES = { grid: 'Block grid', chunks: 'Chunk lines', origin: 'Centre marker', ghost: 'Ghost of floor below', blocks: 'Blocks', zones: 'Zones', multis: 'Multiblocks', routes: 'Cable and pipe routes', anchors: 'Anchors', notes: 'Notes', lights: 'Lights', labels: 'Labels', roofs: 'Roof outlines', dims: 'Dimensions' };
 function jumpTo(lid, x0, z0, x1, z1, selected) {
   if (view.is3D) set3D(false);
   if (lid && lid !== curLid) setLevel(lid);
@@ -13246,6 +13482,9 @@ function collectExport(scope, dig) {
     for (const m of L.multis) { const st = stampById(m.stamp); if (!st) continue; const fp = footprint(st, m.rot), my = y + offAt(i, K(m.x, m.z)) + t + (m.dy || 0); for (const [dx, dz, b] of fp.cells) if (b) put(m.x + dx, my, m.z + dz, b); }
     const rb = roofOf(i); if (rb) { const ry = y + roofBase(i); for (const [k, b] of rb.cells) { const [x, dy, z] = k.split(',').map(Number); put(x, ry + dy, z, b); } }
   });
+  // lights go in last, so one set into the ceiling takes the place of the slab block of the floor above
+  const lightKeys = new Set();
+  for (const [B, i] of jobs) withBld(B, () => { for (const [k, id] of lightCells(lv(i), i, baseY(i))) { cells.set(k, id); lightKeys.add(k); } });
   const clear = new Set();
   if (dig) for (const [B, i] of jobs) withBld(B, () => {
     const L = lv(i), y = baseY(i), t = thickOf(i), cav = cavityOf(i);
@@ -13260,12 +13499,13 @@ function collectExport(scope, dig) {
   });
   let x0 = Infinity, y0 = Infinity, z0 = Infinity, x1 = -Infinity, y1 = -Infinity, z1 = -Infinity; const types = new Set();
   const grow = k => { const [x, y, z] = k.split(',').map(Number); if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; if (z < z0) z0 = z; if (z > z1) z1 = z; };
-  for (const [k, id] of cells) { grow(k); types.add(baseOf(id)); }
+  for (const [k, id] of cells) { grow(k); if (!id.startsWith('lx:')) types.add(baseOf(id)); }
   if (cells.size) for (const k of clear) grow(k);
-  return { cells, types, clear: dig ? clear : null, bb: cells.size ? { x0, y0, z0, x1, y1, z1, w: x1 - x0 + 1, h: y1 - y0 + 1, l: z1 - z0 + 1 } : null };
+  return { cells, types, lightKeys, clear: dig ? clear : null, bb: cells.size ? { x0, y0, z0, x1, y1, z1, w: x1 - x0 + 1, h: y1 - y0 + 1, l: z1 - z0 + 1 } : null };
 }
 /* the Minecraft block state for one cell: stairs work out their corner shape from their neighbours, as the game does */
 function exportState(cells, k, id) {
+  if (id.startsWith('lx:')) return lightState(id);
   const B = BY_ID[id];
   if (B && B.shape === 'slab') return { name: B.base, props: { type: B.top ? 'top' : 'bottom', waterlogged: 'false' } };
   if (B && B.shape === 'ladder') return { name: 'ladder', props: { facing: DIR_NAME[B.f], waterlogged: 'false' } };
@@ -13359,13 +13599,16 @@ function litematicNbt({ cells, bb }, name) {
 }
 /* what the schematic needs, block by block, with stacks of 64 */
 function exMaterials(ex) {
-  const tally = new Map(); for (const id of ex.cells.values()) tally.set(id, (tally.get(id) || 0) + 1);
+  const tally = new Map(), lt = new Map(); for (const [k, id] of ex.cells) { if (ex.lightKeys && ex.lightKeys.has(k)) { const [, t] = id.split(':'), nm = id.startsWith('lx:') ? (t === 'chain' ? (verNum(view.cfg.mcVer) >= verNum('1.21.9') ? 'Iron chain' : 'Chain') : LIGHT_BY[t].n) : LIGHT_BY[id] ? LIGHT_BY[id].n : BY_ID[id].name, col = id.startsWith('lx:') ? (LIGHT_BY[t] ? LIGHT_BY[t].col : '#8a8f98') : null; const e = lt.get(nm) || { n: 0, id: id.startsWith('lx:') ? null : id, col }; e.n++; lt.set(nm, e); continue; } tally.set(id, (tally.get(id) || 0) + 1); }
   const rows = [...tally].filter(([id]) => BY_ID[id]).sort((a, b) => b[1] - a[1] || BY_ID[a[0]].name.localeCompare(BY_ID[b[0]].name)), total = rows.reduce((s, r) => s + r[1], 0);
   const stk = n => n >= 64 ? `${Math.floor(n / 64)} st${n % 64 ? ' + ' + n % 64 : ''}` : '';
-  const text = rows.map(([id, n]) => `${n} × ${BY_ID[id].name}`).join('\n') + `\n${total} blocks in all`;
+  const lrows = [...lt].sort((a, b) => b[1].n - a[1].n);
+  const text = rows.map(([id, n]) => `${n} × ${BY_ID[id].name}`).join('\n') + `\n${total} blocks in all` + (lrows.length ? '\n\nLights\n' + lrows.map(([nm, e]) => `${e.n} × ${nm}`).join('\n') : '');
   const copy = el('button', { class: 'btn sm', title: 'Copy the list as text', onclick: async () => { if (await copyText(text)) { copy.textContent = 'Copied'; setTimeout(() => { copy.replaceChildren(icon('copy'), 'Copy list'); }, 1400); } } }, icon('copy'), 'Copy list');
   return el('div', { class: 'exmats' }, el('div', { class: 'exmh' }, el('span', { class: 'qhead', text: 'Materials' }), el('span', { class: 'exmt', text: `${rows.length} types · ${total.toLocaleString()} blocks` }), copy),
-    el('div', { class: 'exmlist', role: 'list', 'aria-label': 'Materials' }, ...rows.map(([id, n]) => el('div', { class: 'exm', role: 'listitem' }, el('img', { src: SWATCH[id], alt: '' }), el('span', { class: 'exmn', text: BY_ID[id].name }), el('b', { text: n.toLocaleString() }), el('i', { text: stk(n) })))));
+    el('div', { class: 'exmlist', role: 'list', 'aria-label': 'Materials' }, ...rows.map(([id, n]) => el('div', { class: 'exm', role: 'listitem' }, el('img', { src: SWATCH[id], alt: '' }), el('span', { class: 'exmn', text: BY_ID[id].name }), el('b', { text: n.toLocaleString() }), el('i', { text: stk(n) })))),
+    lrows.length ? el('div', { class: 'exmh' }, el('span', { class: 'qhead', text: 'Lights' }), el('span', { class: 'exmt', text: `${lrows.reduce((a, r) => a + r[1].n, 0).toLocaleString()} in all` })) : null,
+    lrows.length ? el('div', { class: 'exmlist', role: 'list', 'aria-label': 'Lights' }, ...lrows.map(([nm, e]) => el('div', { class: 'exm', role: 'listitem' }, e.id ? el('img', { src: SWATCH[e.id], alt: '' }) : el('span', { class: 'exdot', style: `background:${e.col}` }), el('span', { class: 'exmn', text: nm }), el('b', { text: e.n.toLocaleString() }), el('i', { text: stk(e.n) })))) : null);
 }
 const newStampBtn = () => store.readOnly ? null : el('button', { class: 'btn sm', title: 'Make a multiblock by size, or from the blocks you’ve selected', onclick: ev => openNewStampForm(ev.currentTarget) }, icon('plus'), 'New multiblock');
 
@@ -14723,7 +14966,9 @@ function build3D(refit) {
   const inc = (x, y, z) => { if (x < minX) minX = x; if (x > maxX) maxX = x; if (y < minY) minY = y; if (y > maxY) maxY = y; if (z < minZ) minZ = z; if (z > maxZ) maxZ = z; };
   const BB = { minX: Infinity, minY: Infinity, minZ: Infinity, maxX: -Infinity, maxY: -Infinity, maxZ: -Infinity };
   const cutY = view.cut3 == null ? Infinity : view.cut3; let fullY0 = Infinity, fullY1 = -Infinity;
-  const add = (b, x, y, z) => { if (!b) return; if (y < fullY0) fullY0 = y; if (y > fullY1) fullY1 = y; if (y >= cutY) return; let a = buckets.get(b); if (!a) { a = []; buckets.set(b, a); } a.push(x, y, z); inc(x, y, z); if (x < BB.minX) BB.minX = x; if (x > BB.maxX) BB.maxX = x; if (y < BB.minY) BB.minY = y; if (y > BB.maxY) BB.maxY = y; if (z < BB.minZ) BB.minZ = z; if (z > BB.maxZ) BB.maxZ = z; };
+  // light blocks set into a floor or ceiling take the place of the slab block there
+  const lrep = new Map(); for (const B of plan.bldgs) withBld(B, () => { const top = topOf(); for (let i = 0; i <= top; i++) for (const [k, id] of lightCells(lv(i), i, Math.round(baseY(i) * v3.spread))) if (BY_ID[id]) lrep.set(k, id); });
+  const add = (b, x, y, z, own) => { if (!b) return; if (!own && lrep.size && lrep.has(x + ',' + y + ',' + z)) return; if (y < fullY0) fullY0 = y; if (y > fullY1) fullY1 = y; if (y >= cutY) return; let a = buckets.get(b); if (!a) { a = []; buckets.set(b, a); } a.push(x, y, z); inc(x, y, z); if (x < BB.minX) BB.minX = x; if (x > BB.maxX) BB.maxX = x; if (y < BB.minY) BB.minY = y; if (y > BB.maxY) BB.maxY = y; if (z < BB.minZ) BB.minZ = z; if (z > BB.maxZ) BB.maxZ = z; };
   const track = o => { three.disposables.push(o); return o; };
   const shade = o => { if (lit && three.canShadow) { o.castShadow = true; o.receiveShadow = true; } return o; };
   const ys = [];
@@ -14752,6 +14997,7 @@ function build3D(refit) {
       group.add(new THREE.LineSegments(geo, track(new THREE.LineBasicMaterial({ color: new THREE.Color(zn.color) }))));
     }
   } });
+  for (const [k, id] of lrep) { const a = k.split(','); add(id, +a[0], +a[1], +a[2], true); }
   // rock between underground floors, over each floor's own footprint
   if (v3.rock !== false) {
     let occ = null;
