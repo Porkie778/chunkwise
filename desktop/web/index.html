@@ -733,6 +733,13 @@ h4{margin:0 0 8px;font-size:12px;color:var(--ink-2);font-weight:700}
 .desksync input:checked+.dsk{background:var(--accent)}.desksync input:checked+.dsk::after{left:14px}.desksync input:focus-visible+.dsk{outline:2px solid var(--accent);outline-offset:2px}
 .deskfolder{display:flex;align-items:center;gap:6px;min-width:0;flex-wrap:wrap}.deskfolder select{flex:1;min-width:0;max-width:100%}.deskpath{font:500 11.5px var(--f-mono);color:var(--ink-2);word-break:break-all}
 
+.slotimg{position:relative;display:inline-block;line-height:0;flex:none}.slotimg>img{display:block}
+.mixtag{position:absolute;right:-6px;bottom:-4px;padding:1px 5px;border-radius:5px;background:var(--accent);color:var(--on-accent);font:700 10px/14px var(--f-ui);font-style:normal;letter-spacing:.02em;box-shadow:0 0 0 1.5px var(--panel);pointer-events:auto}
+.slotimg.sm .mixtag{right:auto;left:-4px;top:-4px;bottom:auto;min-width:12px;height:12px;padding:0 2px;font-size:8px;line-height:12px;border-radius:4px;text-align:center}
+.dk-tpic .slotimg,.sfpic .slotimg,.csw .slotimg{width:100%;height:100%}.dk-tpic .slotimg>img,.sfpic .slotimg>img,.csw .slotimg>img{width:100%;height:100%}
+.dk-tsub,.sfsub{font-size:11px;color:var(--ink-2);line-height:1.3}
+.mixt .slotimg{margin:0 auto}
+
 .swapflash{position:absolute;left:50%;top:50%;z-index:30;display:grid;justify-items:center;gap:4px;min-width:170px;max-width:240px;padding:18px 22px 16px;border:1px solid var(--line);border-radius:16px;background:var(--panel);box-shadow:var(--shadow);text-align:center;pointer-events:none;transform:translate(-50%,-50%);animation:sfin .16s ease-out,sfout .25s ease-in calc(var(--fl) - 0ms) forwards}
 .swapflash .sfpic{width:96px;height:96px;display:grid;place-items:center;margin-bottom:6px}.swapflash img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
 .swapflash strong{font-size:15px;line-height:1.25;overflow-wrap:anywhere}.swapflash span{font-size:12.5px;color:var(--ink-2)}
@@ -1373,7 +1380,7 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 .dk-roofrow .dk-fn{font-weight:500;font-style:italic}
 .dk-roofrow:not(.on) .dk-fb{height:30px}
 .dk-chips{display:grid;grid-template-columns:1fr;gap:8px}
-.dk-tiles{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px}.dk-tiles.dimmed{opacity:.55}
+.dk-tiles{display:grid;grid-template-columns:1fr auto 1fr;align-items:stretch;gap:6px}.dk-swapc{align-self:center}.dk-tile{align-content:start}.dk-tiles.dimmed{opacity:.55}
 .dk-tile{display:grid;justify-items:center;gap:3px;min-width:0;padding:10px 6px 8px;border:1px solid var(--line);border-radius:10px;background:var(--panel);text-align:center}
 .dk-tile.on{border:2px solid var(--ink);padding:9px 5px 7px}.dk-tile:hover{background:var(--panel-2)}
 .dk-tpic{display:grid;place-items:center;width:100%;aspect-ratio:1;max-width:84px}.dk-tpic img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;border-radius:6px}
@@ -3567,7 +3574,7 @@ const netById = id => plan && plan.networks.find(n => n.id === id);
 function newLevel(name, height = 5, id) { return { id: id || uid('l'), name, height, rock: 0, thick: 1, cavity: false, cables: false, roof: false, roofSpec: null, bh: [], mix: new Map(), rev: 0, blocks: new Map(), walls: new Set(), wstyle: new Map(), zones: [], multis: [], notes: [], openings: [], dims: [], flights: [], routes: new Map(), paths: new Set(), oposts: new Set(), pk: new Map(), bands: new Set() }; }
 /* 3D ground around the build, saved with each plan */
 const GROUND_BLOCKS = ['grass_block', 'dirt', 'coarse_dirt', 'rooted_dirt', 'podzol', 'mycelium', 'moss_block', 'mud', 'clay', 'sand', 'red_sand', 'gravel', 'snow_block', 'stone', 'deepslate', 'terracotta', 'netherrack', 'soul_sand', 'soul_soil', 'end_stone'];
-const deTerrain = x => ({ block: x && typeof x.block === 'string' && BY_ID[x.block] ? x.block : null, margin: clampInt(x == null || x.margin == null ? NaN : x.margin, 4, 64, 16) });
+const deTerrain = x => ({ block: x && typeof x.block === 'string' && BY_ID[x.block] ? x.block : null, margin: clampInt(x == null || x.margin == null ? NaN : x.margin, 0, 64, 16) });
 /* ================= buildings =================
    A plan is one or more buildings side by side, each with its own stack of floors (its own heights, ground line and roofs), all standing
    on the same ground. plan.order and plan.ground are the floors of the building you're on (the one with the current floor), so everything
@@ -5945,10 +5952,18 @@ function mixImg(m) {
   }
   return url;
 }
+/* a mix is shown as the block it has most of, marked as a mix */
+function mixLead(m) { let best = null, n = -1; for (const [id, w] of m.parts) if (BY_ID[id] && w > n) { best = id; n = w; } return best; }
+const mixFace = m => { const id = mixLead(m); return id && SWATCH[id] ? SWATCH[id] : mixImg(m); };
+const mixSub = m => { const id = mixLead(m), k = new Set(m.parts.map(q => q[0]).filter(x => BY_ID[x])).size; return id ? BY_ID[id].name + (k > 1 ? ` + ${k - 1}` : '') : ''; };
+/* a slot's picture, with a Mix tag on it (just an M when it's small) */
+function slotImg(S, small) {
+  return el('span', { class: 'slotimg' + (small ? ' sm' : '') }, el('img', { src: S.img, alt: '' }), S.mix ? el('i', { class: 'mixtag', title: `A mix: ${S.mix.parts.map(q => q[1] + ' ' + (BY_ID[q[0]] ? BY_ID[q[0]].name : q[0])).join(', ')}`, text: small ? 'M' : 'Mix' }) : null);
+}
 /* what a slot shows: its mix, or its block */
 function slotShow(active) {
   const m = active ? activeMix() : mixById(view.altMix), id = active ? view.block : (BY_ID[view.altBlock] ? view.altBlock : view.block);
-  return m ? { name: m.name, img: mixImg(m), mix: m } : { name: BY_ID[id].name, img: SWATCH[id], id };
+  return m ? { name: m.name, img: mixFace(m), mix: m, sub: mixSub(m) } : { name: BY_ID[id].name, img: SWATCH[id], id };
 }
 function useMix(id) {
   const m = mixById(id); if (!m) return;
@@ -10251,7 +10266,7 @@ function dockBlocks() {
   const tile = (S, primary) => el('button', { class: 'dk-tile' + (primary ? ' on' : ''), 'aria-pressed': String(primary),
     title: primary ? `Primary ${S.mix ? 'mix' : 'block'}: ${S.name}. All blocks changes it` : `Secondary ${S.mix ? 'mix' : 'block'}: ${S.name}. Click to swap it with Primary${sk === '—' ? '' : ' (' + sk + ')'}`,
     onclick: () => { if (primary) toggleWin('blocks'); else swapSlots(); } },
-    el('span', { class: 'dk-tpic' }, el('img', { src: S.img, alt: '' })), el('small', { text: primary ? 'Primary' : 'Secondary' }), el('b', { text: S.name }));
+    el('span', { class: 'dk-tpic' }, slotImg(S)), el('small', { text: primary ? 'Primary' : 'Secondary' }), el('b', { text: S.name }), S.mix ? el('span', { class: 'dk-tsub', text: S.sub }) : null);
   const rec = view.recents.filter(id => BY_ID[id]).slice(0, 12);
   return [
     rk ? dkSec('Roof', null, el('div', { class: 'dk-chips' }, ...rk)) : null,
@@ -10276,7 +10291,7 @@ function dkFold(id, title, count, ...kids) {
 function dockMixes() {
   const ms = plan.mixes || [], ro = store.readOnly;
   const row = m => el('div', { class: 'dk-mix' + (view.mix === m.id ? ' on' : '') },
-    el('button', { class: 'dk-mixb', title: `Use the ${m.name} mix as Primary\n${m.parts.map(q => q[1] + ' ' + (BY_ID[q[0]] ? BY_ID[q[0]].name : q[0])).join(' · ')}`, onclick: () => useMix(m.id) }, el('img', { src: mixImg(m), alt: '' }), el('span', { class: 'dk-mn', text: m.name })),
+    el('button', { class: 'dk-mixb', title: `Use the ${m.name} mix as Primary\n${m.parts.map(q => q[1] + ' ' + (BY_ID[q[0]] ? BY_ID[q[0]].name : q[0])).join(' · ')}`, onclick: () => useMix(m.id) }, slotImg({ img: mixFace(m), mix: m }, true), el('span', { class: 'dk-mn', text: m.name })),
     ro ? null : dkIb('pencil', `Change the ${m.name} mix`, () => openMixEditor(m.id, () => renderAll())),
     ro ? null : dkIb('trash', `Delete the ${m.name} mix`, () => deleteMix(m.id)));
   const add = ro ? null : el('button', { class: 'dk-newmix', title: 'Blend several blocks, with a share each, and use the blend like a block', onclick: () => openMixEditor(null, id => { if (id) useMix(id); else renderAll(); }) }, icon('plus'), 'New mix');
@@ -10653,8 +10668,8 @@ function sideRerender() { renderOptbar(); updateHoverGhost(); requestDraw(); sav
 function sideBlockGroup() {
   const A = slotShow(true), B = slotShow(false);
   return vgroup('Blocks', 'W',
-    el('button', { class: 'oblock on', title: 'Choose block', onclick: () => openWin('blocks') }, el('img', { src: A.img, alt: '' }), el('span', {}, el('small', { text: `${slotName(view.wall)} · drawing with${A.mix ? ' a mix' : ''}` }), el('strong', { text: A.name }))),
-    el('button', { class: 'oblock alt', title: `Swap to the ${slotName(!view.wall).toLowerCase()} ${B.mix ? 'mix' : 'block'} (X)`, onclick: swapSlots }, el('img', { src: B.img, alt: '' }), el('span', {}, el('small', { text: slotName(!view.wall) }), el('strong', { text: B.name })), icon('swap')));
+    el('button', { class: 'oblock on', title: 'Choose block', onclick: () => openWin('blocks') }, slotImg(A, true), el('span', {}, el('small', { text: `${slotName(view.wall)} · drawing with${A.mix ? ' a mix' : ''}` }), el('strong', { text: A.name }))),
+    el('button', { class: 'oblock alt', title: `Swap to the ${slotName(!view.wall).toLowerCase()} ${B.mix ? 'mix' : 'block'} (X)`, onclick: swapSlots }, slotImg(B, true), el('span', {}, el('small', { text: slotName(!view.wall) }), el('strong', { text: B.name })), icon('swap')));
 }
 /* facing for stairs, top or bottom half for slabs */
 const FACE_OPTS = [['n', 'North', 'arrU'], ['e', 'East', 'arrR'], ['s', 'South', 'arrD'], ['w', 'West', 'arrL']];
@@ -10808,7 +10823,7 @@ function stripItems() {
       if (view.eraseMode === 'brush' || view.eraseMode === 'line') out.push(brushSbtn('brush'));
     }
     if (curShape()) out.push(sb(effFill(), `Fill: ${FILL_NAMES[effFill()]} (F)`, () => { view.fill = nextFill(); sideRerender(); }));
-    if (t === 'pencil' || t === 'shape' || t === 'bucket') { const A = slotShow(true), B = slotShow(false); out.push(sep(), sb(null, `${slotName(view.wall)} ${A.mix ? 'mix' : 'block'}: ${A.name}`, () => openWin('blocks'), null, A.img), el('button', { class: 'sbtn sbalt', title: `Swap to the ${slotName(!view.wall).toLowerCase()} ${B.mix ? 'mix' : 'block'}, ${B.name} (X)`, 'aria-label': `Swap to the ${slotName(!view.wall).toLowerCase()} block`, onclick: swapSlots }, el('img', { src: B.img, alt: '' }))); }
+    if (t === 'pencil' || t === 'shape' || t === 'bucket') { const A = slotShow(true), B = slotShow(false); out.push(sep(), sb(null, `${slotName(view.wall)} ${A.mix ? 'mix' : 'block'}: ${A.name}`, () => openWin('blocks'), null, A.img), el('button', { class: 'sbtn sbalt', title: `Swap to the ${slotName(!view.wall).toLowerCase()} ${B.mix ? 'mix' : 'block'}, ${B.name} (X)`, 'aria-label': `Swap to the ${slotName(!view.wall).toLowerCase()} block`, onclick: swapSlots }, slotImg(B, true))); }
   } else if (t === 'route' && !ro && plan) {
     const net = netById(view.net);
     if (net) out.push(sep(), el('button', { class: 'sbtn', title: `Network: ${net.name}`, 'aria-label': `Network: ${net.name}`, onclick: () => { view.sideOpen = true; savePrefs(); renderSide(); renderSelbar(); } }, el('span', { class: 'netdot', style: `background:${net.color}` })),
@@ -11070,9 +11085,9 @@ function renderTopTools() {
     $('#tbPair').classList.remove('dim');
   } else if (tb && bk) {
     const A = slotShow(true), B = slotShow(false), sl = slotName(view.wall), al = slotName(!view.wall), tag = n => el('i', { class: 'sltag', text: n[0] });
-    tb.replaceChildren(el('span', { class: 'sw' }, el('img', { src: A.img, alt: '' }), tag(sl)), el('span', { class: 'tbb-t' }, el('small', { text: sl + (A.mix ? ' mix' : ' block') }), el('b', { text: A.name })));
+    tb.replaceChildren(el('span', { class: 'sw' }, slotImg(A, true), tag(sl)), el('span', { class: 'tbb-t' }, el('small', { text: sl + (A.mix ? ' mix' : ' block') }), el('b', { text: A.name })));
     tb.title = `${sl} ${A.mix ? 'mix' : 'block'}: ${A.name}. Open Blocks to change it.`; tb.setAttribute('aria-label', `${sl} ${A.mix ? 'mix' : 'block'}, ${A.name}. Choose block`); tb.setAttribute('aria-expanded', String(view.win === 'blocks'));
-    const ta = $('#tbAlt'); ta.hidden = false; $('#tbPair').classList.remove('solo'); ta.replaceChildren(el('span', { class: 'sw' }, el('img', { src: B.img, alt: '' }), tag(al)), icon('swap'));
+    const ta = $('#tbAlt'); ta.hidden = false; $('#tbPair').classList.remove('solo'); ta.replaceChildren(el('span', { class: 'sw' }, slotImg(B, true), tag(al)), icon('swap'));
     ta.title = `${al} ${B.mix ? 'mix' : 'block'}: ${B.name}. Click or press X to swap.`; ta.setAttribute('aria-label', `Swap to the ${al.toLowerCase()} ${B.mix ? 'mix' : 'block'}, ${B.name}`);
     $('#tbPair').classList.toggle('dim', !ba);
   }
@@ -11090,7 +11105,7 @@ function renderCornerSwatches() {
   const on = !!view.cornerSw && !isMobile() && !store.readOnly && !view.is3D; $('#app').classList.toggle('has-corner', on);
   box.hidden = !on; if (box.hidden) return;
   const b = BY_ID[view.block], a = BY_ID[view.altBlock] || b, ba = ['pencil', 'shape', 'bucket', 'select'].includes(view.tool);
-  const sw = (cls, B, slot, label, fn, tag) => el('button', { class: 'csw ' + cls, title: label, 'aria-label': label, onclick: fn }, el('img', { src: B.img || SWATCH[B.id], alt: '' }), el('i', { class: 'sltag', text: tag || slotName(slot)[0] }));
+  const sw = (cls, B, slot, label, fn, tag) => el('button', { class: 'csw ' + cls, title: label, 'aria-label': label, onclick: fn }, B.mix ? slotImg(B, true) : el('img', { src: B.img || SWATCH[B.id], alt: '' }), el('i', { class: 'sltag', text: tag || slotName(slot)[0] }));
   const rk = roofBlocksNow();
   if (rk) {   // on a roof: just the roof's block; it opens the roof's block picker, gable ends and all
     box.classList.remove('dim');
@@ -11214,7 +11229,7 @@ function swapFlash() {
   const S = slotShow(true), host = $('#viewport') || document.body, ms = FLASH_MS[view.flash] || 1000;
   let f = $('#swapFlash'); if (f) f.remove();
   f = el('div', { class: 'swapflash', id: 'swapFlash', role: 'status', 'aria-live': 'polite', style: `--fl:${ms}ms` },
-    el('div', { class: 'sfpic' }, el('img', { src: S.img, alt: '' })), el('strong', { text: S.name }), el('span', { text: 'Now selected' }));
+    el('div', { class: 'sfpic' }, slotImg(S)), el('strong', { text: S.name }), S.mix ? el('span', { class: 'sfsub', text: S.sub }) : null, el('span', { text: 'Now selected' }));
   host.append(f); clearTimeout(swapFlash.t); swapFlash.t = setTimeout(() => f.remove(), ms + 260);
 }
 /* the eyedropper: takes the block, its facing, and whether it is a wall */
@@ -12110,20 +12125,20 @@ function renderBlocksTab(body) {
   // the two blocks side by side: the one you are choosing for is highlighted; tap the other to choose for it instead
   parts.push(el('div', { class: 'bpair', role: 'group', 'aria-label': 'Primary and Secondary blocks' },
     (() => { const A = slotShow(true); return A.mix
-      ? el('div', { class: 'blockcard on' }, el('img', { src: A.img, alt: '' }),
+      ? el('div', { class: 'blockcard on' }, slotImg(A, true),
         el('div', { style: 'min-width:0;flex:1' }, el('div', { class: 'bslot', text: `${slotName(view.wall)} mix` }), el('div', { class: 'bn', text: A.name })),
         el('button', { class: 'ib sm', title: 'Back to a single block', 'aria-label': 'Stop using the mix', onclick: () => { view.mix = null; renderAll(); savePrefs(); } }, icon('x')))
       : el('div', { class: 'blockcard on' }, el('img', { src: SWATCH[b.id], alt: '' }),
         el('div', { style: 'min-width:0;flex:1' }, el('div', { class: 'bslot', text: `${slotName(view.wall)} block` }), el('div', { class: 'bn', text: b.name }), el('code', { text: b.id })),
         el('button', { class: 'star' + (fav ? ' on' : ''), 'aria-pressed': String(fav), title: fav ? 'Remove from favourites' : 'Add to favourites', 'aria-label': fav ? 'Remove from favourites' : 'Add to favourites', onclick: () => toggleFav(b.id) }, icon(fav ? 'starOn' : 'star'))); })(),
-    (() => { const B = slotShow(false); return el('button', { class: 'blockcard alt', title: `Choose the ${slotName(!view.wall).toLowerCase()} ${B.mix ? 'mix' : 'block'} instead (X)`, onclick: swapSlots }, el('img', { src: B.img, alt: '' }),
+    (() => { const B = slotShow(false); return el('button', { class: 'blockcard alt', title: `Choose the ${slotName(!view.wall).toLowerCase()} ${B.mix ? 'mix' : 'block'} instead (X)`, onclick: swapSlots }, slotImg(B, true),
       el('div', { style: 'min-width:0;flex:1' }, el('div', { class: 'bslot', text: slotName(!view.wall) }), el('div', { class: 'bn', text: B.name })), icon('swap')); })()));
   // presets and mixes: a mix is a weighted blend, painted like a block
   if (!store.readOnly) {
     const mixes = plan.mixes || [];
     parts.push(el('div', { class: 'bpresets' }, el('button', { class: 'btn sm', onclick: ev => openPresets(ev.currentTarget) }, icon('presets'), 'Presets…')));
     if (mixes.length || isMobile()) parts.push(el('h4', { class: 'bsub', text: 'Mixes' }), el('div', { class: 'mixes' }, ...mixes.map(m => el('div', { class: 'mixt', role: 'button', tabindex: '0', 'aria-pressed': String(view.mix === m.id), title: `Draw with the ${m.name} mix: ` + m.parts.map(q => BY_ID[q[0]].name).join(', '), onclick: () => useMix(m.id), onkeydown: ev => { if (ev.key === 'Enter') useMix(m.id); } },
-      el('img', { src: mixImg(m), alt: '' }), el('span', { text: m.name }),
+      slotImg({ img: mixFace(m), mix: m }, true), el('span', { text: m.name }),
       el('button', { class: 'mixe', title: `Edit ${m.name}`, 'aria-label': `Edit ${m.name}`, onclick: ev => { ev.stopPropagation(); openMixEditor(m.id); } }, icon('pencil')),
       el('button', { class: 'mixe mixd', title: `Delete the ${m.name} mix`, 'aria-label': `Delete the ${m.name} mix`, onclick: ev => { ev.stopPropagation(); deleteMix(m.id); } }, icon('trash')))),
       isMobile() ? el('button', { class: 'mixt mixnew', title: 'Blend blocks, like 70% stone bricks, 20% cracked, 10% mossy', onclick: () => openMixEditor(null) }, icon('plus'), el('span', { text: 'New mix' })) : null));
@@ -13976,7 +13991,7 @@ function renderGroundUI() {
     onmouseenter: () => { lbl.lastChild.textContent = cap(id); }, onmouseleave: () => { lbl.lastChild.textContent = cap(deTerrain(plan.terrain).block); },
     onclick: () => setTerrain({ block: id }) }, ...kids);
   const grid = el('div', { class: 'ggrid inl' }, sw(null, [icon('x')], 'No ground'), ...GROUND_BLOCKS.filter(id => BY_ID[id]).map(id => sw(id, [el('img', { src: SWATCH[id], alt: '' })], BY_ID[id].name)));
-  const r = el('input', { type: 'range', id: 'groundMargin', min: '4', max: '64', step: '1', value: String(T.margin), 'data-def': '16', disabled: T.block ? null : true, 'aria-label': 'Ground margin in blocks', 'data-scrub': 'Ground margin' });
+  const r = el('input', { type: 'range', id: 'groundMargin', min: '0', max: '64', step: '1', value: String(T.margin), 'data-def': '16', disabled: T.block ? null : true, 'aria-label': 'Ground margin in blocks', 'data-scrub': 'Ground margin' });
   const out = el('output', { for: 'groundMargin', text: T.margin + ' blocks' });
   let mtx = false;
   r.addEventListener('input', () => { if (!mtx) mtx = txBegin('Changed the ground margin'); plan.terrain = deTerrain({ ...plan.terrain, margin: Number(r.value) }); out.textContent = r.value + ' blocks'; schedule3D(); });
