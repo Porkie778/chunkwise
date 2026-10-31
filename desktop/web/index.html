@@ -5394,8 +5394,8 @@ function setWStyle(L, key, st) { setCellVal(L, 'wstyle', 's', 'ws', key, st); }
 /* a block painted with a mix keeps the mix, so walls and thick floors come out mixed all the way up in 3D and the export */
 function setMix(L, key, id) { setCellVal(L, 'mix', 'x', 'mx', key, id); }
 /* ================= wall heights =================
-   With Inspect: Ctrl-click (⌘ on a Mac) a plain wall block to set how high it goes; Ctrl+Shift-click picks the straight run it's in, and adds it to
-   what's picked. The bar that comes up sets the height; the roof stays at the floor's height */
+   With Inspect: Ctrl-click (⌘ on a Mac) a plain wall block to set how high it goes; Ctrl+Shift-click adds (or takes off) more blocks anywhere, and
+   Ctrl+Shift-drag sweeps over several. The bar that comes up sets the height; the roof stays at the floor's height */
 const whPlain = (L, k) => L.walls.has(k) && L.blocks.has(k) && !(L.wstyle && L.wstyle.get(k));
 function whRun(L, x, z) {
   const i = levelIndex(curLid), op = openingDeco(L, i).col, k0 = K(x, z), plain = k => whPlain(L, k) && !op.has(k);
@@ -5417,10 +5417,11 @@ const whKeys = () => whState.lid === curLid ? whState.keys : new Set();
 function whPick(x, z, run) {
   const L = curLevel(), k = K(x, z); if (!L || !whPlain(L, k)) { if (L && L.walls.has(k)) toast('Only plain walls take their own height. Walls with a design keep theirs.'); return false; }
   if (whState.lid !== curLid) { whState.keys = new Set(); whState.lid = curLid; }
-  if (run) { for (const q of whRun(L, x, z)) whState.keys.add(q); }
+  let r = true;
+  if (run) { if (whState.keys.has(k)) { whState.keys.delete(k); r = 'sub'; } else { whState.keys.add(k); r = 'add'; } }   // Shift: picks add up, anywhere
   else if (whState.keys.size === 1 && whState.keys.has(k)) whState.keys = new Set();
   else whState.keys = new Set([k]);
-  renderWhBar(); return true;
+  renderWhBar(); return r;
 }
 function whClear() { if (!whState.keys.size) return false; whState.keys = new Set(); renderWhBar(); requestDraw(); return true; }
 function setWallHeights(h) {
@@ -9246,7 +9247,7 @@ function toolDown(p, e) {
   if (store.readOnly && !['pointer', 'measure', 'axis'].includes(G.tool)) { G = null; return; }
   switch (G.tool) {
     case 'pointer': {
-      if (!store.readOnly && e && (e.ctrlKey || e.metaKey) && whPick(x, z, e.shiftKey)) { G = null; requestDraw(); return; }
+      if (!store.readOnly && e && (e.ctrlKey || e.metaKey)) { const r = whPick(x, z, e.shiftKey); if (r) { if (e.shiftKey) { G.whDrag = r === 'add' ? 'add' : 'sub'; G.whLast = [x, z]; cancelLongPress(); } else G = null; requestDraw(); return; } }
       const hd = !store.readOnly && handleAt(p, e && e.pointerType !== 'mouse');
       if (hd && hd.a) { G.resize = { a: hd.a, bb: { ...hd.bb }, hx: hd.hx, hz: hd.hz }; G.txOpen = txBegin(`Resized ${hd.a.label || 'an area pin'}`); cancelLongPress(); break; }
       if (hd) { G.resize = { zn: hd.zn, orig: new Set(hd.zn.cells), bb: { ...hd.bb }, hx: hd.hx, hz: hd.hz, dx: 0, dz: 0 }; G.txOpen = txBegin(`Resized ${hd.zn.name || 'a zone'}`); cancelLongPress(); break; }
@@ -9314,6 +9315,11 @@ function toolDown(p, e) {
   requestDraw();
 }
 function toolMove(p) {
+  if (G.whDrag) {   // Ctrl+Shift held while dragging: every plain wall block passed over is added (or taken off)
+    const [x, z] = cellAt(p.x, p.y), L = curLevel(); if (x === G.whLast[0] && z === G.whLast[1]) return;
+    for (const [cx2, cz2] of lineCells(G.whLast[0], G.whLast[1], x, z)) { const k = K(cx2, cz2); if (whPlain(L, k)) { if (G.whDrag === 'add') whState.keys.add(k); else whState.keys.delete(k); } }
+    G.whLast = [x, z]; G.moved = true; renderWhBar(); requestDraw(); return;
+  }
   if (G.resize) { resizeZoneMove(p); return; }
   if (G.roomDrag) { const d = roomDragD(p); if (d !== G.roomDrag.d) { G.roomDrag.d = d; G.moved = true; requestDraw(); } view.hover = cellAt(p.x, p.y); renderCoords(); return; }
   if (G.dimDrag) { dimDragMove(p); return; }
@@ -12962,7 +12968,7 @@ const shortcutGroups = () => shortcutRaw().map(([t, rows]) => [t, rows.filter(r 
 const shortcutRaw = () => [
   ['Tools', [[kk('pointer', 'pan'), 'Pick, pan'], [kk('pencil', 'line'), 'Pencil'], [kk('shape', 'circle'), 'Shape'], [kk('bucket', 'path'), 'Fill, path'], [kk('select', 'eraser', 'extend'), 'Select, eraser, extend up'], [kk('stair', 'door', 'window', 'roof'), 'Stairs, doorway, window, roof'], [kk('zone', 'stamp', 'route'), 'Zone, multiblock, route'], [kk('note', 'anchor', 'measure'), 'Note, anchor, measure']]],
   ['Drawing', [[kk('swapBlocks'), 'Swap the Primary and Secondary blocks'], [kk('wallMode'), 'Wall mode on / off'], [kk('resetBlocks'), 'Primary and Secondary back to the defaults'], [kk('fillMode'), 'Fill: solid, frame or room'], [`Shift + a tool's key`, 'Change that tool’s shape: pencil (freehand, line, path), shape, select, eraser, zone'], ['Shift while drawing', 'Keep a shape 1:1: a square, a circle'], ['Alt while drawing', 'Erase instead of place'], [kk('turn'), 'Turn the stair you are placing, or a multiblock'], [kk('flipHalf'), 'Upside-down stair or top-half slab'], ['[ / ]', 'Brush size smaller / bigger (Pencil, Eraser, Path, roof brush)'], ['[ ]  with a shape', 'Size across; Alt: down; Shift: both; Shift+Alt: square'], ['Right-click', 'Pick a block (with its facing), or quick actions']]],
-  ['Wall heights', [['Ctrl+click a wall', 'With Inspect: pick that wall block to set its height'], ['Ctrl+Shift+click', 'Add the straight run of wall it’s in'], ['Esc', 'Done']]],
+  ['Wall heights', [['Ctrl+click a wall', 'With Inspect: pick that wall block to set its height'], ['Ctrl+Shift+click', 'Add or take off more wall blocks, anywhere (drag to sweep over several)'], ['Esc', 'Done']]],
   ['Editing', [['Shift / Alt while selecting', 'Add / subtract (both: intersect)'], [`${kk('turn')} / Shift+${kk('turn')}`, 'Turn the selection right / left'], ['Ctrl+C / Ctrl+X / Ctrl+V', 'Copy, move, paste blocks'], ['Enter', 'Fill the selection, build up what Extend picked, or lay a path'], ['Delete', 'Erase the selection or the picked object'], ['Ctrl+Z / Ctrl+Shift+Z', 'Undo / redo'], ['Right-click undo', 'Undo history'], ['Ctrl+D or Esc', 'Deselect']]],
   ['Floors and view', [['PgDn PgUp', 'Floor down / up'], ['Right-click a floor tag', 'That floor’s settings'], ['Space + drag', 'Pan with any tool'], ['Scroll, + / −, 0', 'Zoom, fit to screen'], ['Alt with the Ruler', 'A quick measurement that isn’t kept'], ['Ctrl+K', 'Search tools, blocks, floors and actions'], ['Arrow keys', 'Move the view a few cells (Shift: further)'], ['?', 'These keys']]],
   ['3D', [['Alt + drag', 'Orbit round the block under the cursor'], ['Alt + scroll', 'Zoom in on the block under the cursor'], ['Home', 'Back to the whole build']]]];
