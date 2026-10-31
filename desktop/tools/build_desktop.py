@@ -43,11 +43,8 @@ rep("""  const hasClaude = window.claude && typeof window.claude.use === 'functi
 rep("if (user) user.id().then(id => { if (id) { startSettingsSync(db, id); startPackSync(db, id); } }).catch(() => {});",
     "if (user) user.id().then(id => { if (id) startSettingsSync(db, id); }).catch(() => {});")
 # a plan opens in one window only; a window with nothing it may open starts a new plan
-rep("async function openDbPlan(entry) {\n", "async function openDbPlan(entry) {\n  if (!(await deskClaim(entry.id))) { if (!plan) startNewPlan('My base'); return; }\n")
+rep("async function openDbPlan(entry) {\n", "async function openDbPlan(entry) {\n  if (!(await deskClaim(entry.id))) { if (!plan || HOME.on) showHome(); return; }\n")
 rep("function loadPlanInto(p, opts = {}) {\n", "function loadPlanInto(p, opts = {}) {\n  DESK.inv('claim_plan', { pid: p.id }).catch(() => {});\n")
-# the first plan this window opens: the one deskStart chose (no free plan: a new one)
-rep("      else { const e = store.plans.find(p => p.id === prefs.lastPlan) || store.plans[0]; openDbPlan(e); }",
-    "      else { const e = DESK.want ? store.plans.find(p => p.id === DESK.want) : null; if (e) openDbPlan(e); else startNewPlan('My base'); }")
 
 # 4. files: a Save dialog, or a remembered folder
 rep("""async function offerFile(filename, data, fallback) {
@@ -84,12 +81,13 @@ rep("const pack = { db: null, uid: null, ready: false, list: [], used: 0, localD
 # 6. menus and Settings
 rep("    plan && el('button', { class: 'mi', onclick: () => { closePopover(); openExportModal(); } }, icon('download'), 'Export…'),",
     "    plan && el('button', { class: 'mi', onclick: () => { closePopover(); openExportModal(); } }, icon('download'), 'Export…'),\n    ...deskMenuItems(),")
-rep("    mi('focus', 'Take the tour', startTour),", "    mi('focus', 'Take the tour', startTour),\n    sbMenuItem(mi),")
+rep("    /*more-menu-extra*/\n", "    sbMenuItem(mi),\n")
 rep("const SET_CATS = [\n", "const SET_CATS = [\n  ['files', 'Files & updates', 'download', 'Where plans and texture packs are kept on this PC, and the app’s version.', 'desk'],\n")
 rep("function settingsRows(cat) {\n", "function settingsRows(cat) {\n  if (cat === 'files') return deskFilesRows();\n")
 rep("const ICONS = {", "const ICONS = {\n  user: '<circle cx=\"10\" cy=\"7\" r=\"3.2\"/><path d=\"M3.8 16.5c.9-3 3.4-4.6 6.2-4.6s5.3 1.6 6.2 4.6\"/>',")
 CSS = """
 .sbbox{display:grid;gap:10px;width:min(380px,calc(100vw - 64px))}.sbbox p{margin:0;font-size:13px;line-height:1.45}.sbmsg{min-height:1em;color:var(--ink-2)}.sbmsg.bad{color:var(--danger)}.sblinks{display:flex;justify-content:space-between;gap:8px}
+.sblab{font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:-4px}.sbrow{display:flex;gap:8px}.sbrow .field{flex:1;min-width:0}.sbacts{display:flex;flex-wrap:wrap;gap:8px}.sbwarn{padding:10px 12px;border-radius:8px;background:color-mix(in srgb,var(--danger) 12%,transparent);color:var(--danger);font-weight:700}
 .desksync{order:2;display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 10px 0 6px;margin-left:4px;border:1px solid var(--line);border-radius:999px;cursor:pointer;font-size:12px;font-weight:700;color:var(--ink-2);user-select:none;flex:none}
 .desksync input{position:absolute;opacity:0;width:0;height:0}.desksync .dsk{position:relative;width:28px;height:16px;border-radius:999px;background:var(--line);transition:background .15s}
 .desksync .dsk::after{content:'';position:absolute;left:2px;top:2px;width:12px;height:12px;border-radius:50%;background:var(--panel);box-shadow:0 1px 2px rgba(0,0,0,.3);transition:left .15s}

@@ -202,19 +202,19 @@ async function deskStart() {
   await deskReady();
   // signed in before? the account is there for synced plans and settings
   if (localStorage.getItem(SB_TOKEN)) {
-    try { const sb = await sbLoad(), { data } = await sb.auth.getSession(), s = data && data.session; if (s && s.user) { SB.uid = s.user.id; SB.email = s.user.email || ''; DESK.sb = sbDb(sb, SB.uid); } } catch {}
+    try { const sb = await sbLoad(), { data } = await sb.auth.getSession(), s = data && data.session; if (s && s.user) { sbUser(s.user); DESK.sb = sbDb(sb, SB.uid); } } catch {}
   }
   const db = DESK.db = deskDb();
   await db.list();
   // synced plans catch up with the account before anything opens, so a floor changed on another device is never overwritten by the old copy here
   if (DESK.sb) { const done = db.cloudStart().catch(x => console.warn('cloud', x)); await Promise.race([done, new Promise(r => setTimeout(r, 8000))]); }
-  // which plan this window opens: the file it was opened with, the plan it was asked for, or the last one, if no other window has it
+  // which plan this window opens: the file it was opened with, or the plan it was asked for, if no other window has it; otherwise the home page
   let want = DESK.start.plan || null;
   if (DESK.start.file) { try { want = await db.addFile(DESK.start.file); deskRemember(DESK.start.file); } catch { toast('That file isn’t a Chunkwise plan, or it can’t be read.'); } }
   const free = async id => id && db.P.has(id) && !(await DESK.inv('claim_plan', { pid: id }));
-  if (!(await free(want))) { want = null; if (!DESK.start.fresh && await free(prefs.lastPlan)) want = prefs.lastPlan; }
-  if (!want && !DESK.start.fresh) for (const [id] of [...db.P].sort((a, b) => (Number(b[1].meta.updatedAt) || 0) - (Number(a[1].meta.updatedAt) || 0))) if (await free(id)) { want = id; break; }
-  DESK.want = want; if (want) prefs.lastPlan = want;
+  if (!(await free(want))) want = null;
+  DESK.want = HOME.want = want;
+  HOME.add.push(['upload', 'Open a plan file', 'A .chunkwise file from anywhere on this PC.', deskOpenFile]);
   deskHooks();
   return { db, user: { id: async () => SB.uid || null, canEdit: async () => true, can: async () => true } };
 }
@@ -274,7 +274,7 @@ async function deskToggleSync(on) {
 async function deskOpenFile() {
   const path = await window.__TAURI__.dialog.open({ multiple: false, directory: false, filters: [{ name: 'Chunkwise plan', extensions: ['chunkwise'] }], defaultPath: DESK.cfg.plansDir });
   if (!path) return;
-  try { const pid = await DESK.db.addFile(String(path)); deskRemember(String(path)); if (await deskClaim(pid)) switchPlan(pid); } catch { toast('That file isn’t a Chunkwise plan, or it can’t be read.'); }
+  try { const pid = await DESK.db.addFile(String(path)); deskRemember(String(path)); if (await deskClaim(pid)) { hideHome(); switchPlan(pid); } } catch { toast('That file isn’t a Chunkwise plan, or it can’t be read.'); }
 }
 async function deskSaveCopy() {
   if (!plan) return; await flushNow(); await DESK.db.flush();
@@ -385,4 +385,11 @@ async function deskCheckUpdate(asked) {
         await window.__TAURI__.process.relaunch();
       } catch { b.disabled = false; b.textContent = 'Update and restart'; toast('The update couldn’t be installed. Try again later.'); }
     } }, 'Update and restart')))]);
+}
+
+/* the account was deleted: every plan here stays, local only */
+async function deskForgetAccount() {
+  try { await flushNow(); await DESK.db.flush(); } catch {}
+  for (const [pid, e] of DESK.db.P) if (e.sync) { e.sync = false; try { await DESK.db.save(pid); } catch {} }
+  try { await DESK.db.flush(); } catch {}
 }
