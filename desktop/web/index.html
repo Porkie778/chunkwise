@@ -878,6 +878,7 @@ img[src$="#iso"]{image-rendering:auto!important}
 .bldcard small{font-size:11.5px;color:var(--ink-2)}
 .packlist{display:grid;gap:4px;margin:4px 0 10px}
 .pk-info.warn{color:var(--accent)}
+.orow2.sugrow{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:4px 0}.orow2.sugrow .olbl2{min-width:52px}.orow2.sugrow select.pick{flex:1;min-width:0}
 .packrow{display:grid;grid-template-columns:28px 18px minmax(0,1fr) auto 28px 28px;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line);border-radius:9px;background:var(--panel)}
 .packrow input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px;margin:0}
 .packrow.off .pk-t{opacity:.55}
@@ -5177,6 +5178,7 @@ function syncBldTools() {
   if (p.tourDone) view.tourDone = true;
   if (['drag', 'tap'].includes(p.measureHow)) view.measureHow = p.measureHow;
   if (p.lightMap === false) view.lightMap = false;
+  if (p.lightSugOpt && typeof p.lightSugOpt === 'object') view.lightSugOpt = { goal: p.lightSugOpt.goal, type: p.lightSugOpt.type, layout: p.lightSugOpt.layout, where: p.lightSugOpt.where && typeof p.lightSugOpt.where === 'object' ? { wall: !!p.lightSugOpt.where.wall, ceil: !!p.lightSugOpt.where.ceil, floor: !!p.lightSugOpt.where.floor } : null };
   if (p.light && typeof p.light === 'object') { view.light = { t: p.light.t, lm: p.light.lm, h: p.light.h, c: p.light.c }; }   // lightOpt() checks it when it's first used
   if (p.flight && typeof p.flight === 'object') { const f = p.flight; view.flight = { kind: ['straight', 'l', 'spiral', 'ladder'].includes(f.kind) ? f.kind : 'straight', w: clampInt(f.w, 1, 4, 2), r: clampInt(f.r, 1, 4, 2), under: f.under === 'solid' ? 'solid' : 'open', dir: ['n', 'e', 's', 'w'].includes(f.dir) ? f.dir : 'n', turn: f.turn === 'l' ? 'l' : 'r', n1: clampInt(f.n1, 1, 60, 3), steps: f.steps === 'slabs' ? 'slabs' : 'stairs', walls: f.walls === 'well' ? 'well' : 'off', ups: Array.isArray(f.ups) ? f.ups.map(v => clampInt(v, 1, 32, 1)) : [1], mat: typeof f.mat === 'string' && BY_ID[f.mat] ? f.mat : null }; }
   if (p.pathOpt && typeof p.pathOpt === 'object') { const ok = v => typeof v === 'string' && (v.startsWith('mix:') || BY_ID[v]); view.pathOpt = { style: p.pathOpt.style === 'line' ? 'line' : 'curve', w: clampInt(p.pathOpt.w, 1, BRUSH_MAX, 3), block: ok(p.pathOpt.block) ? p.pathOpt.block : 'gravel', edge: !!p.pathOpt.edge, edgeBlock: ok(p.pathOpt.edgeBlock) ? p.pathOpt.edgeBlock : 'cobblestone' }; }
@@ -5265,7 +5267,7 @@ function writePrefs() {
     prefPending = false;
     if (plan) prefs.views[plan.id] = { z: view.z, ox: view.ox, oy: view.oy, lid: curLid, w: W, h: H };
     prefs.lastPlan = plan && plan.id;
-    prefs.ui = { light: view.light || null, lightMap: view.lightMap !== false, measureHow: view.measureHow || null, flight: view.flight || null, pathOpt: view.pathOpt || null, tourDone: !!view.tourDone, stripPin: !!view.stripPin, postFit: !!view.postFit, drawPosts: view.drawPosts || null, pattern: view.pattern, patBlock: view.patBlock, penPat: view.penPat, penPatBlock: view.penPatBlock, postEvery: view.postEvery, postBlock: view.postBlock, postOut: !!view.postOut, mix: view.mix, altMix: view.altMix, tool: view.tool, selOp: view.selOp, fill: view.fill, sizeMode: view.sizeMode, block: view.block, altBlock: view.altBlock, expKind: view.expKind, expScope: view.expScope, uiMode: view.uiMode, flat2d: !!view.flat2d, wallLook: view.wallLook, texWall: view.texWall || 'bevel', railMin: !!view.railMin, theme: view.theme || 'system', viewPin: view.viewPin || 'top', ribbonTab: view.ribbonTab, ribbonMin: !!view.ribbonMin, roofWalls: view.roofWalls !== false, cornerSw: !!view.cornerSw, fov: view.fov, povSens: view.povSens, povKeys: view.povKeys, keys: view.keys || null, cfg: view.cfg, bldTools: view.bldTools || null, doorW: view.doorW, extN: view.extN, fenceH: view.fenceH, fenceFill: view.fenceFill, wallThick: view.wallThick, wallStyle: view.wallStyle, roofStyled: !!view.roofStyled, rampOuter: !!view.rampOuter, doorType: view.doorType, archW: view.archW, archWAuto: view.archWAuto, archH: view.archH, archHAuto: view.archHAuto, doorStyle: view.doorStyle, doorTrim: view.doorTrim, winStyle: view.winStyle, winTrim: view.winTrim, winAuto: view.winAuto, winW: view.winW, winH: view.winH, winSill: view.winSill, winGlass: view.winGlass, w: view.w, h: view.h, lock: view.lock, ratio: view.ratio, layers: view.layers, originStyle: view.originStyle, zoneStyle: view.zoneStyle, zoneAlpha: view.zoneAlpha, recentColors: view.recentColors, contig: view.contig, wall: view.wall, pencil: view.pencil, showMid: view.showMid, sideOpen: view.sideOpen, shapeKind: view.shapeKind, selShape: view.selShape, eraseMode: view.eraseMode, zoneShape: view.zoneShape, zoneOp: view.zoneOp, roofTab: view.roofTab, brush: view.brush, penBrush: view.penBrush || 1, eraseT: view.eraseT, railMode: view.railMode, railW: view.railW || 56, groupLast: view.groupLast, lastBuild: view.lastBuild, net: view.net, routeOp: view.routeOp, circleKind: view.circleKind, polySides: view.polySides, polyPoint: view.polyPoint, ghostAlpha: view.ghostAlpha, favs: view.favs, recents: view.recents, blockSort: view.blockSort, blockCat: view.blockCat, blockMod: view.blockMod || '', blockDesc: !!view.blockDesc, blockIcons: view.blockIcons || 'list', dkOpen: view.dkOpen || null, flash: view.flash || 'standard', split: !!view.split, splitR: view.splitR || 0.5, splitSwap: !!view.splitSwap, homeSize: view.homeSize || 'l', blocksFloat: !!view.blocksFloat, floorsFloat: !!view.floorsFloat, expDig: view.expDig !== false, mobShadows: !!view.mobShadows, bface: view.bface, btop: view.btop, lastRoof: view.lastRoof, mirror: { x: mirror.x, z: mirror.z, radial: mirror.radial || 0, ax: mirror.ax, az: mirror.az }, povFx: view.povFx !== false, v3: pov.on && pov.saved ? { ...v3, ...pov.saved } : v3 };
+    prefs.ui = { lightSugOpt: view.lightSugOpt || null, light: view.light || null, lightMap: view.lightMap !== false, measureHow: view.measureHow || null, flight: view.flight || null, pathOpt: view.pathOpt || null, tourDone: !!view.tourDone, stripPin: !!view.stripPin, postFit: !!view.postFit, drawPosts: view.drawPosts || null, pattern: view.pattern, patBlock: view.patBlock, penPat: view.penPat, penPatBlock: view.penPatBlock, postEvery: view.postEvery, postBlock: view.postBlock, postOut: !!view.postOut, mix: view.mix, altMix: view.altMix, tool: view.tool, selOp: view.selOp, fill: view.fill, sizeMode: view.sizeMode, block: view.block, altBlock: view.altBlock, expKind: view.expKind, expScope: view.expScope, uiMode: view.uiMode, flat2d: !!view.flat2d, wallLook: view.wallLook, texWall: view.texWall || 'bevel', railMin: !!view.railMin, theme: view.theme || 'system', viewPin: view.viewPin || 'top', ribbonTab: view.ribbonTab, ribbonMin: !!view.ribbonMin, roofWalls: view.roofWalls !== false, cornerSw: !!view.cornerSw, fov: view.fov, povSens: view.povSens, povKeys: view.povKeys, keys: view.keys || null, cfg: view.cfg, bldTools: view.bldTools || null, doorW: view.doorW, extN: view.extN, fenceH: view.fenceH, fenceFill: view.fenceFill, wallThick: view.wallThick, wallStyle: view.wallStyle, roofStyled: !!view.roofStyled, rampOuter: !!view.rampOuter, doorType: view.doorType, archW: view.archW, archWAuto: view.archWAuto, archH: view.archH, archHAuto: view.archHAuto, doorStyle: view.doorStyle, doorTrim: view.doorTrim, winStyle: view.winStyle, winTrim: view.winTrim, winAuto: view.winAuto, winW: view.winW, winH: view.winH, winSill: view.winSill, winGlass: view.winGlass, w: view.w, h: view.h, lock: view.lock, ratio: view.ratio, layers: view.layers, originStyle: view.originStyle, zoneStyle: view.zoneStyle, zoneAlpha: view.zoneAlpha, recentColors: view.recentColors, contig: view.contig, wall: view.wall, pencil: view.pencil, showMid: view.showMid, sideOpen: view.sideOpen, shapeKind: view.shapeKind, selShape: view.selShape, eraseMode: view.eraseMode, zoneShape: view.zoneShape, zoneOp: view.zoneOp, roofTab: view.roofTab, brush: view.brush, penBrush: view.penBrush || 1, eraseT: view.eraseT, railMode: view.railMode, railW: view.railW || 56, groupLast: view.groupLast, lastBuild: view.lastBuild, net: view.net, routeOp: view.routeOp, circleKind: view.circleKind, polySides: view.polySides, polyPoint: view.polyPoint, ghostAlpha: view.ghostAlpha, favs: view.favs, recents: view.recents, blockSort: view.blockSort, blockCat: view.blockCat, blockMod: view.blockMod || '', blockDesc: !!view.blockDesc, blockIcons: view.blockIcons || 'list', dkOpen: view.dkOpen || null, flash: view.flash || 'standard', split: !!view.split, splitR: view.splitR || 0.5, splitSwap: !!view.splitSwap, homeSize: view.homeSize || 'l', blocksFloat: !!view.blocksFloat, floorsFloat: !!view.floorsFloat, expDig: view.expDig !== false, mobShadows: !!view.mobShadows, bface: view.bface, btop: view.btop, lastRoof: view.lastRoof, mirror: { x: mirror.x, z: mirror.z, radial: mirror.radial || 0, ax: mirror.ax, az: mirror.az }, povFx: view.povFx !== false, v3: pov.on && pov.saved ? { ...v3, ...pov.saved } : v3 };
     const keys = Object.keys(prefs.views); if (keys.length > 40) delete prefs.views[keys[0]];
     lsSet(LS_VIEW, prefs);
     syncSettings();
@@ -6790,6 +6792,7 @@ function placeLight(x, z, sub, side) {
 /* on a phone, a wall tapped with more than one open side asks which side the torch goes on */
 function lightTap(x, z, mouse, e) {
   const L = curLevel(); if (!L) return;
+  const g = sugAt(x, z); if (g) { acceptSug(g); return; }   // a suggestion clicked is kept
   if (!mouse && e && isWallAt(L, x, z) && lightKind(lightOpt().t) === 'torch' && !roofLevel(L)) {
     const sides = lightOpenSides(L, x, z);
     if (sides.length > 1) { lightSidePop(x, z, e.clientX, e.clientY, sides); return; }
@@ -6860,7 +6863,7 @@ function lightSideGroups() {
   if (kind !== 'torch') out.push(vgroup('Mounted', null, ...vradio(LIGHT_MOUNTS[kind].map(([v, n, d]) => [v, n, null, null, d]), op.lm[kind], v => { op.lm[kind] = v; rr(); })));
   if (kind === 'torch') out.push(vgroup('On walls', null, el('div', { class: 'orow2 wsz' }, el('span', { class: 'olbl2', text: 'Height' }), stepBox('Torch height', op.h, 1, 16, v => { op.h = v; rr(); }))));
   if (kind === 'lantern' && op.lm.lantern === 'hang') out.push(vgroup('Hanging', null, el('div', { class: 'orow2 wsz' }, el('span', { class: 'olbl2', text: 'Chain' }), stepBox('Chain length', op.c, 0, 16, v => { op.c = v; rr(); }))));
-  out.push(lightMapGroup(false), ohint(lightHint(false)));
+  out.push(lightMapGroup(false), sugSideGroup(), ohint(lightHint(false)));
   return out;
 }
 /* ---- the light map: block light worked out as the game does (each block one level less, stopped by solid blocks, through holes
@@ -6868,7 +6871,7 @@ function lightSideGroups() {
 const LX_LEVEL = { torch: 14, soul_torch: 10, lantern: 15, soul_lantern: 10 };
 const lightSolid = id => { const B = BY_ID[id]; return !!B && !B.shape && !B.h && !B.glass && blockKind3(B) === ''; };
 function lightMap() {
-  const L = plan && curLevel(), i = L ? levelIndex(curLid) : -1, key = MODELVER + '|' + curLid + '|' + curBld().id;
+  const L = plan && curLevel(), i = L ? levelIndex(curLid) : -1, sug = lightSugOn(), key = MODELVER + '|' + curLid + '|' + curBld().id + '|' + (sug ? sug.ver : 0);
   if (LMAP && LMAP.key === key) return LMAP;
   const out = LMAP = { key, cells: new Map(), spawn: 0, dark: 0, n: 0 };
   if (!L || i < 0 || roofLevel(L) || !L.blocks.size) return out;
@@ -6879,6 +6882,7 @@ function lightMap() {
   const N = W * D * Hh, solid = new Uint8Array(N), lv = new Uint8Array(N), q = new Int32Array(N); let qn = 0;
   const idx = (x, y, z) => ((y - y0) * D + (z - z0)) * W + (x - x0), inside = (x, y, z) => x >= x0 && x < x0 + W && z >= z0 && z < z0 + D && y >= y0 && y < y0 + Hh;
   const ex = collectExport('all', false);
+  if (sug) for (const [k, id] of lightCells({ lights: sug.list, roof: false }, i, fy)) if (!ex.cells.has(k) || id.startsWith('lx:') || LIGHT_LEVEL[id]) ex.cells.set(k, id);
   for (const [k, id] of ex.cells) {
     const a = k.indexOf(','), b = k.lastIndexOf(','), x = +k.slice(0, a), y = +k.slice(a + 1, b), z = +k.slice(b + 1);
     if (!inside(x, y, z)) continue; const j = idx(x, y, z);
@@ -6897,6 +6901,7 @@ function lightMap() {
     if (y > 0) { const m = j - WD; if (!solid[m] && lv[m] < n) { lv[m] = n; q[qn++] = m; } }
     if (y < Hh - 1) { const m = j + WD; if (!solid[m] && lv[m] < n) { lv[m] = n; q[qn++] = m; } }
   }
+  Object.assign(out, { solid, lv, idx, inside, fy, t });
   // each floor block: the light where you'd stand on it, and whether a mob could spawn there
   for (const k of L.blocks.keys()) {
     if (L.walls.has(k)) continue; const [x, z] = parseK(k), y = fy + offAt(i, k) + t;
@@ -6926,6 +6931,155 @@ function lightMapGroup(phone) {
   const tg = phone ? null : vtoggle('Light levels', 'sun', view.lightMap !== false, () => { view.lightMap = view.lightMap === false; rr(); }, null, 'The block light over each floor block, as the game works it out. Red is where mobs can spawn (light 0)');
   const txt = !M ? 'Turn on to see the light over each floor block.' : !M.n ? 'No open floor on this floor to measure.' : M.spawn ? `${M.spawn.toLocaleString()} block${M.spawn === 1 ? '' : 's'} where mobs can spawn, in red.` : 'Lit everywhere: no mobs can spawn on this floor.';
   return phone ? txt : vgroup('Light map', null, tg, el('p', { class: 'ometa2', text: txt }));
+}
+/* ---- suggested lights: for every room on this floor (floor enclosed by walls), lights that bring all of it up to the light you ask
+   for, shown as ghosts to take one at a time or all at once. Light is worked out as it spreads in the game: one level less per block,
+   round walls, from where each light hangs. Doorways, windows, stairs and paths are kept clear, and only ceiling lights go in the
+   middle of a room */
+const SUG_GOALS = [['safe', 'No spawns', 1, 'Light 1 or more everywhere: just enough that mobs can’t spawn'], ['even', 'Even', 7, 'Light 7 or more everywhere: evenly lit'], ['bright', 'Bright', 11, 'Light 11 or more everywhere']];
+const SUG_TYPES = [['mixed', 'Mixed'], ['torch', 'Torches'], ['lantern', 'Lanterns'], ['block', 'Light blocks']];
+const SUG_LAYOUTS = [['any', 'Anywhere that works', 'The fewest lights'], ['grid', 'Regular grid', 'Evenly spaced'], ['centre', 'Centred', 'In the middle of walls and rooms'], ['mirror', 'Mirror symmetry', 'Matching on both sides of each room']];
+function sugOpt() {
+  const o = view.lightSugOpt && typeof view.lightSugOpt === 'object' ? view.lightSugOpt : (view.lightSugOpt = {});
+  if (!SUG_GOALS.some(g => g[0] === o.goal)) o.goal = 'even';
+  if (!SUG_TYPES.some(g => g[0] === o.type)) o.type = 'mixed';
+  if (!SUG_LAYOUTS.some(g => g[0] === o.layout)) o.layout = 'any';
+  if (!o.where || typeof o.where !== 'object') o.where = { wall: true, ceil: true, floor: false };
+  return o;
+}
+/* the suggestions, if they're for the floor you're on */
+const lightSugOn = () => view.lightSug && view.lightSug.lid === curLid && view.lightSug.list.length ? view.lightSug : null;
+function lightRooms(L) {
+  const open = k => L.blocks.has(k) && !L.walls.has(k), seen = new Set(), rooms = [];
+  for (const k0 of L.blocks.keys()) {
+    if (!open(k0) || seen.has(k0)) continue;
+    const cells = [], st = [k0]; let outdoor = false; seen.add(k0);
+    while (st.length) {
+      const k = st.pop(); cells.push(k); const [x, z] = parseK(k);
+      for (const f of DIR4) { const n = K(x + DV4[f][0], z + DV4[f][1]); if (!L.blocks.has(n)) { outdoor = true; continue; } if (open(n) && !seen.has(n)) { seen.add(n); st.push(n); } }
+    }
+    if (!outdoor) rooms.push(cells);
+  }
+  return rooms;
+}
+function suggestLights() {
+  const L = curLevel(), i = levelIndex(curLid); if (!L || i < 0 || roofLevel(L)) return;
+  view.lightSug = null; LMAP = null;
+  const o = sugOpt(), T = SUG_GOALS.find(g => g[0] === o.goal)[2], M = lightMap(), rooms = lightRooms(L);
+  if (!rooms.length) { toast('No rooms here: suggestions are for floor that walls go all the way round.'); return; }
+  const types = o.type, use = { wall: o.where.wall && (types === 'mixed' || types === 'torch'), ceil: o.where.ceil && types !== 'torch', floor: o.where.floor && types !== 'torch' };
+  if (!use.wall && !use.ceil && !use.floor) { toast(types === 'torch' ? 'Torches only go on walls: tick Walls.' : 'Tick at least one place for lights to go.'); return; }
+  const op = lightOpt(), wallH = op.h, om = openingMap(L), t = thickOf(i), avoidWall = k => { const ox = om.get(k); return !!ox; };
+  const stairs = c => { const [x, z] = parseK(c); return !!flightAt(L, x, z); }, onPath = c => !!(L.paths && L.paths.has(c));
+  const ex0 = (L.lights || []).map(q => K(q.x, q.z)), taken = new Set(ex0);
+  const out = [];
+  for (const room of rooms) {
+    const inRoom = new Set(room), cur = new Map(), cx = [], cz = [];
+    for (const k of room) { const v = M.cells.get(k); cur.set(k, v == null ? 15 : Math.max(0, v)); const [x, z] = parseK(k); cx.push(x); cz.push(z); }
+    const x0 = Math.min(...cx), x1 = Math.max(...cx), z0 = Math.min(...cz), z1 = Math.max(...cz), mx = (x0 + x1) / 2, mz = (z0 + z1) / 2;
+    if (![...cur.values()].some(v => v < T)) continue;
+    // how far each block is from the walls: lights other than ceiling ones stay within a block of a wall
+    const wd = new Map(), q0 = [];
+    for (const k of room) { const [x, z] = parseK(k); if (DIR4.some(f => !inRoom.has(K(x + DV4[f][0], z + DV4[f][1])))) { wd.set(k, 0); q0.push(k); } }
+    for (let h = 0; h < q0.length; h++) { const k = q0[h], [x, z] = parseK(k); for (const f of DIR4) { const n = K(x + DV4[f][0], z + DV4[f][1]); if (inRoom.has(n) && !wd.has(n)) { wd.set(n, wd.get(k) + 1); q0.push(n); } } }
+    // the places a light could go, each with the level it gives where you stand: its light, less how far up or down it is
+    const cands = [];
+    for (const k of room) {
+      if (taken.has(k) || stairs(k)) continue;
+      const [x, z] = parseK(k), H = hAt(i, k), yo = M.fy + offAt(i, k) + t;
+      const roofed = M.inside(x, yo + H, z) && M.solid[M.idx(x, yo + H, z)];
+      if (use.wall) for (const f of DIR4) {
+        const wk = K(x - DV4[f][0], z - DV4[f][1]);
+        if (!L.walls.has(wk) || !L.blocks.has(wk) || avoidWall(wk) || H < wallH + 1) continue;
+        const along = DV4[f][0] ? z : x, a0 = DV4[f][0] ? z0 : x0, a1 = DV4[f][0] ? z1 : x1;
+        cands.push({ k, x, z, q: { t: 'torch', m: 'wall', f, h: wallH }, lv: 14, dy: wallH - 1, ctr: 1 - Math.abs(along - (a0 + a1) / 2) / Math.max(1, (a1 - a0) / 2), wall: true });
+      }
+      if (use.ceil && roofed) {
+        const ctr = 1 - Math.hypot(x - mx, z - mz) / Math.max(1, Math.hypot(x1 - mx, z1 - mz));
+        // lanterns hang on a chain where there's room to walk under them; low rooms get a light block in the ceiling
+        const ch = H >= 4 ? 1 : 0;
+        if (types === 'block' || (types === 'mixed' && H < 3)) cands.push({ k, x, z, q: { t: 'glowstone', m: 'ceil' }, lv: 15, dy: H, ctr });
+        else cands.push({ k, x, z, q: { t: 'lantern', m: 'hang', c: ch }, lv: 15, dy: H - 1 - ch, ctr });
+      }
+      if (use.floor && (wd.get(k) || 0) <= 1 && !onPath(k)) {
+        const nearDoor = DIR4.some(f => { const n = K(x + DV4[f][0], z + DV4[f][1]); const ox = om.get(n); return ox && ox.kind === 'door'; });
+        if (!nearDoor) cands.push({ k, x, z, q: types === 'lantern' ? { t: 'lantern', m: 'floor' } : { t: 'sea_lantern', m: 'slab' }, lv: 15, dy: types === 'lantern' ? 0 : 1, ctr: 0 });
+      }
+    }
+    if (!cands.length) continue;
+    // the reach of each place: block-by-block through the room, round its walls
+    const reach = c => {
+      if (c.r) return c.r; const r = new Map([[c.k, c.lv - c.dy]]), qq = [c.k];
+      for (let h = 0; h < qq.length; h++) { const k = qq[h], v = r.get(k) - 1; if (v <= 0) continue; const [x, z] = parseK(k); for (const f of DIR4) { const n = K(x + DV4[f][0], z + DV4[f][1]); if (inRoom.has(n) && !r.has(n)) { r.set(n, v); qq.push(n); } } }
+      return (c.r = r);
+    };
+    const gainOf = list => { let g = 0; const tmp = new Map(); for (const c of list) for (const [k, v] of reach(c)) { const was = Math.max(cur.get(k), tmp.get(k) || 0); if (v > was && was < T) { g += Math.min(T, v) - was; tmp.set(k, v); } } return g; };
+    // mirrored across the middle of the room, for the symmetric layout
+    const mir = c => { const fx = Math.round(x0 + x1 - c.x), fz = Math.round(z0 + z1 - c.z), fF = f => f; const want = [[fx, c.z, 'x'], [c.x, fz, 'z'], [fx, fz, 'xz']];
+      return want.map(([x, z, ax]) => { const f = c.q.f ? (ax === 'x' ? flipF(c.q.f, 'x') : ax === 'z' ? flipF(c.q.f, 'z') : flipF(flipF(c.q.f, 'x'), 'z')) : null; return cands.find(d => d.x === x && d.z === z && d.q.m === c.q.m && (!f || d.q.f === f)); }).filter(Boolean); };
+    // a regular grid: one spacing for the room, from how far the lights reach, lined up from its middle
+    let pool = cands;
+    if (o.layout === 'grid') {
+      const best = Math.max(...cands.map(c => c.lv - c.dy)), s = Math.max(2, best - T + (T > 1 ? 0 : 1));
+      const on = (v, a0, a1) => ((v - Math.round((a0 + a1) / 2)) % s + s) % s === 0;
+      pool = cands.filter(c => c.wall ? (DV4[c.q.f][0] ? on(c.z, z0, z1) : on(c.x, x0, x1)) : on(c.x, x0, x1) && on(c.z, z0, z1));
+      if (!pool.length) pool = cands;
+    }
+    for (let guard = 0; guard < 400; guard++) {
+      if (![...cur.values()].some(v => v < T)) break;
+      let pick = null, score = 0;
+      for (const c of pool) {
+        if (c.used) continue;
+        const grp = o.layout === 'mirror' ? [...new Set([c, ...mir(c).filter(d => !d.used)])] : [c];
+        const g = gainOf(grp); if (g <= 0) continue;
+        const sc = (o.layout === 'mirror' ? g / grp.length : g) * (o.layout === 'centre' ? 1 + 0.6 * c.ctr : 1) * (c.wall ? 1.04 : 1);
+        if (sc > score) { score = sc; pick = grp; }
+      }
+      if (!pick) { if (pool !== cands) { pool = cands; continue; } break; }
+      for (const c of pick) { c.used = true; for (const [k, v] of reach(c)) if (v > cur.get(k)) cur.set(k, v); out.push({ id: uid('g'), x: c.x, z: c.z, ...c.q }); taken.add(c.k); for (const d of cands) if (d.k === c.k) d.used = true; }
+    }
+  }
+  if (!out.length) { toast(`Every room here already has light ${T} or more.`); renderOptbar(); requestDraw(); return; }
+  view.lightSug = { lid: curLid, list: out.map(deLight).filter(Boolean), ver: Date.now() }; LMAP = null;
+  const M2 = lightMap(); toast(`${out.length} suggested light${out.length === 1 ? '' : 's'}${M2.spawn ? `, leaving ${M2.spawn} block${M2.spawn === 1 ? '' : 's'} where mobs can spawn` : ''}. Click one to keep it, or keep them all.`);
+  renderOptbar(); requestDraw();
+}
+function acceptSug(q) {
+  const S = lightSugOn(), L = curLevel(); if (!S || !L) return;
+  const take = q ? [q] : S.list.slice();
+  txBegin(take.length > 1 ? `Placed ${take.length} suggested lights` : `Placed a suggested ${lightName(take[0]).toLowerCase()}`);
+  if (!L.lights) L.lights = [];
+  for (const g of take) if (lightOK(L, g) && !L.lights.some(p => sameLight(p, g))) L.lights.push({ ...g, id: uid('g') });
+  S.list = S.list.filter(g => !take.includes(g)); S.ver = Date.now(); if (!S.list.length) view.lightSug = null;
+  txCommit(); LMAP = null; renderOptbar(); requestDraw();
+}
+function clearSug() { view.lightSug = null; LMAP = null; renderOptbar(); requestDraw(); }
+const sugAt = (x, z) => { const S = lightSugOn(); return S ? S.list.find(g => g.x === x && g.z === z) || null : null; };
+function drawSugs(c, X, Y, s, T) {
+  const S = lightSugOn(); if (!S) return;
+  for (const q of S.list) {
+    drawLightMark(c, X, Y, s, T, q, true);
+    const px = X(q.x), py = Y(q.z), w = X(q.x + 1) - px; c.strokeStyle = T.accent; c.lineWidth = 1.5 * s; c.setLineDash([3 * s, 2.5 * s]); c.strokeRect(px + 1.5 * s, py + 1.5 * s, w - 3 * s, w - 3 * s); c.setLineDash([]);
+  }
+}
+/* the Suggest group of the Light tool */
+function sugRows(rr) {
+  const o = sugOpt(), S = lightSugOn(), set = fn => { fn(o); rr(); };
+  const rows = [];
+  rows.push(['Aim for', seg(SUG_GOALS.map(([v, n, , d]) => [v, n, null, d]), o.goal, v => set(q => { q.goal = v; }), 'Aim for')]);
+  rows.push(['Lights', segSelect(SUG_TYPES.map(([v, n]) => [v, n]), o.type, v => set(q => { q.type = v; }), 'Kinds of light')]);
+  const wb = (k, n) => el('button', { class: 'btn sm tog', 'aria-pressed': String(!!o.where[k]), onclick: () => set(q => { q.where[k] = !q.where[k]; }) }, n);
+  rows.push(['On', el('div', { class: 'pkids' }, wb('wall', 'Walls'), wb('ceil', 'Ceilings'), wb('floor', 'Floor'))]);
+  rows.push(['Layout', segSelect(SUG_LAYOUTS.map(([v, n, d]) => [v, n, null, d]), o.layout, v => set(q => { q.layout = v; }), 'Layout')]);
+  const acts = el('div', { class: 'pkids' }, el('button', { class: 'btn sm' + (S ? '' : ' primary'), onclick: suggestLights }, icon('lt_torch'), S ? 'Suggest again' : 'Suggest lights'),
+    S ? el('button', { class: 'btn sm primary', onclick: () => acceptSug() }, `Keep all ${S.list.length}`) : null, S ? el('button', { class: 'btn sm', onclick: clearSug }, 'Clear') : null);
+  rows.push(['', acts]);
+  return rows;
+}
+function sugSideGroup() {
+  const rows = sugRows(() => sideRerender());
+  return vgroup('Suggest', null, ...rows.map(([lab, ...kids]) => el('div', { class: 'orow2 sugrow' }, lab ? el('span', { class: 'olbl2', text: lab }) : null, ...kids)),
+    el('p', { class: 'ometa2', text: lightSugOn() ? 'Dashed squares are suggestions. Click one to keep it.' : 'For rooms with walls all the way round, on this floor.' }));
 }
 function toggleWallsSel() {
   if (roofLevel(curLevel())) { toast('Roof floors are a single layer, so they have no walls.'); return; }
@@ -9305,6 +9459,7 @@ function paintScene(c, P) {
   }
   if (live && view.tool === 'light' && view.lightMap !== false && !store.readOnly) drawLightMap(c, X, Y, s, T, Wpx, Hpx);
   // lights (this floor only)
+  if (live && view.tool === 'light') drawSugs(c, X, Y, s, T);
   if (layers.lights !== false && L.lights && L.lights.length) for (const q of L.lights) { const px = X(q.x), py = Y(q.z); if (px < -60 || py < -60 || px > Wpx + 60 || py > Hpx + 60) continue; drawLightMark(c, X, Y, s, T, q); }
 
   if (live) {
@@ -11428,6 +11583,7 @@ function renderOptbarH(target) {
   } else if (t === 'light') {
     for (const [lab, ...kids] of lightRows(rerender, null)) row(lab, ...kids);
     row('Levels', seg([[true, 'Show'], [false, 'Hide']], view.lightMap !== false, v => { view.lightMap = v; rerender(); }, 'Light levels'));
+    for (const [lab, ...kids] of sugRows(rerender)) row(lab || 'Suggest', ...kids);
     const op = lightOpt(), k = lightKind(op.t); sumIcon = 'lt_' + op.t; sum.push(LIGHT_BY[op.t].n, k === 'torch' ? `${op.h} up on walls` : (LIGHT_MOUNTS[k].find(m => m[0] === op.lm[k]) || [])[1]); note = lightHint(true) + (view.lightMap !== false ? ' ' + lightMapGroup(true) : '');
   } else if (t === 'window') {
     const { hMax, sMax } = winLimits();
@@ -14381,6 +14537,7 @@ function syncScenery(core, lit) {
 }
 /* the game's fog: the land fades into the sky towards the edge of the scenery */
 function updateSceneryFog(camera) {
+  three.scene.fog = null; return;   // no fog: the scenery runs out to its edge in plain view
   const S3 = three.scenery, THREE = three.THREE; if (!S3) { three.scene.fog = null; return; }
   const O = three.orbit, d = pov.on ? 0 : camera.position.distanceTo(new THREE.Vector3(O.tx, O.ty, O.tz)), col = three.sky || new THREE.Color(T.paper || '#e5e8e2');
   if (!three.scene.fog) three.scene.fog = new THREE.Fog(col.clone(), 1, 2);
@@ -14684,7 +14841,7 @@ async function startPOV() {
   if (ribbonOn() && view.ribbonTab !== 'view') { view.ribbonTab = 'view'; savePrefs(); }
   setV3Open(false); cancelAnimationFrame(three.flyRaf);
   pov.on = true; pov.stage = 'pick'; pov.saved = { spread: v3.spread, walls: v3.walls }; pov.flying = false; pov.noclip = false; pov.sprinting = false; pov.keys.clear();
-  if (v3.spread !== 1 || !v3.walls) { v3.spread = 1; v3.walls = true; build3D(false); } else povWorld();
+  if (!v3.walls) { v3.walls = true; build3D(false); } else povWorld();   // walls go up to walk among; the spread stays as you set it
   povHud(); if (ribbonOn()) renderRibbon();
   pov.raf = requestAnimationFrame(povLoop);
 }
