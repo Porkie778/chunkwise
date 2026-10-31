@@ -27,7 +27,7 @@
 }
 @media (prefers-color-scheme: dark){
   :root:not([data-theme="light"]){
-    --paper:#131817; --panel:#1b2120; --panel-2:#242b29; --ink:#e2e7e4; --ink-2:#98a49f; --line:#313a37;
+    --paper:#131817; --capbg:#242b29; --capline:#3a4441; --panel:#1b2120; --panel-2:#242b29; --ink:#e2e7e4; --ink-2:#98a49f; --line:#313a37;
     --accent:#ec7b40; --accent-soft:#3d2a20; --on-accent:#1b0f08;
     --anchor:#e563b0; --mirror:#4dbdca; --multi:#8d9df2; --danger:#f06a6a;
     --grid:rgba(226,231,228,.06); --chunk:rgba(226,231,228,.18); --axis:rgba(236,123,64,.55); --mid-fill:rgba(206,211,209,.5); --mid-line:#d4d8d6; --mid-case:rgba(0,0,0,.6); --star:#f2b632;
@@ -36,7 +36,7 @@
   }
 }
 :root[data-theme="dark"]{
-  --paper:#131817; --panel:#1b2120; --panel-2:#242b29; --ink:#e2e7e4; --ink-2:#98a49f; --line:#313a37;
+  --paper:#131817; --capbg:#242b29; --capline:#3a4441; --panel:#1b2120; --panel-2:#242b29; --ink:#e2e7e4; --ink-2:#98a49f; --line:#313a37;
   --accent:#ec7b40; --accent-soft:#3d2a20; --on-accent:#1b0f08;
   --anchor:#e563b0; --mirror:#4dbdca; --multi:#8d9df2; --danger:#f06a6a;
   --grid:rgba(226,231,228,.06); --chunk:rgba(226,231,228,.18); --axis:rgba(236,123,64,.55); --mid-fill:rgba(206,211,209,.5); --mid-line:#d4d8d6; --mid-case:rgba(0,0,0,.6); --star:#f2b632;
@@ -1604,7 +1604,8 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
   .topbar{position:relative;z-index:30;display:block;height:0;padding:0;border:0;background:none;pointer-events:none;overflow:visible}
   .topbar>*{pointer-events:auto}
   .mpill{position:absolute;top:calc(10px + env(safe-area-inset-top,0px));display:flex;align-items:center;gap:2px;height:48px;padding:0 4px;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);pointer-events:auto;box-sizing:border-box}
-  #mPillL{left:10px;max-width:calc(100% - 196px);padding:0 6px 0 8px}
+  #mPillL{left:10px;max-width:calc(100% - 206px);padding:0 6px 0 8px;overflow:hidden}
+  #mPillL .planbtn span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
   #mPillL .brand{margin:0;padding:0 2px}
   #mPillL .tb-title{display:flex;flex-direction:column;align-items:flex-start;min-width:0;max-width:none}
   #mPillL .planbtn{height:28px;padding:0 4px;max-width:100%;font-size:14.5px}
@@ -1613,6 +1614,7 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
   #mPillR{right:10px}
   #mPillR .ib{width:40px;height:44px}
   #mPillR #viewSeg{border:0;padding:0;margin:0 2px;background:transparent}
+  #mPillR #viewSeg button.vs[aria-pressed="true"]{display:none}
   #mPillR #viewSeg button{height:34px;padding:0 10px;font-size:13px;border-radius:9px;background:var(--panel-2);color:var(--ink)}
   #mPillR .tb-group{gap:0}
   .mcol{position:absolute;right:10px;top:calc(68px + env(safe-area-inset-top,0px));display:flex;flex-direction:column;align-items:center;gap:2px;padding:4px;background:var(--panel);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);pointer-events:auto}
@@ -1631,17 +1633,20 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
   /* the tools: a dark bar floating at the bottom */
   .main{grid-template-columns:minmax(0,1fr);grid-template-rows:minmax(0,1fr);grid-template-areas:"stage"}
   .railgrip{display:none!important}
-  .rail{grid-area:auto;position:absolute;left:10px;right:10px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:12;max-width:540px;margin:0 auto;height:64px;padding:0 6px;gap:2px;flex-direction:row;align-items:center;overflow:hidden;border:0;border-radius:22px;background:var(--ink);color:var(--panel);box-shadow:0 10px 28px rgba(22,30,27,.3)}
-  .rail .tool{flex:1 1 0;min-width:0;height:52px;border-radius:16px;color:var(--panel);display:grid;place-items:center}
+  .rail{grid-area:auto;position:absolute;left:10px;right:10px;bottom:calc(14px + env(safe-area-inset-bottom,0px));z-index:12;max-width:540px;margin:0 auto;height:64px;padding:0 6px;gap:2px;flex-direction:row;align-items:center;overflow:hidden;border:1px solid var(--capline,transparent);border-radius:22px;background:var(--capbg,#1c2321);color:#e2e7e4;box-shadow:0 10px 28px rgba(22,30,27,.3)}
+  .rail .tool{flex:1 1 0;min-width:0;height:52px;border-radius:16px;color:#e2e7e4;display:grid;place-items:center}
   .rail .tool svg.i{width:23px;height:23px}
   .rail .tool .tl,.rail .tool .gtri{display:none!important}
   .rail .tool[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
-  .rail .tool:hover{background:color-mix(in srgb,var(--panel) 12%,transparent)}
+  .rail .tool:hover{background:rgba(226,231,228,.1)}
   .rail .tool[aria-pressed="true"]:hover{background:var(--accent)}
   /* the stage: just the plan; the tool's options float above the tools */
   .stage{position:relative;grid-template-rows:minmax(0,1fr)}
   .statusbar{display:none}
-  .optbar.acc{position:absolute;left:92px;right:10px;bottom:calc(90px + env(safe-area-inset-bottom,0px));z-index:11;border:1px solid var(--line);border-radius:16px;background:var(--panel);box-shadow:var(--shadow)}
+  .optbar{position:absolute;left:92px;right:10px;bottom:calc(90px + env(safe-area-inset-bottom,0px));z-index:11;min-height:0;padding:8px 12px;border:1px solid var(--line);border-radius:16px;background:var(--panel);box-shadow:var(--shadow);overflow:hidden}
+  .optbar:empty{display:none}
+  .optbar .hint,.optbar .hint.wrap{white-space:normal;font-size:12.5px;line-height:1.4}
+  .optbar.acc{padding:0;overflow:visible;position:absolute;left:92px;right:10px;bottom:calc(90px + env(safe-area-inset-bottom,0px));z-index:11;border:1px solid var(--line);border-radius:16px;background:var(--panel);box-shadow:var(--shadow)}
   .optbar.acc:empty,.optbar.acc:not(:has(*)){display:none}
   .acc-head{padding:5px 6px}
   .acc-tog{height:40px;border-radius:11px}
