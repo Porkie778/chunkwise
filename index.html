@@ -1381,7 +1381,7 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 .dk-ib:disabled{opacity:.35;pointer-events:none}
 .dk-roofrow .dk-fn{font-weight:500;font-style:italic}
 .dk-roofrow:not(.on) .dk-fb{height:30px}
-.dk-chips{display:grid;grid-template-columns:1fr;gap:8px}.dk-tile.choosing{box-shadow:0 0 0 2px var(--accent)}.bpair .blockcard,.bpair .blockcard.alt{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"img . act" "slot slot slot" "name name name" "code code code";align-items:center;align-content:start;gap:2px 8px;padding:8px 10px;max-width:none;text-align:left}
+.dk-chips{display:grid;grid-template-columns:1fr;gap:8px}.whbar{display:flex;align-items:center;gap:8px}.whbar .whl{font-weight:700;font-size:12.5px}.whbar .whn{font-size:12px;color:var(--ink-2)}.dk-tile.choosing{box-shadow:0 0 0 2px var(--accent)}.bpair .blockcard,.bpair .blockcard.alt{display:grid;grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"img . act" "slot slot slot" "name name name" "code code code";align-items:center;align-content:start;gap:2px 8px;padding:8px 10px;max-width:none;text-align:left}
 .bpair .blockcard>div{display:contents}.bpair .blockcard>img,.bpair .blockcard>.slotimg{grid-area:img;width:30px;height:30px}.bpair .blockcard>.slotimg>img{width:30px;height:30px}
 .bpair .blockcard .bslot{grid-area:slot;min-width:0;margin-top:6px;line-height:1.2}.bpair .blockcard.blockcard>img,.bpair .blockcard.blockcard>.slotimg,.bpair .blockcard.blockcard>.slotimg>img{width:30px;height:30px}.bpair .blockcard .star{width:28px;height:28px}.bpair .blockcard:not(.alt){gap:2px 8px;padding:8px 10px}.bpair .blockcard>button,.bpair .blockcard>svg.i{grid-area:act;justify-self:end}
 .bpair .blockcard .bn,.bpair .blockcard.alt .bn{grid-area:name;min-width:0;font-size:13px;font-weight:700;line-height:1.25;white-space:normal;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
@@ -3593,7 +3593,7 @@ let plan = null, curLid = null;
 const NET_COLORS = ['#f59f00', '#7048e8', '#1c7ed6', '#12b886', '#e03131', '#e64980', '#82c91e', '#fd7e14', '#15aabf', '#868e96'];
 const defaultNetworks = () => [{ id: 'power', name: 'Power', color: '#f59f00' }, { id: 'me', name: 'ME network', color: '#7048e8' }, { id: 'fluid', name: 'Fluids', color: '#1c7ed6' }, { id: 'gas', name: 'Gases', color: '#12b886' }];
 const netById = id => plan && plan.networks.find(n => n.id === id);
-function newLevel(name, height = 5, id) { return { id: id || uid('l'), name, height, rock: 0, thick: 1, cavity: false, cables: false, roof: false, roofSpec: null, bh: [], mix: new Map(), rev: 0, blocks: new Map(), walls: new Set(), wstyle: new Map(), zones: [], multis: [], notes: [], openings: [], dims: [], flights: [], routes: new Map(), paths: new Set(), oposts: new Set(), pk: new Map(), bands: new Set() }; }
+function newLevel(name, height = 5, id) { return { id: id || uid('l'), name, height, rock: 0, thick: 1, cavity: false, cables: false, roof: false, roofSpec: null, bh: [], mix: new Map(), rev: 0, blocks: new Map(), walls: new Set(), wstyle: new Map(), zones: [], multis: [], notes: [], openings: [], dims: [], flights: [], routes: new Map(), paths: new Set(), oposts: new Set(), pk: new Map(), wh: new Map(), bands: new Set() }; }
 /* 3D ground around the build, saved with each plan */
 const GROUND_BLOCKS = ['grass_block', 'dirt', 'coarse_dirt', 'rooted_dirt', 'podzol', 'mycelium', 'moss_block', 'mud', 'clay', 'sand', 'red_sand', 'gravel', 'snow_block', 'stone', 'deepslate', 'terracotta', 'netherrack', 'soul_sand', 'soul_soil', 'end_stone'];
 const deTerrain = x => ({ block: x && typeof x.block === 'string' && BY_ID[x.block] ? x.block : null, margin: clampInt(x == null || x.margin == null ? NaN : x.margin, 0, 64, 16) });
@@ -4911,6 +4911,7 @@ function serLevel(l) {
   return { name: l.name, height: l.height, rock: l.rock || 0, thick: l.thick || 1, cavity: !!l.cavity, cables: !!l.cables, roof: !!l.roof, roofSpec: l.roofSpec || null, bh: l.bh || [], mix: (() => { const by = {}; for (const [k, id] of l.mix || []) if (l.blocks.has(k)) (by[id] = by[id] || new Set()).add(k); const o = {}; for (const id in by) o[id] = encodeCells(by[id]); return o; })(), pal, rows,
     zones: l.zones.map(z => ({ id: z.id, name: z.name, color: z.color, cells: encodeCells(z.cells) })),
     multis: l.multis.map(m => ({ id: m.id, stamp: m.stamp, x: m.x, z: m.z, rot: m.rot, label: m.label, dy: m.dy || 0, color: m.color || null })),
+    wh: (() => { const by = {}; for (const [k, h] of l.wh || []) if (l.walls.has(k)) (by[h] = by[h] || new Set()).add(k); const o = {}; for (const h in by) o[h] = encodeCells(by[h]); return o; })(),
     walls: encodeCells(l.walls), wstyle: (() => { const by = {}; for (const [k, st] of l.wstyle || []) (by[st] = by[st] || new Set()).add(k); const o = {}; for (const st in by) o[st] = encodeCells(by[st]); return o; })(), notes: l.notes.map(n => ({ id: n.id, x: n.x, z: n.z, text: n.text })), openings: (l.openings || []).map(o => ({ id: o.id, kind: o.kind, x: o.x, z: o.z, ax: o.ax, w: o.w, h: o.h, sill: o.sill, glass: o.glass, dp: o.dp || 1, out: o.out || 1, style: o.style || 'plain', trim: o.trim || null, dt: o.dt || null, gd: o.gd === 'full' || o.gd === 'inner' ? o.gd : undefined })), dims: (l.dims || []).map(d => ({ id: d.id, ax: d.ax, a: d.a, b: d.b, ra: d.ra, rb: d.rb, off: d.off, div: d.div, read: d.read && d.read !== 'len' ? d.read : undefined })),
     flights: (l.flights || []).map(f => ({ ...f })), paths: encodeCells([...(l.paths || [])].filter(k => l.blocks.has(k))), oposts: encodeCells([...(l.oposts || [])].filter(k => l.blocks.has(k))), pk: [...(l.pk || [])].filter(([k]) => l.blocks.has(k)).map(([k, e]) => [k, ...e]), bands: encodeCells([...(l.bands || [])].filter(k => l.blocks.has(k))), pg: (() => { const by = {}; for (const [k, g] of l.pg || []) if (l.walls.has(k)) (by[g] = by[g] || new Set()).add(k); const o = {}; for (const g in by) o[g] = encodeCells(by[g]); return o; })(),
     routes: [...l.routes].filter(([, set]) => set.size).map(([net, set]) => ({ net, cells: encodeCells(set) })) };
@@ -4923,6 +4924,7 @@ function deLevel(id, d) {
     zones: (Array.isArray(d.zones) ? d.zones : []).filter(z => z && typeof z === 'object').map(z => ({ id: SEG_RE.test(str(z.id)) ? z.id : uid('z'), name: str(z.name, 'Zone').slice(0, 48), color: COLOR_RE.test(str(z.color)) ? z.color : ZONE_COLORS[0], cells: decodeCells(str(z.cells)), ver: ++zoneVer })),
     multis: (Array.isArray(d.multis) ? d.multis : []).filter(m => m && typeof m === 'object').map(m => ({ id: SEG_RE.test(str(m.id)) ? m.id : uid('m'), stamp: str(m.stamp), x: clampInt(m.x, -1e6, 1e6, 0), z: clampInt(m.z, -1e6, 1e6, 0), rot: clampInt(m.rot, 0, 3, 0), label: str(m.label).slice(0, 48), dy: clampInt(m.dy, -256, 256, 0), color: COLOR_RE.test(str(m.color)) ? m.color : null })),
     walls: decodeCells(str(d.walls)),
+    wh: (() => { const m = new Map(); if (d.wh && typeof d.wh === 'object') for (const [h, cells] of Object.entries(d.wh)) { const v = clampInt(h, 1, 64, 0); if (v) for (const k of decodeCells(str(cells))) m.set(k, v); } return m; })(),   // plain walls set to their own height
     wstyle: (() => { const m = new Map(); if (d.wstyle && typeof d.wstyle === 'object') for (const [st0, cells] of Object.entries(d.wstyle)) { const st = normWS(st0); if (st) for (const k of decodeCells(str(cells))) m.set(k, st); } return m; })(),
     notes: (Array.isArray(d.notes) ? d.notes : []).filter(n => n && typeof n === 'object').map(n => ({ id: SEG_RE.test(str(n.id)) ? n.id : uid('n'), x: clampInt(n.x, -1e6, 1e6, 0), z: clampInt(n.z, -1e6, 1e6, 0), text: str(n.text, 'Note').slice(0, 80) })),
     openings: (Array.isArray(d.openings) ? d.openings : []).slice(0, 2000).map(deOpening).filter(Boolean),
@@ -5316,7 +5318,7 @@ function startSettingsSync(db, id) {
 /* ================= history ================= */
 function metaSnap() {
   return JSON.stringify({ bldgs: plan.bldgs.map(b => ({ id: b.id, name: b.name, order: b.order, ground: b.ground, ...(b.icon ? { icon: b.icon } : {}), ...(b.posts ? { posts: b.posts } : {}), ...(b.pgroups && Object.keys(b.pgroups).length ? { pgroups: b.pgroups } : {}) })), mixes: plan.mixes || [], stamps: plan.stamps, anchors: plan.anchors, networks: plan.networks, terrain: plan.terrain,
-    lv: [...plan.levels.values()].map(l => ({ id: l.id, name: l.name, height: l.height, rock: l.rock || 0, thick: l.thick || 1, cavity: !!l.cavity, cables: !!l.cables, roof: !!l.roof, roofSpec: l.roofSpec || null, bh: l.bh || [], zones: l.zones.map(z => ({ id: z.id, name: z.name, color: z.color, cells: [...z.cells] })), multis: l.multis, notes: l.notes, openings: l.openings || [], dims: l.dims || [], flights: l.flights || [], paths: [...(l.paths || [])], oposts: [...(l.oposts || [])], pk: [...(l.pk || [])], bands: [...(l.bands || [])], pg: [...(l.pg || [])], routes: [...l.routes].map(([n, set]) => [n, [...set]]) })) });
+    lv: [...plan.levels.values()].map(l => ({ id: l.id, name: l.name, height: l.height, rock: l.rock || 0, thick: l.thick || 1, cavity: !!l.cavity, cables: !!l.cables, roof: !!l.roof, roofSpec: l.roofSpec || null, bh: l.bh || [], zones: l.zones.map(z => ({ id: z.id, name: z.name, color: z.color, cells: [...z.cells] })), multis: l.multis, notes: l.notes, openings: l.openings || [], dims: l.dims || [], flights: l.flights || [], paths: [...(l.paths || [])], oposts: [...(l.oposts || [])], pk: [...(l.pk || [])], wh: [...(l.wh || [])], bands: [...(l.bands || [])], pg: [...(l.pg || [])], routes: [...l.routes].map(([n, set]) => [n, [...set]]) })) });
 }
 function restoreMeta(json) {
   const m = JSON.parse(json);
@@ -5334,7 +5336,7 @@ function restoreMeta(json) {
     l.openings = (d.openings || []).map(deOpening).filter(Boolean);
     l.dims = (d.dims || []).map(deDim).filter(Boolean);
     l.flights = (d.flights || []).map(deFlight).filter(Boolean);
-    l.paths = new Set(d.paths || []); l.oposts = new Set(d.oposts || []); l.pk = new Map((d.pk || []).map(([k, e]) => [k, e.slice()])); l.bands = new Set(d.bands || []); l.pg = new Map(d.pg || []);
+    l.paths = new Set(d.paths || []); l.oposts = new Set(d.oposts || []); l.pk = new Map((d.pk || []).map(([k, e]) => [k, e.slice()])); l.wh = new Map(d.wh || []); l.bands = new Set(d.bands || []); l.pg = new Map(d.pg || []);
     l.routes = new Map((d.routes || []).map(([n, arr]) => [n, new Set(arr)]));
   }
   if (!allLids().includes(curLid)) curLid = defaultLid();
@@ -5373,6 +5375,7 @@ function setBlock(L, key, val) {
   if (L.oposts && L.oposts.size && !POSTING) L.oposts.delete(key);
   if (L.pk && L.pk.size && !POSTING && L.pk.delete(key) && L.bands) L.bands.delete(key);
   if (val == null && L.pg && L.pg.size && !POSTING) L.pg.delete(key);
+  if (val == null && L.wh && L.wh.size) L.wh.delete(key);
   if (tx) { const tk = L.id + '|' + key; if (!tx.blocks.has(tk)) tx.blocks.set(tk, { lid: L.id, key, before: prev }); }
   if (val == null) L.blocks.delete(key); else L.blocks.set(key, val);
 }
@@ -5389,11 +5392,72 @@ function setCellVal(L, field, tag, flag, key, v) {
 function setWStyle(L, key, st) { setCellVal(L, 'wstyle', 's', 'ws', key, st); }
 /* a block painted with a mix keeps the mix, so walls and thick floors come out mixed all the way up in 3D and the export */
 function setMix(L, key, id) { setCellVal(L, 'mix', 'x', 'mx', key, id); }
+/* ================= wall heights =================
+   With Inspect: Ctrl-click (⌘ on a Mac) a plain wall block to set how high it goes; Ctrl+Shift-click picks the straight run it's in, and adds it to
+   what's picked. The bar that comes up sets the height; the roof stays at the floor's height */
+const whPlain = (L, k) => L.walls.has(k) && L.blocks.has(k) && !(L.wstyle && L.wstyle.get(k));
+function whRun(L, x, z) {
+  const i = levelIndex(curLid), op = openingDeco(L, i).col, k0 = K(x, z), plain = k => whPlain(L, k) && !op.has(k);
+  const has = (a, b) => L.walls.has(K(a, b));
+  const ax = has(x - 1, z) || has(x + 1, z) ? [1, 0] : [0, 1], perp = [ax[1], ax[0]], out = new Set([k0]);
+  for (const d of [1, -1]) {
+    let cx = x, cz = z;
+    for (let n = 0; n < 512; n++) {
+      // a corner or a wall branching off ends the run; the corner block itself is part of it
+      if ((cx !== x || cz !== z) && (has(cx + perp[0], cz + perp[1]) || has(cx - perp[0], cz - perp[1]))) break;
+      cx += ax[0] * d; cz += ax[1] * d; const k = K(cx, cz);
+      if (!plain(k)) break; out.add(k);
+    }
+  }
+  return out;
+}
+const whState = { keys: new Set(), lid: null };
+const whKeys = () => whState.lid === curLid ? whState.keys : new Set();
+function whPick(x, z, run) {
+  const L = curLevel(), k = K(x, z); if (!L || !whPlain(L, k)) { if (L && L.walls.has(k)) toast('Only plain walls take their own height. Walls with a design keep theirs.'); return false; }
+  if (whState.lid !== curLid) { whState.keys = new Set(); whState.lid = curLid; }
+  if (run) { for (const q of whRun(L, x, z)) whState.keys.add(q); }
+  else if (whState.keys.size === 1 && whState.keys.has(k)) whState.keys = new Set();
+  else whState.keys = new Set([k]);
+  renderWhBar(); return true;
+}
+function whClear() { if (!whState.keys.size) return false; whState.keys = new Set(); renderWhBar(); requestDraw(); return true; }
+function setWallHeights(h) {
+  const L = curLevel(), i = levelIndex(curLid), ks = [...whKeys()].filter(k => whPlain(L, k)); if (!ks.length) return;
+  txBegin(h == null ? 'Walls back to the floor height' : `Wall height ${h}`);
+  if (!L.wh) L.wh = new Map();
+  for (const k of ks) { if (h == null || h === hAt(i, k)) L.wh.delete(k); else L.wh.set(k, Math.min(h, wallCap(L, i, k))); }
+  L.rev = (L.rev || 0) + 1; txCommit(); renderWhBar(); requestDraw(); schedule3D();
+}
+function renderWhBar() {
+  let bar = $('#whbar'); const ks = [...whKeys()], L = curLevel();
+  if (!ks.length || !L || view.tool !== 'pointer' || view.is3D) { if (bar) bar.hidden = true; return; }
+  if (!bar) { bar = el('div', { class: 'selbar whbar', id: 'whbar', role: 'toolbar', 'aria-label': 'Wall height' }); vp.append(bar); }
+  const i = levelIndex(curLid), hs = new Set(ks.map(k => wallH(L, i, k))), cap = Math.min(...ks.map(k => wallCap(L, i, k))), cur = hs.size === 1 ? [...hs][0] : null, any = ks.some(k => L.wh && L.wh.has(k));
+  bar.hidden = false;
+  bar.replaceChildren(...[el('span', { class: 'whn', text: `${ks.length} wall block${ks.length === 1 ? '' : 's'}` }), el('span', { class: 'whl', text: 'Height' }),
+    stepBox('Wall height', cur == null ? hOf(i) : cur, 1, cap, v => setWallHeights(v)), cur == null ? el('span', { class: 'whn', text: 'mixed' }) : null,
+    el('button', { class: 'btn sm', disabled: any ? null : true, title: `Back to the floor's height, ${hOf(i)}`, onclick: () => setWallHeights(null) }, icon('undo'), 'Floor height'),
+    el('button', { class: 'ib sm', title: 'Done (Esc)', 'aria-label': 'Done', onclick: whClear }, icon('x'))].filter(Boolean));
+}
+/* on the plan: the picked wall blocks outlined, and each wall with its own height marked with it */
+function drawWallHeights() {
+  const L = curLevel(); if (!L || view.is3D) return; const ks = whKeys(), z = view.z, i = levelIndex(curLid);
+  if (!ks.size && !(L.wh && L.wh.size)) return;
+  cx.save(); cx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  if (L.wh && L.wh.size && z >= 14) {
+    cx.font = `700 ${Math.round(Math.min(z * 0.5, 14))}px ${getComputedStyle(document.body).fontFamily}`; cx.textAlign = 'center'; cx.textBaseline = 'middle';
+    for (const [k, h] of L.wh) { if (!L.walls.has(k)) continue; const [x, zz] = parseK(k), sx = view.ox + (x + 0.5) * z, sy = view.oy + (zz + 0.5) * z; if (sx < -z || sy < -z || sx > W + z || sy > H + z) continue;
+      const v = wallH(L, i, k); cx.fillStyle = 'rgba(0,0,0,.55)'; cx.beginPath(); cx.arc(sx, sy, z * 0.34, 0, Math.PI * 2); cx.fill(); cx.fillStyle = '#fff'; cx.fillText(String(v), sx, sy + 0.5); }
+  }
+  if (ks.size) { cx.strokeStyle = T.accent || '#b9481a'; cx.lineWidth = 2; for (const k of ks) { const [x, zz] = parseK(k); cx.strokeRect(view.ox + x * z + 1, view.oy + zz * z + 1, z - 2, z - 2); } }
+  cx.restore();
+}
 function setWall(L, key, on) {
   const prev = L.walls.has(key); if (prev === on) return;
   L.rev = (L.rev || 0) + 1;
   if (tx) { const tk = 'w|' + L.id + '|' + key; if (!tx.blocks.has(tk)) tx.blocks.set(tk, { lid: L.id, key, before: prev, wall: true }); }
-  if (on) L.walls.add(key); else L.walls.delete(key);
+  if (on) L.walls.add(key); else { L.walls.delete(key); if (L.wh && L.wh.size) L.wh.delete(key); }
   if (!on && L.wstyle && L.wstyle.has(key)) setWStyle(L, key, null);
 }
 function txCommit() {
@@ -7300,8 +7364,11 @@ function placeOpening(kind, x, z, x2, z2) {
 function removeOpeningAt(x, z) { const L = curLevel(), ex = L && openingMap(L).get(K(x, z)); if (ex) placeOpening(ex.kind, x, z); }
 /* a wall block rises the full floor height, except where a doorway or window opens it or its style changes it.
    A styled wall stands a block higher: its top is level with the floor above, so a rampart's walk meets that floor */
+/* a plain wall can have its own height: lower than its floor, or taller where nothing is above it, but never into the floor above */
+const wallCap = (L, i, k) => i + 1 < plan.order.length && lv(i + 1) && lv(i + 1).blocks.has(k) ? hAt(i, k) : 64;
+const wallH = (L, i, k) => { const v = L.wh && L.wh.get(k); return v && !(L.wstyle && L.wstyle.get(k)) ? Math.min(v, wallCap(L, i, k)) : hAt(i, k); };
 function wallColumn(L, i, k, b, put) {
-  const t = thickOf(i), top = t + hAt(i, k), st = L.wstyle && L.wstyle.get(k);
+  const t = thickOf(i), top = t + wallH(L, i, k), st = L.wstyle && L.wstyle.get(k);
   if (st && FENCE_IDS.has(wsId(st))) { fenceColumn(L, i, k, b, st, put, styledBase(L, i, k), riseOf(L, i, k)); return; }
   const ov = openingDeco(L, i).col.get(k), y0 = st ? styledBase(L, i, k) : fillFromBelow(i, k), y1 = st ? top + riseOf(L, i, k) : top;
   const mx = L.mix && L.mix.size && L.mix.get(k) ? parseK(k) : null;
@@ -9045,7 +9112,7 @@ function draw() {
   if (view.is3D) return;
   if (!plan || !curLevel()) { cx.setTransform(1, 0, 0, 1, 0, 0); cx.fillStyle = T.paper || '#e5e8e2'; cx.fillRect(0, 0, cv.width, cv.height); return; }
   paintScene(cx, { Z: view.z * dpr, OX: view.ox * dpr, OY: view.oy * dpr, Wpx: cv.width, Hpx: cv.height, s: dpr, live: true, L: curLevel() });
-  placeObjBar();
+  drawWallHeights(); placeObjBar();
 }
 function zoomAt(sx, sy, f) {
   const nz = clamp(view.z * f, ZMIN, ZMAX); if (nz === view.z) return;
@@ -9176,6 +9243,7 @@ function toolDown(p, e) {
   if (store.readOnly && !['pointer', 'measure', 'axis'].includes(G.tool)) { G = null; return; }
   switch (G.tool) {
     case 'pointer': {
+      if (!store.readOnly && e && (e.ctrlKey || e.metaKey) && whPick(x, z, e.shiftKey)) { G = null; requestDraw(); return; }
       const hd = !store.readOnly && handleAt(p, e && e.pointerType !== 'mouse');
       if (hd && hd.a) { G.resize = { a: hd.a, bb: { ...hd.bb }, hx: hd.hx, hz: hd.hz }; G.txOpen = txBegin(`Resized ${hd.a.label || 'an area pin'}`); cancelLongPress(); break; }
       if (hd) { G.resize = { zn: hd.zn, orig: new Set(hd.zn.cells), bb: { ...hd.bb }, hx: hd.hx, hz: hd.hz, dx: 0, dz: 0 }; G.txOpen = txBegin(`Resized ${hd.zn.name || 'a zone'}`); cancelLongPress(); break; }
@@ -9469,7 +9537,7 @@ window.addEventListener('keydown', e => {
   if (mod || e.altKey) return;
   if (e.key === 'Home' && view.is3D && !pov.on) { e.preventDefault(); resetView3D(); return; }
   if (e.key === ' ') { if (!spaceDown) { spaceDown = true; cv.classList.add('grab'); } e.preventDefault(); return; }
-  if (e.key === 'Escape') { if (G) cancelGesture(); else if (view.tool === 'path' && cancelPath()) {} else if (view.tool === 'stair' && view.flightSel) { view.flightSel = null; renderOptbar(); requestDraw(); } else if (view.bhPick) stopBH(); else if (view.roofPick) roofPickCancel(); else if (floating.active) endFloat(true); else if (mirror.placing) { mirror.placing = false; renderOptbar(); } else if (view.tool === 'extend' && ext.cells.size) { extClear(); renderOptbar(); requestDraw(); } else if (view.measure) { view.measure = null; requestDraw(); } else if (view.roomSel && view.tool === 'pointer') { view.roomSel = null; renderInspector(); requestDraw(); } else if (view.selected) { view.selected = null; renderInspector(); requestDraw(); } else clearSel(); return; }
+  if (e.key === 'Escape') { if (G) cancelGesture(); else if (whClear()) {} else if (view.tool === 'path' && cancelPath()) {} else if (view.tool === 'stair' && view.flightSel) { view.flightSel = null; renderOptbar(); requestDraw(); } else if (view.bhPick) stopBH(); else if (view.roofPick) roofPickCancel(); else if (floating.active) endFloat(true); else if (mirror.placing) { mirror.placing = false; renderOptbar(); } else if (view.tool === 'extend' && ext.cells.size) { extClear(); renderOptbar(); requestDraw(); } else if (view.measure) { view.measure = null; requestDraw(); } else if (view.roomSel && view.tool === 'pointer') { view.roomSel = null; renderInspector(); requestDraw(); } else if (view.selected) { view.selected = null; renderInspector(); requestDraw(); } else clearSel(); return; }
   if (e.key.startsWith('Arrow') && !view.is3D && plan && !e.defaultPrevented) {
     const d = (e.shiftKey ? 10 : 3) * view.z;
     view.ox += e.key === 'ArrowLeft' ? d : e.key === 'ArrowRight' ? -d : 0; view.oy += e.key === 'ArrowUp' ? d : e.key === 'ArrowDown' ? -d : 0;
@@ -10673,7 +10741,7 @@ function ribbonGroupsFrom(rows, acts) {
   if (!real.length && hints.length) out.push(el('div', { class: 'rb-g rb-note' }, el('div', { class: 'rb-gi' }, el('p', { text: hints[0], title: hints[0] })), el('div', { class: 'rb-gc', text: '' })));
   return out;
 }
-function renderOptbar() {
+function renderOptbar() { renderWhBar();
   renderTopTools(); renderPickbar(); renderBHbar();
   if (ribbonOn()) { renderRibbon(); return; }
   if (!isMobile()) { renderSide(); return; }
@@ -12888,6 +12956,7 @@ const shortcutGroups = () => shortcutRaw().map(([t, rows]) => [t, rows.filter(r 
 const shortcutRaw = () => [
   ['Tools', [[kk('pointer', 'pan'), 'Pick, pan'], [kk('pencil', 'line'), 'Pencil'], [kk('shape', 'circle'), 'Shape'], [kk('bucket', 'path'), 'Fill, path'], [kk('select', 'eraser', 'extend'), 'Select, eraser, extend up'], [kk('stair', 'door', 'window', 'roof'), 'Stairs, doorway, window, roof'], [kk('zone', 'stamp', 'route'), 'Zone, multiblock, route'], [kk('note', 'anchor', 'measure'), 'Note, anchor, measure']]],
   ['Drawing', [[kk('swapBlocks'), 'Swap the Primary and Secondary blocks'], [kk('wallMode'), 'Wall mode on / off'], [kk('resetBlocks'), 'Primary and Secondary back to the defaults'], [kk('fillMode'), 'Fill: solid, frame or room'], [`Shift + a tool's key`, 'Change that tool’s shape: pencil (freehand, line, path), shape, select, eraser, zone'], ['Shift while drawing', 'Keep a shape 1:1: a square, a circle'], ['Alt while drawing', 'Erase instead of place'], [kk('turn'), 'Turn the stair you are placing, or a multiblock'], [kk('flipHalf'), 'Upside-down stair or top-half slab'], ['[ / ]', 'Brush size smaller / bigger (Pencil, Eraser, Path, roof brush)'], ['[ ]  with a shape', 'Size across; Alt: down; Shift: both; Shift+Alt: square'], ['Right-click', 'Pick a block (with its facing), or quick actions']]],
+  ['Wall heights', [['Ctrl+click a wall', 'With Inspect: pick that wall block to set its height'], ['Ctrl+Shift+click', 'Add the straight run of wall it’s in'], ['Esc', 'Done']]],
   ['Editing', [['Shift / Alt while selecting', 'Add / subtract (both: intersect)'], [`${kk('turn')} / Shift+${kk('turn')}`, 'Turn the selection right / left'], ['Ctrl+C / Ctrl+X / Ctrl+V', 'Copy, move, paste blocks'], ['Enter', 'Fill the selection, build up what Extend picked, or lay a path'], ['Delete', 'Erase the selection or the picked object'], ['Ctrl+Z / Ctrl+Shift+Z', 'Undo / redo'], ['Right-click undo', 'Undo history'], ['Ctrl+D or Esc', 'Deselect']]],
   ['Floors and view', [['PgDn PgUp', 'Floor down / up'], ['Right-click a floor tag', 'That floor’s settings'], ['Space + drag', 'Pan with any tool'], ['Scroll, + / −, 0', 'Zoom, fit to screen'], ['Alt with the Ruler', 'A quick measurement that isn’t kept'], ['Ctrl+K', 'Search tools, blocks, floors and actions'], ['Arrow keys', 'Move the view a few cells (Shift: further)'], ['?', 'These keys']]],
   ['3D', [['Alt + drag', 'Orbit round the block under the cursor'], ['Alt + scroll', 'Zoom in on the block under the cursor'], ['Home', 'Back to the whole build']]]];
@@ -14768,12 +14837,13 @@ function build3D(refit) {
 }
 
 /* ================= wiring ================= */
-function renderAll() {
+function renderAll() { renderWhBar();
   if (!plan) return;
   syncBldTools();
   renderPlanName(); renderRail(); renderOptbar(); renderPanel(); renderFloorChip(); renderStatus(); renderSelbar(); renderInspector(); updateUndoUI(); renderGroundUI(); renderMobWarn(); requestDraw(); schedule3D(); if (!isMobile()) renderDock();
 }
-function renderAfterChange() { syncBldTools(); renderRail(); renderPanel(); renderFloorChip(); renderStatus(); renderSelbar(); renderInspector(); updateUndoUI(); renderGroundUI(); renderMobWarn(); if (view.tool === 'roof' || BLOCK_TOOLS.has(view.tool)) renderOptbar(); requestDraw(); schedule3D(); }
+function renderAfterChange() { renderWhBar();
+ syncBldTools(); renderRail(); renderPanel(); renderFloorChip(); renderStatus(); renderSelbar(); renderInspector(); updateUndoUI(); renderGroundUI(); renderMobWarn(); if (view.tool === 'roof' || BLOCK_TOOLS.has(view.tool)) renderOptbar(); requestDraw(); schedule3D(); }
 
 function wire() {
   $('#undoBtn').append(icon('undo')); $('#redoBtn').append(icon('redo')); $('#layersBtn').append(icon('tune')); $('#searchBtn').append(icon('search')); $('#exportBtn').append(icon('download'), el('span', { class: 'tl', text: 'Export' })); $('#moreBtn').append(icon('more')); $('#objBtn').append(icon('stamp'), el('span', { class: 'tl', text: 'Objects' })); $('#winClose').append(icon('x')); $('#modalClose').append(icon('x'));
