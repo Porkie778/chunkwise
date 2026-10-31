@@ -2154,6 +2154,19 @@ function makeSwatch(id) {
   const C = swCanvases(), cv = C.out, g = C.og; g.clearRect(0, 0, ISO_W, ISO_W);
   // drawn at twice the size and scaled down smoothly, so the edges are clean; '#iso' tells the CSS not to show them pixelated
   const done = src => { g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high'; g.drawImage(src, 0, 0, ISO_W, ISO_W); return cv.toDataURL() + '#iso'; };
+  // fences and walls as the game shows them in the inventory: two posts joined by two rails, or a post with a wall through it
+  if (B && (B.shape === 'fence' || B.shape === 'wall')) {
+    const big = C.big, bg = C.bg; bg.setTransform(1, 0, 0, 1, 0, 0); bg.globalAlpha = 1; bg.globalCompositeOperation = 'source-over'; bg.clearRect(0, 0, ISO_W * 2, ISO_W * 2); bg.imageSmoothingEnabled = false;
+    const u = 1 / 16, bx = a => isoBox(bg, F, ...a.map(v => v * u));
+    if (B.shape === 'fence') for (const a of [[6, 0, 0, 10, 16, 4], [7, 12, 4, 9, 15, 12], [7, 6, 4, 9, 9, 12], [6, 0, 12, 10, 16, 16]]) bx(a);
+    else for (const a of [[5, 0, 0, 11, 13, 4], [4, 0, 4, 12, 16, 12], [5, 0, 12, 11, 13, 16]]) bx(a);
+    // they're narrower than a block, so they're drawn larger to fill the picture the way the game fills the slot
+    const N = big.width, d = bg.getImageData(0, 0, N, N).data; let x0 = N, y0 = N, x1 = 0, y1 = 0;
+    for (let y = 0; y < N; y += 2) for (let x = 0; x < N; x += 2) if (d[(y * N + x) * 4 + 3] > 8) { if (x < x0) x0 = x; if (x > x1) x1 = x; if (y < y0) y0 = y; if (y > y1) y1 = y; }
+    if (x1 <= x0) return done(big);
+    const sz = Math.max(x1 - x0, y1 - y0) / 0.9, cx = (x0 + x1) / 2, cy = (y0 + y1) / 2;
+    g.imageSmoothingEnabled = true; g.imageSmoothingQuality = 'high'; g.drawImage(big, cx - sz / 2, cy - sz / 2, sz, sz, 0, 0, ISO_W, ISO_W); return cv.toDataURL() + '#iso';
+  }
   if (B && B.shape && B.shape !== 'stairs' && B.shape !== 'slab') {   // flat pictures: blown up square, pixels kept sharp
     const S = ATL.S; if (C.tile.width !== S) C.tile.width = C.tile.height = S; const tg = C.tg; tg.clearRect(0, 0, S, S); tg.imageSmoothingEnabled = false; shapeSwatchInto(tg, B, F.n, S);
     g.imageSmoothingEnabled = false; g.drawImage(C.tile, 0, 0, ISO_W, ISO_W); return cv.toDataURL() + '#iso';
@@ -2163,6 +2176,8 @@ function makeSwatch(id) {
     : B.top ? [[0, 0.5, 0, 1, 1, 1], [0, 0, 0, 1, 0.5, 0.5]] : [[0, 0, 0, 1, 0.5, 1], [0, 0.5, 0, 1, 1, 0.5]];
   // the built-in grass block has one picture for every face; give it dirt sides with a grass edge, as in the game
   if (id === 'grass_block' && F.s === F.u && TEXF.dirt) { const D = TEXF.dirt; isoBox(bg, { u: F.u, s: D.s, e: D.e }, 0, 0, 0, 1, 1, 1); isoBox(bg, { s: F.u, e: F.u }, 0, 13 / 16, 0, 1, 1, 1); return done(big); }
+  // pistons as their item: pointing up, the head on top and the sides with their wooden end at the top
+  if (id === 'piston' || id === 'sticky_piston') { isoBox(bg, { u: F.s, s: F.e, e: F.e }, 0, 0, 0, 1, 1, 1); return done(big); }
   for (const bx of boxes) isoBox(bg, F, ...bx);
   return done(big);
 }
