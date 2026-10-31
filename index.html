@@ -358,7 +358,7 @@ label.v3row,.v3row>label{cursor:pointer}
 .prpick img{width:28px;height:28px;image-rendering:pixelated;border-radius:4px;flex:none}.prpick span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .prpick:hover{border-color:var(--accent)}
 .prcard.own .prpick{padding-right:24px}.prdel{position:absolute;right:2px;top:50%;transform:translateY(-50%)}
-.prsave{display:flex;gap:6px}.bpresets{display:flex;gap:6px;flex-wrap:wrap}.prsave .field{flex:1;min-width:0}
+.prsave{display:flex;gap:6px}.bpresets{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px}.bsub{margin:0 0 6px;font:600 11px var(--f-ui);letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}.bsub+.mixes{margin:0 0 18px}.mixnew{border-style:dashed!important;color:var(--ink-2);background:transparent}.mixnew svg.i{width:22px;height:22px;margin:8px auto 2px}.prsave .field{flex:1;min-width:0}
 .cswap:hover{color:var(--ink);background:var(--panel)}
 .objbar .ib.sm{width:32px;height:32px}
 .objbar .ib.danger{color:var(--danger)}
@@ -734,6 +734,19 @@ h4{margin:0 0 8px;font-size:12px;color:var(--ink-2);font-weight:700}
 .msep{height:1px;background:var(--line);margin:5px 4px}
 .mnote{margin:6px 10px 4px;max-width:250px;font-size:11.5px;line-height:1.4;color:var(--ink-2)}
 .sbbox{display:grid;gap:10px;width:min(360px,calc(100vw - 64px))}.sbbox p{margin:0;font-size:13px;line-height:1.45}.sbmsg{min-height:1em;color:var(--ink-2)}.sbmsg.bad{color:var(--danger)}.sblinks{display:flex;justify-content:space-between;gap:8px}.sblab{font-size:12px;font-weight:700;color:var(--ink-2);margin-bottom:-4px}.sbrow{display:flex;gap:8px}.sbrow .field{flex:1;min-width:0}.sbacts{display:flex;flex-wrap:wrap;gap:8px}.sbwarn{padding:10px 12px;border-radius:8px;background:color-mix(in srgb,var(--danger) 12%,transparent);color:var(--danger);font-weight:700}
+.swapflash{position:absolute;left:50%;top:50%;z-index:30;display:grid;justify-items:center;gap:4px;min-width:170px;max-width:240px;padding:18px 22px 16px;border:1px solid var(--line);border-radius:16px;background:var(--panel);box-shadow:var(--shadow);text-align:center;pointer-events:none;transform:translate(-50%,-50%);animation:sfin .16s ease-out,sfout .25s ease-in calc(var(--fl) - 0ms) forwards}
+.swapflash .sfpic{width:96px;height:96px;display:grid;place-items:center;margin-bottom:6px}.swapflash img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated}
+.swapflash strong{font-size:15px;line-height:1.25;overflow-wrap:anywhere}.swapflash span{font-size:12.5px;color:var(--ink-2)}
+@keyframes sfin{from{opacity:0;transform:translate(-50%,-50%) scale(.85)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}
+@keyframes sfout{to{opacity:0;transform:translate(-50%,-50%) scale(.96)}}
+@media (prefers-reduced-motion:reduce){.swapflash{animation:sfout .2s linear var(--fl) forwards}}
+
+.splitv .view3d{border-left:0}.splitv .cornersw{translate:var(--sx2) 0}.splitv .swapflash{left:calc(var(--sx2) + var(--sw2) / 2)}.splitbar{position:absolute;top:0;bottom:0;width:10px;margin-left:-5px;z-index:4;cursor:col-resize;touch-action:none}
+.splitbar::before{content:'';position:absolute;left:4px;top:0;bottom:0;width:2px;background:var(--line)}.splitbar:hover::before,.splitbar.drag::before{background:var(--accent)}
+.splith{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);display:grid;place-items:center;width:30px;height:30px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--panel);color:var(--ink);box-shadow:var(--shadow);cursor:pointer}
+.splith:hover{border-color:var(--accent);color:var(--accent)}.splith svg.i{width:15px;height:15px}
+@media (max-width:820px){#vSegSp{display:none}}
+
 /* home: the plans as tiles */
 .home{position:fixed;inset:0;z-index:40;display:grid;grid-template-rows:auto minmax(0,1fr);background:var(--paper);color:var(--ink)}
 .hm-top{display:flex;align-items:center;gap:12px;padding:10px 20px;border-bottom:1px solid var(--line);background:var(--panel);min-height:56px}
@@ -1361,6 +1374,20 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 .dk-roofrow .dk-fn{font-weight:500;font-style:italic}
 .dk-roofrow:not(.on) .dk-fb{height:30px}
 .dk-chips{display:grid;grid-template-columns:1fr;gap:8px}
+.dk-tiles{display:grid;grid-template-columns:1fr auto 1fr;align-items:center;gap:6px}.dk-tiles.dimmed{opacity:.55}
+.dk-tile{display:grid;justify-items:center;gap:3px;min-width:0;padding:10px 6px 8px;border:1px solid var(--line);border-radius:10px;background:var(--panel);text-align:center}
+.dk-tile.on{border:2px solid var(--ink);padding:9px 5px 7px}.dk-tile:hover{background:var(--panel-2)}
+.dk-tpic{display:grid;place-items:center;width:100%;aspect-ratio:1;max-width:84px}.dk-tpic img{width:100%;height:100%;object-fit:contain;image-rendering:pixelated;border-radius:6px}
+.dk-tile small{font:600 9.5px var(--f-mono);letter-spacing:.06em;text-transform:uppercase;color:var(--ink-2);margin-top:2px}
+.dk-tile b{max-width:100%;font-size:12.5px;font-weight:600;line-height:1.25;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;word-break:break-word}
+.dk-swapc{display:grid;justify-items:center;gap:4px}.dk-swap{display:grid;place-items:center;width:32px;height:32px;border:1px solid var(--line);border-radius:50%;background:var(--panel);color:var(--ink)}.dk-swap:hover{background:var(--panel-2)}.dk-swap svg.i{width:16px;height:16px}
+.dk-swapc kbd{font:600 10px var(--f-mono);color:var(--ink-2);padding:1px 5px;border:1px solid var(--line);border-radius:4px}
+.dk-tiles + .dk-pair{margin-top:8px}
+.dk-fold{display:flex;align-items:center;gap:6px;width:100%;min-height:28px;padding:0;border:0;background:none;color:var(--ink-2);text-align:left}
+.dk-fold h3{margin:0;font:600 11px var(--f-ui);letter-spacing:.08em;text-transform:uppercase}.dk-fold svg.i{width:14px;height:14px;transform:rotate(-90deg);transition:transform .12s}.dk-fold[aria-expanded="true"] svg.i{transform:none}
+.dk-fold i{font-style:normal;font:600 10px var(--f-mono);padding:0 5px;border-radius:8px;background:var(--panel-2)}.dk-foldsec>.dk-fold+*{margin-top:6px}
+.dk-newmix{display:flex;align-items:center;justify-content:center;gap:6px;height:36px;margin-top:4px;border:1.5px dashed var(--line);border-radius:8px;background:transparent;color:var(--ink-2);font-weight:600;font-size:12.5px}.dk-newmix:hover{border-color:var(--accent);color:var(--accent)}.dk-newmix svg.i{width:16px;height:16px}
+
 .dk-chip{display:flex;align-items:center;gap:11px;height:52px;padding:0 12px;border:1px solid var(--line);border-radius:9px;background:var(--panel);text-align:left;min-width:0}
 .dk-chip.on{border:2px solid var(--ink);padding:0 11px}
 .dk-chip img{width:30px;height:30px;image-rendering:pixelated;border-radius:4px;flex:none}
@@ -1568,9 +1595,9 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
     </div>
     <div class="spacer"></div>
     <div class="tb-row2">
-    <div class="tbpair edit-only" id="tbPair" role="group" aria-label="Main and Alt blocks">
+    <div class="tbpair edit-only" id="tbPair" role="group" aria-label="Primary and Secondary blocks">
       <button class="tbblock" id="tbBlock" aria-haspopup="dialog" aria-expanded="false" title="Block to build with"></button>
-      <button class="tbalt" id="tbAlt" title="Swap Main and Alt (X)"></button>
+      <button class="tbalt" id="tbAlt" title="Swap Primary and Secondary (X)"></button>
       <button class="ib sm tbmini desk-only" id="tbPresets" title="Block presets" aria-label="Block presets" aria-haspopup="true"></button>
       <button class="ib sm tbmini desk-only" id="tbReset" title="Back to the default blocks" aria-label="Back to the default blocks"></button>
     </div>
@@ -1612,14 +1639,14 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
             <div class="v3panel" id="v3panel" role="group" aria-label="3D options" hidden>
               <section class="v3sec v3s-floors" aria-labelledby="v3hFloors"><h3 class="v3h" id="v3hFloors">Floors</h3>
                 <div class="seg" id="upToSeg"><button id="v3all" aria-pressed="true">All floors</button><button id="v3up" aria-pressed="false">Up to current</button></div>
-                <label class="v3row" for="spread"><span>Spread</span><input type="range" id="spread" min="1" max="3" step="0.25" value="1" data-scrub="Spread"></label>
+                <label class="v3row" for="spread"><span>Spread</span><input type="range" id="spread" min="1" max="3" step="0.25" value="1" data-def="1" data-scrub="Spread"></label>
                 <label class="v3row" for="v3walls"><input type="checkbox" id="v3walls"> Raise walls</label>
                 <label class="v3row" for="v3roofs"><input type="checkbox" id="v3roofs"> Show roofs</label>
                 <label class="v3row" for="v3dims"><input type="checkbox" id="v3dims"> Show dimensions</label>
-                <label class="v3row cutrow" for="v3cut" title="Slice the build off above a height, to see inside"><span>Cut away</span><input type="range" id="v3cut" min="0" max="10" step="1" value="10" aria-describedby="v3cutV"><output id="v3cutV">Off</output></label>
+                <label class="v3row cutrow" for="v3cut" title="Slice the build off above a height, to see inside"><span>Cut away</span><input type="range" id="v3cut" min="0" max="10" step="1" value="10" data-def="max" aria-describedby="v3cutV"><output id="v3cutV">Off</output></label>
               </section>
               <section class="v3sec v3s-light" aria-labelledby="v3hLight"><h3 class="v3h" id="v3hLight">Sky and light</h3>
-                <div class="v3row" id="lightCard"><label for="v3light" title="Minecraft-style light: sky light that fades under roofs, face and corner shading, and glowing blocks"><input type="checkbox" id="v3light"> Lighting</label><span class="tod" id="todBox" hidden><input type="range" id="tod" min="0" max="24" step="0.25" value="12" aria-label="Time of day" data-scrub="Time of day"><output id="todOut" for="tod">12:00</output></span></div>
+                <div class="v3row" id="lightCard"><label for="v3light" title="Minecraft-style light: sky light that fades under roofs, face and corner shading, and glowing blocks"><input type="checkbox" id="v3light"> Lighting</label><span class="tod" id="todBox" hidden><input type="range" id="tod" min="0" max="24" step="0.25" value="12" data-def="12" aria-label="Time of day" data-scrub="Time of day"><output id="todOut" for="tod">12:00</output></span></div>
                 <label class="v3row" for="v3clouds" title="Minecraft’s fancy clouds, high over the build and drifting west"><input type="checkbox" id="v3clouds"> Clouds</label>
               </section>
               <section class="v3sec v3s-scn" aria-labelledby="v3hScn"><h3 class="v3h" id="v3hScn">Scenery</h3>
@@ -1650,7 +1677,7 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
         <div class="selbar pickbar" id="bhbar" role="toolbar" aria-label="Building heights" hidden></div>
         <div class="inspector" id="inspector" hidden></div>
         <div class="objbar" id="objbar" role="toolbar" aria-label="Object actions" hidden></div>
-        <div class="cornersw" id="cornerSw" role="group" aria-label="Main and Alt blocks" hidden></div>
+        <div class="cornersw" id="cornerSw" role="group" aria-label="Primary and Secondary blocks" hidden></div>
         <button class="card viewpin" id="viewPin" hidden title="Switch to 3D">2D</button>
         <div class="overlay" id="overlay" hidden></div>
         <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -2221,7 +2248,7 @@ function texFill() {
     if (left) { idle(step, { timeout: 1500 }); return; }
     texBar(0, 0); pack.used = TEXN.used; if (settingsOpen()) renderSettings();
     for (const p of ATL.pages) if (p.tex) p.tex.needsUpdate = true;
-    if (three && view.is3D) render3D();
+    if (three && show3D()) render3D();
   };
   TEXF_STATE.timer = setTimeout(() => idle(step, { timeout: 1500 }), 400);
 }
@@ -2308,7 +2335,7 @@ async function decodeRecord(rec) {
 function texturesChanged() {
   requestDraw();
   if (plan) { renderPanel(); renderOptbar(); renderSelbar(); }
-  if (three) { disposeMats(three.mats); three.mats = makeMats(); if (view.is3D) build3D(false); }
+  if (three) { disposeMats(three.mats); three.mats = makeMats(); if (show3D()) build3D(false); }
   updateAnimTicker();
 }
 /* animated textures step at Minecraft's 20 ticks a second */
@@ -2332,7 +2359,7 @@ function animTick() {
     p.g.clearRect(a.h.x, a.h.y, ATL.S, ATL.S); p.g.drawImage(s2.sheet, sx, sy, s2.S, s2.S, a.h.x, a.h.y, ATL.S, ATL.S); pages.add(p);
   }
   if (!pages.size || !plan || !ANIM_BLOCKS.size) return;
-  if (view.is3D) { let any = false; for (const p of pages) if (p.tex) { p.tex.needsUpdate = true; any = true; } if (any) render3D(); return; }
+  if (show3D()) { let any = false; for (const p of pages) if (p.tex) { p.tex.needsUpdate = true; any = true; } if (any) render3D(); if (view.is3D) return; }
   const L = curLevel(); if (L && levelUsesAnim(L)) requestDraw();
 }
 async function importPack(file) {
@@ -3459,8 +3486,8 @@ function toolHow(t = view.tool) {
 }
 function brushExpand(pts) {
   const k = brushKind(), n = k === 'brush' && view.tool === 'eraser' ? view.brush : k === 'pen' ? view.penBrush || 1 : 1; if (n <= 1) return pts;
-  const a = -((n - 1) >> 1), b = a + n - 1, m = new Map();
-  for (const [x, z] of pts) for (let dz = a; dz <= b; dz++) for (let dx = a; dx <= b; dx++) m.set(K(x + dx, z + dz), [x + dx, z + dz]);
+  const ax = evenLo(n, PSUB[0]), az = evenLo(n, PSUB[1]), m = new Map();
+  for (const [x, z] of pts) for (let dz = az; dz < az + n; dz++) for (let dx = ax; dx < ax + n; dx++) m.set(K(x + dx, z + dz), [x + dx, z + dz]);
   return [...m.values()];
 }
 const polyOpts = () => ({ sides: view.polySides, point: view.polyPoint });
@@ -4495,8 +4522,8 @@ function pickBuilding(x, z, add) {
 function setRoofMode(m) { view.roofMode = m; cv.classList.toggle('grab', view.tool === 'roof' && m === 'pick'); renderRail(); renderOptbar(); requestDraw(); }
 function roofBrush(x0, z0, x1, z1) {
   const L = curLevel(), R = L && L.roofSpec; if (!R || !G.rset) return;
-  const n = view.brush || 1, a = -((n - 1) >> 1), b = a + n - 1;
-  for (const [x, z] of lineCells(x0, z0, x1, z1)) for (let dz = a; dz <= b; dz++) for (let dx = a; dx <= b; dx++) {
+  const n = view.brush || 1, ax = evenLo(n, PSUB[0]), az = evenLo(n, PSUB[1]);
+  for (const [x, z] of lineCells(x0, z0, x1, z1)) for (let dz = az; dz < az + n; dz++) for (let dx = ax; dx < ax + n; dx++) {
     const k = K(x + dx, z + dz);
     if (G.rmode === 'erase') { if (G.covered.has(k) && !G.rset.has(k)) { G.rset.add(k); G.rhit = true; } else if (!G.covered.has(k) && !G.rset.has(k)) G.rmiss = true; }
     else if (G.rset.delete(k)) G.rhit = true;
@@ -4988,7 +5015,7 @@ const KEY_ACTIONS = [
   ['bucket', 'Fill', 'g'], ['path', 'Path', ''], ['select', 'Select', 'm'], ['eraser', 'Eraser', 'e'], ['extend', 'Extend up', ''],
   ['stair', 'Stairs', ''], ['door', 'Doorway', ''], ['window', 'Window', ''], ['roof', 'Roof', ''], ['zone', 'Zone', 'z'], ['stamp', 'Multiblock', 'k'], ['route', 'Cable and pipe routes', 'p'],
   ['note', 'Note', 'n'], ['anchor', 'Anchor pin', 'a'], ['measure', 'Ruler', 'r'],
-  ['swapBlocks', 'Swap the Main and Alt blocks', 'x', 'act'], ['wallMode', 'Wall mode on / off', 'w', 'act'], ['resetBlocks', 'Main and Alt back to the defaults', 'd', 'act'], ['fillMode', 'Fill: solid, frame or room', 'f', 'act'], ['turn', 'Turn a stair, multiblock or selection', 'q', 'act'], ['flipHalf', 'Upside-down stair or top slab', 't', 'act']];
+  ['swapBlocks', 'Swap the Primary and Secondary blocks', 'x', 'act'], ['wallMode', 'Wall mode on / off', 'w', 'act'], ['resetBlocks', 'Primary and Secondary back to the defaults', 'd', 'act'], ['fillMode', 'Fill: solid, frame or room', 'f', 'act'], ['turn', 'Turn a stair, multiblock or selection', 'q', 'act'], ['flipHalf', 'Upside-down stair or top slab', 't', 'act'], ['viewMode', 'Switch 2D, 3D and split view', 'y', 'act']];
 const SHAPE_CYCLES = {
   pencil: { tools: ['pencil', 'path'], get: () => view.tool === 'path' ? 'path' : view.pencil, list: [['free', 'Freehand'], ['line', 'Line'], ['path', 'Path']], set: v => { pencilMode(v); } },
   shape: { tools: ['shape'], get: () => view.shapeKind, list: [['rect', 'Rectangle'], ['circle', 'Circle'], ['poly', 'Polygon']], set: v => { view.shapeKind = v; } },
@@ -5041,7 +5068,7 @@ function keyBindBtn(a, name, again) {
   return keyCatchBtn('tk-' + a, name, () => keyName(keyOf(a)), ev => {
     const k = ev.key.length === 1 ? ev.key.toLowerCase() : null;
     if (ev.ctrlKey || ev.metaKey || ev.altKey || !k) return 'Use a single letter, number or symbol key, without Ctrl, ⌘ or Alt.';
-    if (KEY_FIXED.has(k)) return `${keyName(k)} is kept for ${k === ' ' ? 'panning' : k === '[' || k === ']' ? 'brush size and changing floors' : k === '?' || k === '/' ? 'the keys sheet' : 'zooming'}.`;
+    if (KEY_FIXED.has(k)) return `${keyName(k)} is kept for ${k === ' ' ? 'panning' : k === '[' || k === ']' ? 'brush size' : k === '?' || k === '/' ? 'the keys sheet' : 'zooming'}.`;
     const swapped = setKey(a, k); again(); if (swapped) toast(`${keyName(k)} was ${swapped}. That now has ${keyName(keyOf(KEY_ACTIONS.find(r => r[1] === swapped)[0]))}.`);
   });
 }
@@ -5137,9 +5164,8 @@ function syncBldTools() {
   if (Array.isArray(p.favs)) view.favs = p.favs.filter(id => typeof id === 'string').slice(0, 40);
   if (Array.isArray(p.recents)) view.recents = p.recents.filter(id => typeof id === 'string').slice(0, 12);
   if (['family', 'colour', 'az', 'mod'].includes(p.blockSort)) view.blockSort = p.blockSort;
-  if (typeof p.blockCat === 'string') view.blockCat = p.blockCat;
   if (typeof p.blockMod === 'string') view.blockMod = p.blockMod; if (typeof p.blockDesc === 'boolean') view.blockDesc = p.blockDesc;
-  if (['list', 's', 'l', 'xl'].includes(p.blockIcons)) view.blockIcons = p.blockIcons; if (['s', 'l', 'xl'].includes(p.homeSize)) view.homeSize = p.homeSize; if (typeof p.blocksFloat === 'boolean') view.blocksFloat = p.blocksFloat; if (typeof p.floorsFloat === 'boolean') view.floorsFloat = p.floorsFloat;
+  if (['list', 's', 'l', 'xl'].includes(p.blockIcons)) view.blockIcons = p.blockIcons; if (['s', 'l', 'xl'].includes(p.homeSize)) view.homeSize = p.homeSize; if (Number.isFinite(p.splitR)) view.splitR = clamp(p.splitR, 0.2, 0.8); view.splitSwap = !!p.splitSwap; view.wantSplit = !!p.split; if (['slow', 'standard', 'quick'].includes(p.flash)) view.flash = p.flash; if (p.dkOpen && typeof p.dkOpen === 'object') view.dkOpen = { mixes: !!p.dkOpen.mixes, presets: !!p.dkOpen.presets }; if (typeof p.blocksFloat === 'boolean') view.blocksFloat = p.blocksFloat; if (typeof p.floorsFloat === 'boolean') view.floorsFloat = p.floorsFloat;
   if (typeof p.expDig === 'boolean') view.expDig = p.expDig;
   if (typeof p.mobShadows === 'boolean') view.mobShadows = p.mobShadows;
   if (DIR4.includes(p.bface)) view.bface = p.bface; if (typeof p.btop === 'boolean') view.btop = p.btop; if (p.lastRoof) view.lastRoof = deRoofPart(p.lastRoof);
@@ -5187,7 +5213,7 @@ function writePrefs() {
     prefPending = false;
     if (plan) prefs.views[plan.id] = { z: view.z, ox: view.ox, oy: view.oy, lid: curLid, w: W, h: H };
     prefs.lastPlan = plan && plan.id;
-    prefs.ui = { measureHow: view.measureHow || null, flight: view.flight || null, pathOpt: view.pathOpt || null, tourDone: !!view.tourDone, stripPin: !!view.stripPin, postFit: !!view.postFit, drawPosts: view.drawPosts || null, pattern: view.pattern, patBlock: view.patBlock, penPat: view.penPat, penPatBlock: view.penPatBlock, postEvery: view.postEvery, postBlock: view.postBlock, postOut: !!view.postOut, mix: view.mix, altMix: view.altMix, tool: view.tool, selOp: view.selOp, fill: view.fill, sizeMode: view.sizeMode, block: view.block, altBlock: view.altBlock, expKind: view.expKind, expScope: view.expScope, uiMode: view.uiMode, flat2d: !!view.flat2d, wallLook: view.wallLook, railMin: !!view.railMin, theme: view.theme || 'system', viewPin: view.viewPin || 'top', ribbonTab: view.ribbonTab, ribbonMin: !!view.ribbonMin, roofWalls: view.roofWalls !== false, cornerSw: !!view.cornerSw, fov: view.fov, povSens: view.povSens, povKeys: view.povKeys, keys: view.keys || null, cfg: view.cfg, bldTools: view.bldTools || null, doorW: view.doorW, extN: view.extN, fenceH: view.fenceH, fenceFill: view.fenceFill, wallThick: view.wallThick, wallStyle: view.wallStyle, roofStyled: !!view.roofStyled, rampOuter: !!view.rampOuter, doorType: view.doorType, archW: view.archW, archWAuto: view.archWAuto, archH: view.archH, archHAuto: view.archHAuto, doorStyle: view.doorStyle, doorTrim: view.doorTrim, winStyle: view.winStyle, winTrim: view.winTrim, winAuto: view.winAuto, winW: view.winW, winH: view.winH, winSill: view.winSill, winGlass: view.winGlass, w: view.w, h: view.h, lock: view.lock, ratio: view.ratio, layers: view.layers, originStyle: view.originStyle, zoneStyle: view.zoneStyle, zoneAlpha: view.zoneAlpha, recentColors: view.recentColors, contig: view.contig, wall: view.wall, pencil: view.pencil, showMid: view.showMid, sideOpen: view.sideOpen, shapeKind: view.shapeKind, selShape: view.selShape, eraseMode: view.eraseMode, zoneShape: view.zoneShape, zoneOp: view.zoneOp, roofTab: view.roofTab, brush: view.brush, penBrush: view.penBrush || 1, eraseT: view.eraseT, railMode: view.railMode, railW: view.railW || 56, groupLast: view.groupLast, lastBuild: view.lastBuild, net: view.net, routeOp: view.routeOp, circleKind: view.circleKind, polySides: view.polySides, polyPoint: view.polyPoint, ghostAlpha: view.ghostAlpha, favs: view.favs, recents: view.recents, blockSort: view.blockSort, blockCat: view.blockCat, blockMod: view.blockMod || '', blockDesc: !!view.blockDesc, blockIcons: view.blockIcons || 'list', homeSize: view.homeSize || 'l', blocksFloat: !!view.blocksFloat, floorsFloat: !!view.floorsFloat, expDig: view.expDig !== false, mobShadows: !!view.mobShadows, bface: view.bface, btop: view.btop, lastRoof: view.lastRoof, mirror: { x: mirror.x, z: mirror.z, radial: mirror.radial || 0, ax: mirror.ax, az: mirror.az }, povFx: view.povFx !== false, v3: pov.on && pov.saved ? { ...v3, ...pov.saved } : v3 };
+    prefs.ui = { measureHow: view.measureHow || null, flight: view.flight || null, pathOpt: view.pathOpt || null, tourDone: !!view.tourDone, stripPin: !!view.stripPin, postFit: !!view.postFit, drawPosts: view.drawPosts || null, pattern: view.pattern, patBlock: view.patBlock, penPat: view.penPat, penPatBlock: view.penPatBlock, postEvery: view.postEvery, postBlock: view.postBlock, postOut: !!view.postOut, mix: view.mix, altMix: view.altMix, tool: view.tool, selOp: view.selOp, fill: view.fill, sizeMode: view.sizeMode, block: view.block, altBlock: view.altBlock, expKind: view.expKind, expScope: view.expScope, uiMode: view.uiMode, flat2d: !!view.flat2d, wallLook: view.wallLook, railMin: !!view.railMin, theme: view.theme || 'system', viewPin: view.viewPin || 'top', ribbonTab: view.ribbonTab, ribbonMin: !!view.ribbonMin, roofWalls: view.roofWalls !== false, cornerSw: !!view.cornerSw, fov: view.fov, povSens: view.povSens, povKeys: view.povKeys, keys: view.keys || null, cfg: view.cfg, bldTools: view.bldTools || null, doorW: view.doorW, extN: view.extN, fenceH: view.fenceH, fenceFill: view.fenceFill, wallThick: view.wallThick, wallStyle: view.wallStyle, roofStyled: !!view.roofStyled, rampOuter: !!view.rampOuter, doorType: view.doorType, archW: view.archW, archWAuto: view.archWAuto, archH: view.archH, archHAuto: view.archHAuto, doorStyle: view.doorStyle, doorTrim: view.doorTrim, winStyle: view.winStyle, winTrim: view.winTrim, winAuto: view.winAuto, winW: view.winW, winH: view.winH, winSill: view.winSill, winGlass: view.winGlass, w: view.w, h: view.h, lock: view.lock, ratio: view.ratio, layers: view.layers, originStyle: view.originStyle, zoneStyle: view.zoneStyle, zoneAlpha: view.zoneAlpha, recentColors: view.recentColors, contig: view.contig, wall: view.wall, pencil: view.pencil, showMid: view.showMid, sideOpen: view.sideOpen, shapeKind: view.shapeKind, selShape: view.selShape, eraseMode: view.eraseMode, zoneShape: view.zoneShape, zoneOp: view.zoneOp, roofTab: view.roofTab, brush: view.brush, penBrush: view.penBrush || 1, eraseT: view.eraseT, railMode: view.railMode, railW: view.railW || 56, groupLast: view.groupLast, lastBuild: view.lastBuild, net: view.net, routeOp: view.routeOp, circleKind: view.circleKind, polySides: view.polySides, polyPoint: view.polyPoint, ghostAlpha: view.ghostAlpha, favs: view.favs, recents: view.recents, blockSort: view.blockSort, blockCat: view.blockCat, blockMod: view.blockMod || '', blockDesc: !!view.blockDesc, blockIcons: view.blockIcons || 'list', dkOpen: view.dkOpen || null, flash: view.flash || 'standard', split: !!view.split, splitR: view.splitR || 0.5, splitSwap: !!view.splitSwap, homeSize: view.homeSize || 'l', blocksFloat: !!view.blocksFloat, floorsFloat: !!view.floorsFloat, expDig: view.expDig !== false, mobShadows: !!view.mobShadows, bface: view.bface, btop: view.btop, lastRoof: view.lastRoof, mirror: { x: mirror.x, z: mirror.z, radial: mirror.radial || 0, ax: mirror.ax, az: mirror.az }, povFx: view.povFx !== false, v3: pov.on && pov.saved ? { ...v3, ...pov.saved } : v3 };
     const keys = Object.keys(prefs.views); if (keys.length > 40) delete prefs.views[keys[0]];
     lsSet(LS_VIEW, prefs);
     syncSettings();
@@ -6430,15 +6456,15 @@ function paintCell(L, k, op, fx, fz, kd) {
   if (wall && (view.tool === 'shape' || (view.tool === 'pencil' && view.pencil === 'line'))) { const g = drawMark(curBld(), true); if (!L.pg) L.pg = new Map(); if (g) L.pg.set(k, g); else L.pg.delete(k); } else if (!wall && L.pg) L.pg.delete(k);
   setWStyle(L, k, wall && (view.tool === 'pencil' || kd === 'w') ? paintWS() : null);
 }
-/* a room's walls are drawn in your Main block, and the floor inside it in your Alt block */
+/* a room's walls are drawn in your Primary block, and the floor inside it in your Secondary block */
 function roomWallId(fx, fz) { return placeId(fx, fz); }
 function floorId() { const fb = BY_ID[view.altBlock] ? view.altBlock : view.block, B = BY_ID[fb]; return B && B.shape && !isFenceish(B) ? shapedId(fb, 'n', false) : fb; }
-/* Fill for the Shape tool: Solid, Frame or Room. Room draws walls in your Main block, as thick as set and growing inwards from the shape's edge,
-   with their design, and fills the inside with your Alt block. With wall mode on, Frame draws walls too. Solid stays all one thing */
+/* Fill for the Shape tool: Solid, Frame or Room. Room draws walls in your Primary block, as thick as set and growing inwards from the shape's edge,
+   with their design, and fills the inside with your Secondary block. With wall mode on, Frame draws walls too. Solid stays all one thing */
 const roomAvail = () => view.tool === 'shape' && !!plan && !roofLevel(curLevel());
 const effFill = () => view.fill === 'room' ? (roomAvail() ? 'room' : 'solid') : view.fill === 'frame' ? 'frame' : 'solid';
 const FILL_NAMES = { solid: 'Solid', frame: 'Frame', room: 'Room' };
-const fillItems = () => [['solid', 'Solid', 'solid', null, 'Every block, all of them walls when wall mode is on'], ['frame', 'Frame', 'frame', null, 'Just the outline' + (roomAvail() && view.wall ? ', as thick as the walls are set' : '')], ...(roomAvail() ? [['room', 'Room', 'room', null, 'Walls in your Main block as thick as set, with your Alt block inside']] : [])];
+const fillItems = () => [['solid', 'Solid', 'solid', null, 'Every block, all of them walls when wall mode is on'], ['frame', 'Frame', 'frame', null, 'Just the outline' + (roomAvail() && view.wall ? ', as thick as the walls are set' : '')], ...(roomAvail() ? [['room', 'Room', 'room', null, 'Walls in your Primary block as thick as set, with your Secondary block inside']] : [])];
 const nextFill = () => { const l = fillItems().map(f => f[0]); return l[(l.indexOf(effFill()) + 1) % l.length]; };
 const wallRoomOn = () => roomAvail() && (effFill() === 'room' || (effFill() === 'frame' && !!view.wall));
 function roomCells(kind, x0, z0, w, h, floor) {
@@ -8526,18 +8552,22 @@ function readTheme() {
   T = { paper: g('--paper'), panel: g('--panel'), ink: g('--ink'), ink2: g('--ink-2'), line: g('--line'), accent: g('--cv-accent') || g('--accent'), anchor: g('--anchor'), mirror: g('--mirror'), multi: g('--multi'), danger: g('--danger'), grid: g('--grid'), chunk: g('--chunk'), axis: g('--axis'), midFill: g('--mid-fill'), midLine: g('--mid-line'), midCase: g('--mid-case') };
 }
 function resize() {
-  placeUndo();
+  placeUndo(); if (view.split) layoutSplit();
   const r = vp.getBoundingClientRect();
-  const nw = Math.max(1, r.width), nh = Math.max(1, r.height);
+  const nw = Math.max(1, view.split ? splitGeo().w2 : r.width), nh = Math.max(1, r.height);
   if (plan && W > 1 && H > 1) { view.ox += (nw - W) / 2; view.oy += (nh - H) / 2; }
   W = nw; H = nh; dpr = Math.min(window.devicePixelRatio || 1, 2.5);
   cv.width = Math.round(W * dpr); cv.height = Math.round(H * dpr); cv.style.width = W + 'px'; cv.style.height = H + 'px';
-  requestDraw(); if (view.is3D) resize3D();
+  requestDraw(); if (show3D()) resize3D();
 }
 let drawQueued = false;
 function requestDraw() { dockSoon(); if (drawQueued) return; drawQueued = true; requestAnimationFrame(() => { drawQueued = false; draw(); }); }
 const toWorld = (sx, sy) => [(sx - view.ox) / view.z, (sy - view.oy) / view.z];
-const cellAt = (sx, sy) => { const [wx, wz] = toWorld(sx, sy); return [Math.floor(wx), Math.floor(wz)]; };
+/* PSUB: which half of its block the pointer is in, so an even-sized brush or shape centres on the grid corner nearest the pointer */
+let PSUB = [0, 0];
+const cellAt = (sx, sy) => { const [wx, wz] = toWorld(sx, sy), x = Math.floor(wx), z = Math.floor(wz); PSUB = [wx - x >= 0.5 ? 1 : 0, wz - z >= 0.5 ? 1 : 0]; return [x, z]; };
+/* the first offset of a run n long round the pointer's block: odd sizes centre on the block, even ones on the nearest corner */
+const evenLo = (n, s) => n % 2 ? -((n - 1) >> 1) : -n / 2 + s;
 function updateAnts() {
   const need = sel.size > 0 && !reduceMotion.matches;
   if (need && !antTimer) antTimer = setInterval(() => { antPhase = (antPhase + 1) % 16; requestDraw(); }, 110);
@@ -9011,7 +9041,7 @@ function effOp(e) {
   return al ? 'erase' : 'place';
 }
 function presetGhost(x, z, e) {
-  const w = postLen(view.w), h = postLen(view.h), x0 = x - ((w - 1) >> 1), z0 = z - ((h - 1) >> 1);
+  const w = postLen(view.w), h = postLen(view.h), x0 = x + evenLo(w, PSUB[0]), z0 = z + evenLo(h, PSUB[1]);
   return { kind: 'preset', op: effOp(e), box: [x0, z0, w, h], cells: mirrorExpand(shapeOrRoom(x0, z0, w, h)) };
 }
 function stampGhost(x, z) {
@@ -9073,7 +9103,7 @@ function addStroke(x0, z0, x1, z1) {
   }
   else { for (const p of pts) G.cells.set(K(p[0], p[1]), p); view.preview = { kind: 'stroke', cells: [...G.cells.values()], op: G.op }; }
 }
-const roofBrushCells = (x, z) => { const n = view.brush || 1, a = -((n - 1) >> 1), b = a + n - 1, out = []; for (let dz = a; dz <= b; dz++) for (let dx = a; dx <= b; dx++) out.push([x + dx, z + dz]); return out; };
+const roofBrushCells = (x, z) => { const n = view.brush || 1, ax = evenLo(n, PSUB[0]), az = evenLo(n, PSUB[1]), out = []; for (let dz = az; dz < az + n; dz++) for (let dx = ax; dx < ax + n; dx++) out.push([x + dx, z + dz]); return out; };
 function updateHoverGhost(e) {
   if (G || !view.hover || store.readOnly) return;
   const [x, z] = view.hover;
@@ -9396,7 +9426,7 @@ window.addEventListener('keydown', e => {
   if (e.key === 'Alt' && view.is3D) { e.preventDefault(); return; }
   if (e.key === 'Shift') setShift(true);
   if (e.key === '?' && !mod) { showShortcuts(); return; }
-  if (!mod && (e.code === 'BracketLeft' || e.code === 'BracketRight') && plan && !store.readOnly && !view.is3D && sizeKey(e)) { e.preventDefault(); return; }
+  if (!mod && (e.code === 'BracketLeft' || e.code === 'BracketRight')) { e.preventDefault(); if (plan && !store.readOnly && !view.is3D) sizeKey(e); return; }
   if (mod || e.altKey) return;
   if (e.key === 'Home' && view.is3D && !pov.on) { e.preventDefault(); resetView3D(); return; }
   if (e.key === ' ') { if (!spaceDown) { spaceDown = true; cv.classList.add('grab'); } e.preventDefault(); return; }
@@ -9406,13 +9436,14 @@ window.addEventListener('keydown', e => {
     view.ox += e.key === 'ArrowLeft' ? d : e.key === 'ArrowRight' ? -d : 0; view.oy += e.key === 'ArrowUp' ? d : e.key === 'ArrowDown' ? -d : 0;
     e.preventDefault(); requestDraw(); savePrefs(); return;
   }
-  if (e.key === 'PageUp' || e.key === ']') { stepLevel(1); e.preventDefault(); return; }
-  if (e.key === 'PageDown' || e.key === '[') { stepLevel(-1); e.preventDefault(); return; }
+  if (e.key === 'PageUp') { stepLevel(1); e.preventDefault(); return; }
+  if (e.key === 'PageDown') { stepLevel(-1); e.preventDefault(); return; }
   if (e.key === '+' || e.key === '=') { zoomAt(W / 2, H / 2, 1.25); return; }
   if (e.key === '-') { zoomAt(W / 2, H / 2, 0.8); return; }
   if (e.key === '0') { fitView(); return; }
   const act = actionOfKey(k), tl = act === 'line' ? 'pencil' : act === 'circle' ? 'shape' : act && toolDef(act) ? act : null;
   if (tl) { if (store.readOnly && !['pointer', 'pan', 'measure'].includes(tl)) return; if (e.shiftKey && shapeCycle(act)) return; if (act === 'line') view.pencil = 'line'; if (act === 'pencil') view.pencil = 'free'; if (act === 'shape') view.shapeKind = 'rect'; if (act === 'circle') view.shapeKind = view.shapeKind === 'circle' ? 'poly' : 'circle'; setTool(tl); return; }
+  if (act === 'viewMode') { cycleView(); return; }
   if (store.readOnly) return;
   if (view.tool === 'path' && view.pathPts && view.pathPts.length) {
     if (e.key === 'Enter') { layPath(); return; }
@@ -9753,7 +9784,7 @@ const wallOptsOn = () => !!plan && ((view.tool === 'pencil' && !!view.wall && !r
 function wallNote() {
   const t = view.wallThick || 1;
   if (view.tool === 'shape') {
-    const a = effFill() === 'room' ? `Drag out the outside edge: the walls grow inwards in your Main block, ${BY_ID[baseOf(userWallBlock())] ? BY_ID[baseOf(userWallBlock())].name : 'the Main block'}, and the inside gets your Alt block, ${BY_ID[baseOf(floorId())] ? BY_ID[baseOf(floorId())].name : 'the Alt block'}.` : 'Drag out the outside edge: the walls grow inwards, with nothing inside.';
+    const a = effFill() === 'room' ? `Drag out the outside edge: the walls grow inwards in your Primary block, ${BY_ID[baseOf(userWallBlock())] ? BY_ID[baseOf(userWallBlock())].name : 'the Primary block'}, and the inside gets your Secondary block, ${BY_ID[baseOf(floorId())] ? BY_ID[baseOf(floorId())].name : 'the Secondary block'}.` : 'Drag out the outside edge: the walls grow inwards, with nothing inside.';
     const c = t === 2 ? ' Designs come at 1 thick (fences) or 3 and up (ramparts).' : '';
     return a + c + ' To build it up through more floors, use Extend.';
   }
@@ -10009,12 +10040,12 @@ function studioTopbar() {
     icon('search'), el('span', { text: 'Search tools, floors, commands' }), el('kbd', { text: /Mac|iPhone|iPad/.test(navigator.platform) ? '⌘ K' : 'Ctrl K' }));
   seg.before(pill);
   // a rocker: either side flips to the other view
-  const flip = () => set3D(!view.is3D);
-  seg.append(el('button', { id: 'vSeg2d', class: 'vs', title: 'The 2D plan. Press to switch views', onclick: flip }, '2D'), el('button', { id: 'vSeg3d', class: 'vs', title: '3D. Press to switch views', onclick: flip }, '3D'));
+  seg.append(el('button', { id: 'vSeg2d', class: 'vs', title: 'The 2D plan (Y switches views)', onclick: () => setViewMode('2d') }, '2D'), el('button', { id: 'vSeg3d', class: 'vs', title: '3D (Y switches views)', onclick: () => setViewMode('3d') }, '3D'),
+    el('button', { id: 'vSegSp', class: 'vs vsp', title: 'Split: 2D and 3D side by side (Y switches views)', onclick: () => setViewMode('split') }, 'Split'));
 }
 function studioSyncSeg() {
-  const a = $('#vSeg2d'), b = $('#vSeg3d'); if (!a || !b) return;
-  a.setAttribute('aria-pressed', String(!view.is3D)); b.setAttribute('aria-pressed', String(!!view.is3D));
+  const a = $('#vSeg2d'), b = $('#vSeg3d'), c = $('#vSegSp'); if (!a || !b) return;
+  const m = viewMode(); a.setAttribute('aria-pressed', String(m === '2d')); b.setAttribute('aria-pressed', String(m === '3d')); if (c) c.setAttribute('aria-pressed', String(m === 'split'));
 }
 function studioPlace(on) {
   const app = $('#app'), sb = $('#statusbar'), stage = document.querySelector('.stage');
@@ -10212,34 +10243,43 @@ function dkRoofChips() {
 }
 function dockBlocks() {
   const A = slotShow(true), B = slotShow(false), onR = onRoof(), sk = keyName(keyOf('swapBlocks')), rk = onR ? dkRoofChips() : null;
-  const ct = (cap, name) => el('span', { class: 'dk-ct' }, el('small', { text: cap }), el('b', { text: name }));
-  const chip = (cap, S, main) => el('button', { class: 'dk-chip' + (main ? ' on' : ''), 'aria-pressed': String(main),
-    title: main ? `Main ${S.mix ? 'mix' : 'block'}: ${S.name}. All blocks changes it` : `Alt ${S.mix ? 'mix' : 'block'}: ${S.name}. Click to swap it with Main${sk === '—' ? '' : ' (' + sk + ')'}`,
-    onclick: () => { if (main) toggleWin('blocks'); else swapSlots(); } }, el('img', { src: S.img, alt: '' }), ct(cap, S.name), main ? null : icon('swap'));
   const kb = k => { const n = keyOf(k); return n ? el('kbd', { text: keyName(n) }) : null; };
+  // Primary and Secondary as two tiles, the swap between them
+  const tile = (S, primary) => el('button', { class: 'dk-tile' + (primary ? ' on' : ''), 'aria-pressed': String(primary),
+    title: primary ? `Primary ${S.mix ? 'mix' : 'block'}: ${S.name}. All blocks changes it` : `Secondary ${S.mix ? 'mix' : 'block'}: ${S.name}. Click to swap it with Primary${sk === '—' ? '' : ' (' + sk + ')'}`,
+    onclick: () => { if (primary) toggleWin('blocks'); else swapSlots(); } },
+    el('span', { class: 'dk-tpic' }, el('img', { src: S.img, alt: '' })), el('small', { text: primary ? 'Primary' : 'Secondary' }), el('b', { text: S.name }));
   const rec = view.recents.filter(id => BY_ID[id]).slice(0, 12);
   return [
     rk ? dkSec('Roof', null, el('div', { class: 'dk-chips' }, ...rk)) : null,
-    dkSec('Main and Alt', el('button', { class: 'dk-btn', title: 'Search every block and choose Main', onclick: () => toggleWin('blocks') }, icon('search'), 'All blocks'),
-      el('div', { class: 'dk-chips' + (onR ? ' dimmed' : ''), title: onR ? 'The Roof tool uses the roof blocks above. Main and Alt are for drawing floors and walls' : null }, chip('Main', A, true), chip('Alt', B, false)),
+    dkSec('Primary and Secondary', el('button', { class: 'dk-btn', title: 'Search every block and choose Primary', onclick: () => toggleWin('blocks') }, icon('search'), 'All blocks'),
+      el('div', { class: 'dk-tiles' + (onR ? ' dimmed' : ''), title: onR ? 'The Roof tool uses the roof blocks above. Primary and Secondary are for drawing floors and walls' : null },
+        tile(A, true), el('div', { class: 'dk-swapc' }, el('button', { class: 'dk-swap', title: 'Swap Primary and Secondary', 'aria-label': 'Swap Primary and Secondary', onclick: swapSlots }, icon('swap')), kb('swapBlocks')), tile(B, false)),
       el('div', { class: 'dk-pair dk-wrap' },
-        el('button', { class: 'dk-btn', title: 'Swap Main and Alt', onclick: swapSlots }, icon('swap'), 'Swap', kb('swapBlocks')),
-        el('button', { class: 'dk-btn', title: `Defaults: ${BY_ID[view.cfg.nf.fb].name} as Main, ${BY_ID[view.cfg.nf.wb].name} as Alt`, onclick: resetBlocks }, icon('defblocks'), 'Defaults', kb('resetBlocks')),
-        el('button', { class: 'dk-btn', title: 'Find a block or mix and replace it in a room, a floor, a building or the whole plan', onclick: () => openFindReplace() }, icon('search'), 'Find and replace')),
+        el('button', { class: 'dk-btn', title: `Defaults: ${BY_ID[view.cfg.nf.fb].name} as Primary, ${BY_ID[view.cfg.nf.wb].name} as Secondary`, onclick: resetBlocks }, icon('defblocks'), 'Defaults', kb('resetBlocks'))),
       el('div', { class: 'dk-rechead' },
         rec.length ? el('button', { class: 'dk-recbtn', 'aria-expanded': String(dockRecOpen), title: dockRecOpen ? 'Hide recent blocks' : 'Show recent blocks', onclick: () => { dockRecOpen = !dockRecOpen; renderDock(); } }, icon('chev'), 'Recent blocks', el('i', { text: String(rec.length) })) : el('span', { class: 'dk-empty', text: 'No recent blocks yet' })),
       rec.length && dockRecOpen ? el('div', { class: 'dk-rec' }, ...rec.map(id => el('button', { class: 'dk-sw', title: BY_ID[id].name, 'aria-label': BY_ID[id].name, onclick: () => setBlockChoice(id) }, el('img', { src: SWATCH[id], alt: '' })))) : null),
     dockMixes(), dockPresets()].filter(Boolean);
 }
+/* a section that folds: Mixes and Presets start folded, and stay how you leave them */
+function dkFold(id, title, count, ...kids) {
+  const open = !!(view.dkOpen && view.dkOpen[id]);
+  const head = el('button', { class: 'dk-fold', 'aria-expanded': String(open), onclick: () => { view.dkOpen = { ...(view.dkOpen || {}), [id]: !open }; savePrefs(); dockSig = ''; renderDock(); } },
+    icon('chev'), el('h3', { text: title }), count ? el('i', { text: String(count) }) : null);
+  return el('section', { class: 'dk-sec dk-foldsec' }, head, ...(open ? kids.filter(Boolean) : []));
+}
 /* mixes: weighted blends of blocks that draw like a block. Make, change and remove them here */
 function dockMixes() {
   const ms = plan.mixes || [], ro = store.readOnly;
   const row = m => el('div', { class: 'dk-mix' + (view.mix === m.id ? ' on' : '') },
-    el('button', { class: 'dk-mixb', title: `Use the ${m.name} mix as Main\n${m.parts.map(q => q[1] + ' ' + (BY_ID[q[0]] ? BY_ID[q[0]].name : q[0])).join(' · ')}`, onclick: () => useMix(m.id) }, el('img', { src: mixImg(m), alt: '' }), el('span', { class: 'dk-mn', text: m.name })),
+    el('button', { class: 'dk-mixb', title: `Use the ${m.name} mix as Primary\n${m.parts.map(q => q[1] + ' ' + (BY_ID[q[0]] ? BY_ID[q[0]].name : q[0])).join(' · ')}`, onclick: () => useMix(m.id) }, el('img', { src: mixImg(m), alt: '' }), el('span', { class: 'dk-mn', text: m.name })),
     ro ? null : dkIb('pencil', `Change the ${m.name} mix`, () => openMixEditor(m.id, () => renderAll())),
     ro ? null : dkIb('trash', `Delete the ${m.name} mix`, () => deleteMix(m.id)));
-  return dkSec('Mixes', ro ? null : el('button', { class: 'dk-btn', title: 'Blend several blocks, with a share each, and use the blend like a block', onclick: () => openMixEditor(null, id => { if (id) useMix(id); else renderAll(); }) }, icon('plus'), 'New mix'),
-    ms.length ? el('div', { class: 'dk-mixes' }, ...ms.map(row)) : el('p', { class: 'dk-empty', text: 'No mixes yet. A mix blends blocks, like stone bricks with some cracked and mossy.' }));
+  const add = ro ? null : el('button', { class: 'dk-newmix', title: 'Blend several blocks, with a share each, and use the blend like a block', onclick: () => openMixEditor(null, id => { if (id) useMix(id); else renderAll(); }) }, icon('plus'), 'New mix');
+  return dkFold('mixes', 'Mixes', ms.length,
+    el('div', { class: 'dk-mixes' }, ...ms.map(row), add),
+    ms.length ? null : el('p', { class: 'dk-empty', text: 'A mix blends blocks, like stone bricks with some cracked and mossy.' }));
 }
 /* presets: Main, Alt, roof, stairs, trims, posts and paths in one click */
 function dockPresets() {
@@ -10251,12 +10291,12 @@ function dockPresets() {
   const nm = el('input', { class: 'field dk-in', maxlength: '32', placeholder: 'Name, e.g. Castle walls', 'aria-label': 'New preset name' });
   const save = () => { const name = nm.value.trim(); if (!name) { nm.focus(); return; } const P = presetFromNow(name); if (!P) return; view.presets = [...view.presets.filter(x => x.name.toLowerCase() !== name.toLowerCase()), P].slice(-40); savePrefs(); dockSig = ''; renderDock(); toast(`Saved the ${name} preset.`); };
   nm.addEventListener('keydown', ev => { if (ev.key === 'Enter') { ev.preventDefault(); save(); } });
-  return dkSec('Presets', null,
+  return dkFold('presets', 'Presets', 0,
     el('div', { class: 'dk-prgrid' }, ...BUILTIN_PRESETS.map(P => card(P, false))),
     el('div', { class: 'dk-sub', text: 'Yours' }),
     view.presets.length ? el('div', { class: 'dk-prgrid' }, ...view.presets.map(P => card(P, true))) : el('p', { class: 'dk-empty', text: 'Save the blocks you’re using now as a preset of your own. It follows you to every plan.' }),
     ro ? null : el('div', { class: 'dk-presave' }, nm, el('button', { class: 'dk-btn', onclick: save }, icon('plus'), 'Save current')),
-    el('p', { class: 'dk-empty', text: 'A preset sets Main, Alt, the roof and its trim, stairs, door and window trims, posts, patterns and paths. What’s built stays as it is.' }));
+    el('p', { class: 'dk-empty', text: 'A preset sets Primary, Secondary, the roof and its trim, stairs, door and window trims, posts, patterns and paths. What’s built stays as it is.' }));
 }
 /* wall thickness, style and height, and posts: the settings that used to sit in the bar for the Shape tool */
 function dockPosts() {
@@ -10527,13 +10567,13 @@ function rb3DGroups() {
 const gammaText = v => v <= 0 ? 'Moody' : v >= 1 ? 'Bright' : Math.round(v * 100) + '%';
 function setGamma(v) { v3.gamma = clamp(Number(v) || 0, 0, 1); v3.gammaSet = true; savePrefs(); if (three && v3.light) { updateLightmap(); render3D(); } }
 function rbBrightSlider() {
-  const out = el('output', { class: 'rbt-out', text: gammaText(v3.gamma) }), r = el('input', { type: 'range', min: '0', max: '1', step: '0.01', value: String(v3.gamma), 'aria-label': 'Brightness', disabled: v3.light ? null : true });
+  const out = el('output', { class: 'rbt-out', text: gammaText(v3.gamma) }), r = el('input', { type: 'range', min: '0', max: '1', step: '0.01', value: String(v3.gamma), 'data-def': '1', 'aria-label': 'Brightness', disabled: v3.light ? null : true });
   r.addEventListener('input', () => { setGamma(r.value); out.textContent = gammaText(v3.gamma); });
   return el('div', { class: 'rbt' + (v3.light ? '' : ' dis'), title: v3.light ? 'Brightness, as in Minecraft’s Video Settings' : 'Turn lighting on to set the brightness' }, el('div', { class: 'rbt-top' }, icon('sun'), el('span', { text: 'Brightness' }), out), r);
 }
 function rbTimeSlider() {
   const src = $('#tod'), out = el('output', { class: 'rbt-out', text: $('#todOut') ? $('#todOut').textContent : '12:00' });
-  const r = el('input', { type: 'range', min: src ? src.min : '0', max: src ? src.max : '24', step: src ? src.step : '0.25', value: src ? src.value : '12', 'aria-label': 'Time of day', disabled: v3.light ? null : true });
+  const r = el('input', { type: 'range', min: src ? src.min : '0', max: src ? src.max : '24', step: src ? src.step : '0.25', value: src ? src.value : '12', 'data-def': '12', 'aria-label': 'Time of day', disabled: v3.light ? null : true });
   r.addEventListener('input', () => { v3input('#tod', r.value, 'input'); out.textContent = $('#todOut') ? $('#todOut').textContent : ''; });
   r.addEventListener('change', () => v3input('#tod', r.value, 'change'));
   return el('div', { class: 'rbt' + (v3.light ? '' : ' dis'), title: v3.light ? 'Time of day' : 'Turn lighting on to set the time of day' }, el('div', { class: 'rbt-top' }, icon('clock'), el('span', { text: 'Time' }), out), r);
@@ -10877,7 +10917,7 @@ function renderOptbarH(target) {
     if ((t === 'pencil' || t === 'shape' || t === 'bucket') && roofLevel(curLevel())) note = 'This is a roof floor: one layer of blocks, no walls.';
     else if (t === 'pencil' || t === 'shape' || t === 'bucket') {
       if (view.wall) sum.push('Wall');
-      note = ribbonOn() ? null : 'Your Main and Alt blocks are the two swatches in the top bar: tap the second one to swap them. The Wall button turns wall mode on, so new blocks are walls, which rise to full floor height in 3D.';
+      note = ribbonOn() ? null : 'Your Primary and Secondary blocks are the two swatches in the top bar: tap the second one to swap them. The Wall button turns wall mode on, so new blocks are walls, which rise to full floor height in 3D.';
     }
     if (t === 'select') note = view.selShape === 'wand' ? 'Tap a block to select what it touches, or every block of that type with Every match.' : null;
   } else if (t === 'roof') {
@@ -11059,15 +11099,15 @@ function renderCornerSwatches() {
   box.replaceChildren(
     sw('back', Bk, !view.wall, `${slotName(!view.wall)} ${Bk.mix ? 'mix' : 'block'}: ${Bk.name}. Click to swap (X)`, swapSlots),
     sw('front', A, view.wall, `${slotName(view.wall)} ${A.mix ? 'mix' : 'block'}: ${A.name}. Click to choose another`, () => toggleWin('blocks')),
-    el('button', { class: 'cswap', title: 'Swap Main and Alt (X)', 'aria-label': 'Swap the Main and Alt blocks', onclick: swapSlots }, icon('swap')),
-    el('button', { class: 'creset', title: `Defaults (D): ${BY_ID[view.cfg.nf.fb].name} as Main, ${BY_ID[view.cfg.nf.wb].name} as Alt`, 'aria-label': 'Back to the default blocks', onclick: resetBlocks }, icon('defblocks')),
+    el('button', { class: 'cswap', title: 'Swap Primary and Secondary (X)', 'aria-label': 'Swap the Primary and Secondary blocks', onclick: swapSlots }, icon('swap')),
+    el('button', { class: 'creset', title: `Defaults (D): ${BY_ID[view.cfg.nf.fb].name} as Primary, ${BY_ID[view.cfg.nf.wb].name} as Secondary`, 'aria-label': 'Back to the default blocks', onclick: resetBlocks }, icon('defblocks')),
     el('button', { class: 'cpreset', title: 'Block presets', 'aria-label': 'Block presets', 'aria-haspopup': 'true', onclick: ev => openPresets(ev.currentTarget) }, icon('presets')));
 }
 /* ================= block presets =================
    A preset sets the blocks you draw with in one go: floor and walls, the roof and its gable ends, stairs, doorway and window trims, posts,
    the pattern's second block and paths. What's built stays as it is. The built-in ones follow the Swap palette themes; yours follow you
    to every plan, mixes and all */
-const PRESET_SLOTS = [['f', 'Main'], ['w', 'Alt'], ['r', 'Roof'], ['rt', 'Gable ends'], ['s', 'Stairs'], ['d', 'Doorways'], ['wi', 'Windows'], ['po', 'Posts'], ['pa', 'Pattern'], ['pt', 'Paths']];
+const PRESET_SLOTS = [['f', 'Primary'], ['w', 'Secondary'], ['r', 'Roof'], ['rt', 'Gable ends'], ['s', 'Stairs'], ['d', 'Doorways'], ['wi', 'Windows'], ['po', 'Posts'], ['pa', 'Pattern'], ['pt', 'Paths']];
 const BUILTIN_PRESETS = [
   { id: 'p-default', name: 'Default', f: 'oak_planks', w: 'cobblestone', r: 'dark_oak_planks', rt: null, s: 'stone_bricks', d: null, wi: null, po: 'stripped_spruce_log', pa: 'polished_andesite', pt: 'gravel' },
   { id: 'p-medieval', name: 'Medieval', f: 'spruce_planks', w: 'cobblestone', r: 'dark_oak_planks', rt: 'stone_bricks', s: 'stone_bricks', d: 'stone_bricks', wi: 'spruce_planks', po: 'stripped_spruce_log', pa: 'stone_bricks', pt: 'gravel' },
@@ -11113,7 +11153,7 @@ function applyPreset(P) {
   const pa = U('pa'); if (pa && full(pa)) { view.patBlock = pa; view.penPatBlock = pa; }
   const pt = U('pt'); if (pt) view.pathOpt = { ...pathOpt(), block: pt };
   txCommit(); savePrefs(); renderAll(); renderTopTools(); if (ribbonOn()) renderRibbon();
-  toast(`${P.name}: Main is ${slotShow(true).name}, Alt is ${slotShow(false).name}.`);
+  toast(`${P.name}: Primary is ${slotShow(true).name}, Secondary is ${slotShow(false).name}.`);
 }
 function presetFromNow(name) {
   const L = view.lastRoof, o = { id: uid('q'), name: name.slice(0, 32) || 'My preset', f: presetKeep(slotV(false)), w: presetKeep(slotV(true)), r: L && L.mat || defaultRoofMat(), rt: L && L.trim || null,
@@ -11125,7 +11165,7 @@ function resetBlocks() {
   if (store.readOnly) return;
   const nf = view.cfg.nf; setSlotV(false, nf.fb); setSlotV(true, nf.wb);
   savePrefs(); renderAll(); renderTopTools(); if (ribbonOn()) renderRibbon();
-  toast(`Main is ${BY_ID[nf.fb].name} and Alt is ${BY_ID[nf.wb].name} again.`);
+  toast(`Primary is ${BY_ID[nf.fb].name} and Secondary is ${BY_ID[nf.wb].name} again.`);
 }
 function openPresets(anchor) {
   if (!plan) return;
@@ -11143,15 +11183,15 @@ function openPresets(anchor) {
       el('div', { class: 'mlabel', text: 'Yours' }),
       view.presets.length ? el('div', { class: 'prgrid' }, ...view.presets.map(P => card(P, true))) : el('p', { class: 'ddhint', text: 'Save the blocks you’re using now as a preset of your own. It follows you to every plan.' }),
       store.readOnly ? null : el('div', { class: 'prsave' }, nm, el('button', { class: 'btn sm primary', onclick: save }, icon('plus'), 'Save current')),
-      el('p', { class: 'ddhint', text: 'A preset sets Main, Alt, the roof and its trim, stairs, door and window trims, posts, patterns and paths. What’s built stays as it is.' }));
+      el('p', { class: 'ddhint', text: 'A preset sets Primary, Secondary, the roof and its trim, stairs, door and window trims, posts, patterns and paths. What’s built stays as it is.' }));
   };
   render(); openPopover(anchor, wrap);
 }
 function symChanged() { renderOptbar(); updateHoverGhost(); requestDraw(); savePrefs(); }
 function toggleMirror(axis) { if (!mirrorApplies()) return; mirror[axis] = !mirror[axis]; if (mirror[axis]) mirror.radial = 0; symChanged(); }
-/* two blocks that are alike, like a paint program's two colours: Main is the one you draw with and Alt waits behind it. X swaps them, W turns
+/* two blocks that are alike, like a paint program's two colours: Primary is the one you draw with and Secondary waits behind it. X swaps them, W turns
    wall mode on and off, and D puts the defaults back */
-const slotName = a => !!a === !!view.wall ? 'Main' : 'Alt';
+const slotName = a => !!a === !!view.wall ? 'Primary' : 'Secondary';
 function swapPair() { const a = BY_ID[view.altBlock] ? view.altBlock : view.block; view.altBlock = view.block; view.block = a; const m = view.mix; view.mix = view.altMix || null; view.altMix = m || null; }
 function pairChanged() { symChanged(); renderSelbar(); renderTopTools(); if (ribbonOn()) renderRibbon(); if (view.win === 'blocks') renderPanel(); }
 function toggleWall(quiet) {
@@ -11159,10 +11199,20 @@ function toggleWall(quiet) {
   view.wall = !view.wall; pairChanged();
   if (!quiet) toast(view.wall ? `Wall mode on · drawing walls with ${slotShow(true).name}.` : `Wall mode off · drawing plain blocks with ${slotShow(true).name}.`);
 }
-/* swaps Main and Alt, whatever the tool */
+/* swaps Primary and Secondary, whatever the tool */
 function swapSlots() {
   if (store.readOnly) return;
-  swapPair(); pairChanged(); toast(`Swapped · Main is ${slotShow(true).name}, Alt is ${slotShow(false).name}.`);
+  swapPair(); pairChanged(); swapFlash();
+}
+/* the block (or mix) you've just swapped to, large in the middle of the plan for a moment; how long is Settings › Appearance › Swap flash */
+const FLASH_MS = { slow: 1500, standard: 1000, quick: 500 };
+function swapFlashDemo() { if (plan) swapFlash(); }
+function swapFlash() {
+  const S = slotShow(true), host = $('#viewport') || document.body, ms = FLASH_MS[view.flash] || 1000;
+  let f = $('#swapFlash'); if (f) f.remove();
+  f = el('div', { class: 'swapflash', id: 'swapFlash', role: 'status', 'aria-live': 'polite', style: `--fl:${ms}ms` },
+    el('div', { class: 'sfpic' }, el('img', { src: S.img, alt: '' })), el('strong', { text: S.name }), el('span', { text: 'Now selected' }));
+  host.append(f); clearTimeout(swapFlash.t); swapFlash.t = setTimeout(() => f.remove(), ms + 260);
 }
 /* the eyedropper: takes the block, its facing, and whether it is a wall */
 function pickBlockAt(x, z, plain) {
@@ -11173,7 +11223,7 @@ function pickBlockAt(x, z, plain) {
   if (pk.shape) { view.bface = pk.f || 'n'; view.btop = !!pk.top; }
   setBlockChoice(id);
   const how = pk.shape === 'stairs' ? `, facing ${DIR_NAME[pk.f || 'n']}${pk.top ? ', upside down' : ''}` : pk.shape === 'slab' ? (pk.top ? ', top half' : ', bottom half') : '';
-  toast(`Picked ${pk.name}${how} as your Main block.`);
+  toast(`Picked ${pk.name}${how} as your Primary block.`);
 }
 function setMirrorAxis(ax, az) { mirror.ax = ax; mirror.az = az; symChanged(); }
 function openMirrorMenu(btn) {
@@ -12055,10 +12105,10 @@ function renderBlockResults() {
 function renderBlocksTab(body) {
   const b = BY_ID[view.block] || BLOCKS[0], fav = view.favs.includes(b.id), parts = [];
   // the two blocks side by side: the one you are choosing for is highlighted; tap the other to choose for it instead
-  parts.push(el('div', { class: 'bpair', role: 'group', 'aria-label': 'Main and Alt blocks' },
+  parts.push(el('div', { class: 'bpair', role: 'group', 'aria-label': 'Primary and Secondary blocks' },
     (() => { const A = slotShow(true); return A.mix
       ? el('div', { class: 'blockcard on' }, el('img', { src: A.img, alt: '' }),
-        el('div', { style: 'min-width:0;flex:1' }, el('div', { class: 'bslot', text: `${slotName(view.wall)} mix` }), el('div', { class: 'bn', text: A.name }), el('code', { text: A.mix.parts.map(q => q[1] + ' ' + BY_ID[q[0]].name).join(' · ') })),
+        el('div', { style: 'min-width:0;flex:1' }, el('div', { class: 'bslot', text: `${slotName(view.wall)} mix` }), el('div', { class: 'bn', text: A.name })),
         el('button', { class: 'ib sm', title: 'Back to a single block', 'aria-label': 'Stop using the mix', onclick: () => { view.mix = null; renderAll(); savePrefs(); } }, icon('x')))
       : el('div', { class: 'blockcard on' }, el('img', { src: SWATCH[b.id], alt: '' }),
         el('div', { style: 'min-width:0;flex:1' }, el('div', { class: 'bslot', text: `${slotName(view.wall)} block` }), el('div', { class: 'bn', text: b.name }), el('code', { text: b.id })),
@@ -12068,12 +12118,12 @@ function renderBlocksTab(body) {
   // presets and mixes: a mix is a weighted blend, painted like a block
   if (!store.readOnly) {
     const mixes = plan.mixes || [];
-    parts.push(el('div', { class: 'bpresets' }, el('button', { class: 'btn sm', onclick: ev => openPresets(ev.currentTarget) }, icon('presets'), 'Presets…'),
-      el('button', { class: 'btn sm', title: 'Blend blocks, like 70% stone bricks, 20% cracked, 10% mossy', onclick: () => openMixEditor(null) }, icon('plus'), 'New mix')));
-    if (mixes.length) parts.push(el('div', { class: 'mixes' }, ...mixes.map(m => el('div', { class: 'mixt', role: 'button', tabindex: '0', 'aria-pressed': String(view.mix === m.id), title: `Draw with the ${m.name} mix: ` + m.parts.map(q => BY_ID[q[0]].name).join(', '), onclick: () => useMix(m.id), onkeydown: ev => { if (ev.key === 'Enter') useMix(m.id); } },
+    parts.push(el('div', { class: 'bpresets' }, el('button', { class: 'btn sm', onclick: ev => openPresets(ev.currentTarget) }, icon('presets'), 'Presets…')));
+    if (mixes.length || isMobile()) parts.push(el('h4', { class: 'bsub', text: 'Mixes' }), el('div', { class: 'mixes' }, ...mixes.map(m => el('div', { class: 'mixt', role: 'button', tabindex: '0', 'aria-pressed': String(view.mix === m.id), title: `Draw with the ${m.name} mix: ` + m.parts.map(q => BY_ID[q[0]].name).join(', '), onclick: () => useMix(m.id), onkeydown: ev => { if (ev.key === 'Enter') useMix(m.id); } },
       el('img', { src: mixImg(m), alt: '' }), el('span', { text: m.name }),
       el('button', { class: 'mixe', title: `Edit ${m.name}`, 'aria-label': `Edit ${m.name}`, onclick: ev => { ev.stopPropagation(); openMixEditor(m.id); } }, icon('pencil')),
-      el('button', { class: 'mixe mixd', title: `Delete the ${m.name} mix`, 'aria-label': `Delete the ${m.name} mix`, onclick: ev => { ev.stopPropagation(); deleteMix(m.id); } }, icon('trash'))))));
+      el('button', { class: 'mixe mixd', title: `Delete the ${m.name} mix`, 'aria-label': `Delete the ${m.name} mix`, onclick: ev => { ev.stopPropagation(); deleteMix(m.id); } }, icon('trash')))),
+      isMobile() ? el('button', { class: 'mixt mixnew', title: 'Blend blocks, like 70% stone bricks, 20% cracked, 10% mossy', onclick: () => openMixEditor(null) }, icon('plus'), el('span', { text: 'New mix' })) : null));
   }
   const q = el('input', { class: 'field', id: 'blockSearch', type: 'search', placeholder: `Search ${BLOCKS.filter(b => !b.hidden).length.toLocaleString()} blocks by name, ID or mod folder`, value: view.bq, autocomplete: 'off', spellcheck: 'false', 'aria-label': 'Search blocks' });
   q.addEventListener('input', () => { view.bq = q.value; renderBlockResults(); });
@@ -12534,7 +12584,7 @@ const LAYER_INFO = {
   zones: 'Coloured areas you’ve marked out, like rooms or farms.', multis: 'Footprints of the multiblocks you’ve placed.', routes: 'Power, ME, fluid and gas lines.',
   anchors: 'Pins that show on every floor, for lining things up.', notes: 'Your notes on the plan.', labels: 'Names on zones, multiblocks and roofs.', roofs: 'The dashed outline of each floor’s roof.' };
 const SET_CATS = [
-  ['view', 'Plan view', 'layers', 'What the 2D plan shows and how it looks. These follow you to your other devices.'],
+  ['view', 'Appearance', 'layers', 'How the app and the 2D plan look, and what the plan shows. These follow you to your other devices.'],
   ['3d', '3D view', 'eye', 'How the 3D view starts. The same switches are in 3D options.'],
   ['packs', 'Texture packs', 'image', 'Resource packs for real block textures, your favourite blocks, and the plan’s mods.'],
   ['walls', 'Walls & roofs', 'wall', 'How styled walls are built and what roofs cover.'],
@@ -12604,8 +12654,14 @@ function settingsTips(back) {
   new MutationObserver(() => { if (back.hidden) tipHide(); }).observe(back, { attributes: true, attributeFilter: ['hidden'] });
 }
 function setSwitch(id, on, fn, label) { const inp = el('input', { type: 'checkbox', class: 'sw', id, role: 'switch', checked: on ? true : null, 'aria-label': label }); inp.addEventListener('change', () => fn(inp.checked)); return inp; }
+/* every slider's default: a double-click (or double-tap) puts it back */
+const RANGE_DEF = { ghostAlpha: 0.35, 'set-grida': 1, zoneAlpha: 0.28, 'set-zspd': 1, 'set3-gamma': 1, 'set3-tod': 12, 'set3-spread': 1, 'set-fov': 70, 'set-sens': 1 };
+{ let lastR = null, lastT = 0, lastReset = 0;
+  const reset = r => { const d = r.dataset.def; if (d == null || r.disabled || Date.now() - lastReset < 400) return; lastReset = Date.now(); r.value = d === 'max' ? r.max : d; r.dispatchEvent(new Event('input', { bubbles: true })); r.dispatchEvent(new Event('change', { bubbles: true })); toast('Back to the default'); };
+  document.addEventListener('dblclick', e => { const r = e.target; if (r instanceof HTMLInputElement && r.type === 'range') { e.preventDefault(); reset(r); } });
+  document.addEventListener('pointerup', e => { const r = e.target; if (!(r instanceof HTMLInputElement) || r.type !== 'range' || e.pointerType === 'mouse') return; const t = Date.now(); if (lastR === r && t - lastT < 350) reset(r); lastR = r; lastT = t; }); }
 function setRange(id, min, max, step, value, fn, fmt, label) {
-  const r = el('input', { type: 'range', id, min: String(min), max: String(max), step: String(step), value: String(value), 'aria-label': label }), o = el('output', { for: id, text: fmt(value) });
+  const r = el('input', { type: 'range', id, min: String(min), max: String(max), step: String(step), value: String(value), 'data-def': RANGE_DEF[id] != null ? String(RANGE_DEF[id]) : null, 'aria-label': label }), o = el('output', { for: id, text: fmt(value) });
   r.addEventListener('input', () => { fn(Number(r.value)); o.textContent = fmt(Number(r.value)); }); return el('div', { class: 'setrange' }, r, o);
 }
 const v3input = (sel, value, evName = 'change') => { const n = $(sel); if (!n) return; if (n.type === 'checkbox') n.checked = value; else n.value = value; n.dispatchEvent(new Event(evName)); };
@@ -12614,9 +12670,10 @@ function settingsRows(cat) {
   if (cat === 'view') {
     const C = view.cfg;
     rows.push(setRow('2D / 3D button', 'In the top bar, or as a pin floating at the bottom left of the plan and the 3D view.', seg([['top', 'Top bar'], ['pin', 'Floating pin']], view.viewPin === 'pin' ? 'pin' : 'top', v => { setViewPin(v); again(); }, '2D / 3D button')));
+    rows.push(setRow('Swap flash', 'How long the picture of your new Primary block stays in the middle of the plan after you swap Primary and Secondary.', seg([['slow', 'Slow'], ['standard', 'Standard'], ['quick', 'Quick']], view.flash || 'standard', v => { view.flash = v; savePrefs(); again(); swapFlashDemo(); }, 'Swap flash')));
     rows.push(setRow('Theme', 'Light or dark colours for the whole app, or follow your device.', seg([['system', 'System'], ['light', 'Light'], ['dark', 'Dark']], view.theme || 'system', v => { setTheme(v); again(); }, 'Theme')));
     rows.push(setChecks([['set-hovername', 'Block names on hover', C.hoverName, v => { C.hoverName = v; savePrefs(); renderCoords(); }, 'Name the block under the cursor next to its coordinates, with its mix if it has one.'],
-      !isMobile() && ['set-cornersw', 'Swatches in the corner', !!view.cornerSw, v => { view.cornerSw = v; savePrefs(); renderTopTools(); if (ribbonOn()) renderRibbon(); }, 'Your Main and Alt blocks in the bottom-left corner of the plan, like Photoshop’s colours: Main in front, Alt behind. Click Alt to swap them.']]));
+      !isMobile() && ['set-cornersw', 'Swatches in the corner', !!view.cornerSw, v => { view.cornerSw = v; savePrefs(); renderTopTools(); if (ribbonOn()) renderRibbon(); }, 'Your Primary and Secondary blocks in the bottom-left corner of the plan, like Photoshop’s colours: Primary in front, Secondary behind. Click Secondary to swap them.']]));
     rows.push(el('h4', { class: 'setsub', text: 'Show on the plan' }));
     rows.push(setChecks(['grid', 'chunks', 'origin', 'blocks', 'zones', 'multis', 'routes', 'anchors', 'notes', 'labels', 'roofs', 'ghost'].map(k => ['set-' + k, LAYER_NAMES[k], view.layers[k], v => { view.layers[k] = v; requestDraw(); savePrefs(); if (ribbonOn()) renderRibbon(); if (k === 'ghost') again(); }, LAYER_INFO[k]])));
     rows.push(el('h4', { class: 'setsub', text: 'Look' }));
@@ -12751,9 +12808,9 @@ const kk = (...a) => a.filter(x => keyOf(x)).map(x => keyName(keyOf(x))).join(' 
 const shortcutGroups = () => shortcutRaw().map(([t, rows]) => [t, rows.filter(r => r[0] !== '')]);
 const shortcutRaw = () => [
   ['Tools', [[kk('pointer', 'pan'), 'Pick, pan'], [kk('pencil', 'line'), 'Pencil'], [kk('shape', 'circle'), 'Shape'], [kk('bucket', 'path'), 'Fill, path'], [kk('select', 'eraser', 'extend'), 'Select, eraser, extend up'], [kk('stair', 'door', 'window', 'roof'), 'Stairs, doorway, window, roof'], [kk('zone', 'stamp', 'route'), 'Zone, multiblock, route'], [kk('note', 'anchor', 'measure'), 'Note, anchor, measure']]],
-  ['Drawing', [[kk('swapBlocks'), 'Swap the Main and Alt blocks'], [kk('wallMode'), 'Wall mode on / off'], [kk('resetBlocks'), 'Main and Alt back to the defaults'], [kk('fillMode'), 'Fill: solid, frame or room'], [`Shift + a tool's key`, 'Change that tool’s shape: pencil (freehand, line, path), shape, select, eraser, zone'], ['Shift while drawing', 'Keep a shape 1:1: a square, a circle'], ['Alt while drawing', 'Erase instead of place'], [kk('turn'), 'Turn the stair you are placing, or a multiblock'], [kk('flipHalf'), 'Upside-down stair or top-half slab'], ['[ / ]', 'Brush size smaller / bigger (Pencil, Eraser, Path, roof brush)'], ['[ ]  with a shape', 'Size across; Alt: down; Shift: both; Shift+Alt: square'], ['Right-click', 'Pick a block (with its facing), or quick actions']]],
+  ['Drawing', [[kk('swapBlocks'), 'Swap the Primary and Secondary blocks'], [kk('wallMode'), 'Wall mode on / off'], [kk('resetBlocks'), 'Primary and Secondary back to the defaults'], [kk('fillMode'), 'Fill: solid, frame or room'], [`Shift + a tool's key`, 'Change that tool’s shape: pencil (freehand, line, path), shape, select, eraser, zone'], ['Shift while drawing', 'Keep a shape 1:1: a square, a circle'], ['Alt while drawing', 'Erase instead of place'], [kk('turn'), 'Turn the stair you are placing, or a multiblock'], [kk('flipHalf'), 'Upside-down stair or top-half slab'], ['[ / ]', 'Brush size smaller / bigger (Pencil, Eraser, Path, roof brush)'], ['[ ]  with a shape', 'Size across; Alt: down; Shift: both; Shift+Alt: square'], ['Right-click', 'Pick a block (with its facing), or quick actions']]],
   ['Editing', [['Shift / Alt while selecting', 'Add / subtract (both: intersect)'], [`${kk('turn')} / Shift+${kk('turn')}`, 'Turn the selection right / left'], ['Ctrl+C / Ctrl+X / Ctrl+V', 'Copy, move, paste blocks'], ['Enter', 'Fill the selection, build up what Extend picked, or lay a path'], ['Delete', 'Erase the selection or the picked object'], ['Ctrl+Z / Ctrl+Shift+Z', 'Undo / redo'], ['Right-click undo', 'Undo history'], ['Ctrl+D or Esc', 'Deselect']]],
-  ['Floors and view', [['PgDn PgUp', 'Floor down / up (also [ ] with tools that have no size)'], ['Right-click a floor tag', 'That floor’s settings'], ['Space + drag', 'Pan with any tool'], ['Scroll, + / −, 0', 'Zoom, fit to screen'], ['Alt with the Ruler', 'A quick measurement that isn’t kept'], ['Ctrl+K', 'Search tools, blocks, floors and actions'], ['Arrow keys', 'Move the view a few cells (Shift: further)'], ['?', 'These keys']]],
+  ['Floors and view', [['PgDn PgUp', 'Floor down / up'], ['Right-click a floor tag', 'That floor’s settings'], ['Space + drag', 'Pan with any tool'], ['Scroll, + / −, 0', 'Zoom, fit to screen'], ['Alt with the Ruler', 'A quick measurement that isn’t kept'], ['Ctrl+K', 'Search tools, blocks, floors and actions'], ['Arrow keys', 'Move the view a few cells (Shift: further)'], ['?', 'These keys']]],
   ['3D', [['Alt + drag', 'Orbit round the block under the cursor'], ['Alt + scroll', 'Zoom in on the block under the cursor'], ['Home', 'Back to the whole build']]]];
 const keyCaps = k => el('span', {}, k.split(' / ').map((x, i) => [i ? ' / ' : '', el('kbd', { text: x })]));
 function shortcutList() { return el('div', { class: 'keysheet' }, shortcutGroups().map(([h, rows]) => el('section', { class: 'keyg' }, el('h4', { class: 'keyh', text: h }), el('div', { class: 'keys' }, rows.flatMap(([k, d]) => [keyCaps(k), el('span', { text: d })]))))); }
@@ -12883,11 +12940,11 @@ function paletteSource() {
   A('Export plan (.json)', exportJSON, { icon: 'file', kw: 'save backup' });
   A('Export this floor (.png)', exportPNG, { icon: 'image', kw: 'picture image screenshot' });
   A('Settings', () => openWin('settings'), { icon: 'tune', kw: 'layers zones textures grid chunk ghost options preferences' });
-  if (!ro) A('Swap Main and Alt blocks', swapSlots, { icon: 'swap', key: keyOf('swapBlocks') ? keyName(keyOf('swapBlocks')) : null, sub: `Alt: ${(BY_ID[view.altBlock] || BY_ID[view.block]).name}`, kw: 'block pair swap wall floor main alt' });
+  if (!ro) A('Swap Primary and Secondary blocks', swapSlots, { icon: 'swap', key: keyOf('swapBlocks') ? keyName(keyOf('swapBlocks')) : null, sub: `Secondary: ${(BY_ID[view.altBlock] || BY_ID[view.block]).name}`, kw: 'block pair swap wall floor main alt' });
   if (!ro) A(view.wall ? 'Wall mode off' : 'Wall mode on', () => toggleWall(), { icon: 'wall', key: keyOf('wallMode') ? keyName(keyOf('wallMode')) : null, kw: 'wall mode toggle draw walls' });
   A('Import plan (.json)', () => $('#importFile').click(), { icon: 'upload', edit: 1 });
   A('Block presets', () => openPresets($('#tbPresets').offsetParent ? $('#tbPresets') : $('#searchBtn')), { icon: 'presets', edit: 1, kw: 'preset theme medieval palette blocks' });
-  A('Main and Alt back to the defaults', resetBlocks, { icon: 'defblocks', edit: 1, key: keyOf('resetBlocks') ? keyName(keyOf('resetBlocks')) : null, kw: 'reset blocks oak cobblestone default main alt' });
+  A('Primary and Secondary back to the defaults', resetBlocks, { icon: 'defblocks', edit: 1, key: keyOf('resetBlocks') ? keyName(keyOf('resetBlocks')) : null, kw: 'reset blocks oak cobblestone default main alt' });
   A('Find and replace', () => openFindReplace(), { icon: 'swap', edit: 1, kw: 'find replace blocks mix room floor building' });
   A('Swap palette', () => openSwap(), { icon: 'swap', edit: 1, kw: 'replace blocks swap material theme' });
   A('Snapshots', openSnapshotsModal, { icon: 'history', edit: 1, kw: 'backup restore version save' });
@@ -13262,7 +13319,8 @@ function loadThree() {
   return loadThree.p;
 }
 async function set3D(on) {
-  if (on === view.is3D) return;
+  if (view.split) splitOff(); else if (on === view.is3D) return;
+  if (on === view.is3D) { requestDraw(); return; }
   if (on && ribbonOn() && view.ribbonTab !== 'view') { view.ribbonTab = 'view'; savePrefs(); }   // the 3D controls live on the View tab
   if (!on && pov.on) povExit();
   view.is3D = on;
@@ -13274,6 +13332,51 @@ async function set3D(on) {
   cancelGesture();
   try { await loadThree(); if (!view.is3D) return; init3D(); resize3D(); build3D(true); }
   catch { toast('The 3D preview could not load. Check your connection and try again.'); set3D(false); }
+}
+/* ================= split view: the 2D plan and 3D side by side =================
+   Drag the line between them to resize; the handle in its middle swaps the sides. Computers and tablets only */
+const show3D = () => view.is3D || !!view.split;
+const splitOK = () => !isMobile();
+function viewMode() { return view.split ? 'split' : view.is3D ? '3d' : '2d'; }
+async function setViewMode(m) {
+  if (m === 'split' && !splitOK()) m = '3d';
+  if (m === viewMode()) return;
+  if (m !== 'split') { if (view.split) splitOff(); await set3D(m === '3d'); syncViewToggle(); savePrefs(); return; }
+  if (view.is3D) await set3D(false);
+  if (pov.on) povExit();
+  view.split = true; $('#app').classList.add('splitv'); $('#view3d').hidden = false; cv.style.visibility = '';
+  layoutSplit(); resize(); syncViewToggle(); renderTopTools(); savePrefs();
+  try { await loadThree(); if (!view.split) return; init3D(); resize3D(); build3D(!three.fitted); }
+  catch { toast('The 3D preview could not load. Check your connection and try again.'); splitOff(); }
+}
+function splitOff() {
+  if (!view.split) return; view.split = false; $('#app').classList.remove('splitv');
+  if (!view.is3D) $('#view3d').hidden = true; layoutSplit(); resize(); syncViewToggle();
+}
+/* Y: 2D, 3D, split, and round again (phones: 2D and 3D) */
+function cycleView() { const order = splitOK() ? ['2d', '3d', 'split'] : ['2d', '3d']; const m = order[(order.indexOf(viewMode()) + 1) % order.length]; setViewMode(m); toast({ '2d': '2D plan', '3d': '3D view', split: 'Split view' }[m]); }
+function splitGeo() {
+  const R = vp.getBoundingClientRect(), f = clamp(Number.isFinite(view.splitR) ? view.splitR : 0.5, 0.2, 0.8), lw = Math.round(R.width * f), rw = Math.max(1, R.width - lw), sw = !!view.splitSwap;
+  return { R, lw, w2: sw ? rw : lw, x2: sw ? lw : 0, w3: sw ? lw : rw, x3: sw ? 0 : lw };
+}
+function layoutSplit() {
+  const v3d = $('#view3d'); let bar = $('#splitBar');
+  if (!view.split) { cv.style.marginLeft = ''; v3d.style.left = v3d.style.width = v3d.style.right = ''; if (bar) bar.hidden = true; return; }
+  const g = splitGeo();
+  cv.style.marginLeft = g.x2 + 'px'; vp.style.setProperty('--sx2', g.x2 + 'px'); vp.style.setProperty('--sw2', g.w2 + 'px'); v3d.style.left = g.x3 + 'px'; v3d.style.width = g.w3 + 'px'; v3d.style.right = 'auto';
+  if (!bar) {
+    bar = el('div', { class: 'splitbar', id: 'splitBar', role: 'separator', 'aria-orientation': 'vertical', 'aria-label': 'Drag to resize the 2D and 3D views; double-click for half and half', title: 'Drag to resize · double-click for half and half' },
+      el('button', { class: 'splith', title: 'Swap the 2D and 3D sides', 'aria-label': 'Swap the 2D and 3D sides', onclick: ev => { ev.stopPropagation(); view.splitSwap = !view.splitSwap; layoutSplit(); resize(); savePrefs(); } }, icon('swap')));
+    bar.addEventListener('dblclick', ev => { if (ev.target.closest('.splith')) return; view.splitR = 0.5; layoutSplit(); resize(); savePrefs(); });
+    bar.addEventListener('pointerdown', ev => {
+      if (ev.button !== 0 || ev.target.closest('.splith')) return; ev.preventDefault(); bar.setPointerCapture(ev.pointerId); bar.classList.add('drag');
+      const mv = e => { const R = vp.getBoundingClientRect(); view.splitR = clamp((e.clientX - R.left) / R.width, 0.2, 0.8); layoutSplit(); resize(); };
+      const up = () => { bar.classList.remove('drag'); bar.removeEventListener('pointermove', mv); bar.removeEventListener('pointerup', up); bar.removeEventListener('pointercancel', up); savePrefs(); };
+      bar.addEventListener('pointermove', mv); bar.addEventListener('pointerup', up); bar.addEventListener('pointercancel', up);
+    });
+    vp.append(bar);
+  }
+  bar.hidden = false; bar.style.left = g.lw + 'px';
 }
 /* light sources, by Minecraft light level */
 const LIGHT_LEVEL = { glowstone: 15, sea_lantern: 15, ochre_froglight: 15, pearlescent_froglight: 15, verdant_froglight: 15, shroomlight: 15, jack_o_lantern: 15, redstone_lamp: 15, magma_block: 3, crying_obsidian: 10 };
@@ -13376,7 +13479,7 @@ function setCut(v, live) {
 }
 /* a picture of the 3D view, twice the size of the screen */
 async function savePicture() {
-  if (!three || !view.is3D) return;
+  if (!three || !show3D()) return;
   const { renderer } = three, c = renderer.domElement, w = c.clientWidth, h = c.clientHeight, pr = renderer.getPixelRatio();
   renderer.setPixelRatio(Math.min(3, pr * 2)); renderer.setSize(w, h, false); render3D();
   const blob = await new Promise(res => c.toBlob(res, 'image/png'));
@@ -13447,12 +13550,12 @@ function disposeMats(mats) {
   for (const p of ATL.pages) if (p.tex) { p.tex.dispose(); p.tex = null; }
 }
 function resize3D() {
-  if (!three) return; const r = vp.getBoundingClientRect();
+  if (!three) return; const r = $('#view3d').getBoundingClientRect();
   three.renderer.setSize(Math.max(1, r.width), Math.max(1, r.height), false);
   three.camera.aspect = Math.max(1, r.width) / Math.max(1, r.height); three.camera.updateProjectionMatrix(); render3D();
 }
 function render3D() {
-  if (!three || !view.is3D) return;
+  if (!three || !show3D()) return;
   const { camera, renderer, scene, orbit: O, THREE } = three;
   if (pov.on && pov.stage === 'walk') povCamera(camera);
   else {
@@ -13820,12 +13923,12 @@ function renderSceneryUI() {
     el('div', { class: 'v3row' }, el('button', { class: 'btn sm', 'data-k': 'new', disabled: off ? true : null, title: 'Reroll the landscape', onclick: () => setScenery({ seed: (Math.random() * 2147483647) | 0 }) }, icon('rotate'), 'New landscape')));
   if (fk) { const n = box.querySelector(`[data-k="${fk}"]`); if (n && !n.disabled) n.focus({ preventScroll: true }); }
 }
-function setScenery(patch) { v3.scn = { ...scnOf(), ...patch }; renderSceneryUI(); savePrefs(); if (three && view.is3D) build3D(false); if (ribbonOn()) renderRibbon(); }
+function setScenery(patch) { v3.scn = { ...scnOf(), ...patch }; renderSceneryUI(); savePrefs(); if (three && show3D()) build3D(false); if (ribbonOn()) renderRibbon(); }
 
-function setSmoothLight(on) { v3.smooth = !!on; savePrefs(); if (three && view.is3D) build3D(false); if (ribbonOn()) renderRibbon(); }
+function setSmoothLight(on) { v3.smooth = !!on; savePrefs(); if (three && show3D()) build3D(false); if (ribbonOn()) renderRibbon(); }
 function setSunMoon(on) { v3.sunMoon = !!on; savePrefs(); render3D(); if (ribbonOn()) renderRibbon(); }
 function setClouds(on) { v3.clouds = !!on; savePrefs(); const cb = $('#v3clouds'); if (cb) cb.checked = v3.clouds; render3D(); }
-function schedule3D() { if (!view.is3D || !three) return; clearTimeout(rebuildTimer); rebuildTimer = setTimeout(() => build3D(false), 180); }
+function schedule3D() { if (!show3D() || !three) return; clearTimeout(rebuildTimer); rebuildTimer = setTimeout(() => build3D(false), 180); }
 
 /* sun, moon and sky for the time of day; flat mode keeps the even studio light */
 const smooth01 = (a, b, x) => { const t = clamp((x - a) / (b - a), 0, 1); return t * t * (3 - 2 * t); };
@@ -13877,7 +13980,7 @@ function renderGroundUI() {
     onmouseenter: () => { lbl.lastChild.textContent = cap(id); }, onmouseleave: () => { lbl.lastChild.textContent = cap(deTerrain(plan.terrain).block); },
     onclick: () => setTerrain({ block: id }) }, ...kids);
   const grid = el('div', { class: 'ggrid inl' }, sw(null, [icon('x')], 'No ground'), ...GROUND_BLOCKS.filter(id => BY_ID[id]).map(id => sw(id, [el('img', { src: SWATCH[id], alt: '' })], BY_ID[id].name)));
-  const r = el('input', { type: 'range', id: 'groundMargin', min: '4', max: '64', step: '1', value: String(T.margin), disabled: T.block ? null : true, 'aria-label': 'Ground margin in blocks', 'data-scrub': 'Ground margin' });
+  const r = el('input', { type: 'range', id: 'groundMargin', min: '4', max: '64', step: '1', value: String(T.margin), 'data-def': '16', disabled: T.block ? null : true, 'aria-label': 'Ground margin in blocks', 'data-scrub': 'Ground margin' });
   const out = el('output', { for: 'groundMargin', text: T.margin + ' blocks' });
   let mtx = false;
   r.addEventListener('input', () => { if (!mtx) mtx = txBegin('Changed the ground margin'); plan.terrain = deTerrain({ ...plan.terrain, margin: Number(r.value) }); out.textContent = r.value + ' blocks'; schedule3D(); });
@@ -14089,7 +14192,7 @@ function povTick() {
 async function startPOV() {
   if (pov.on) return;
   if (isMobile()) { toast('Walk mode needs a keyboard and mouse, so it’s on computers only.'); return; }
-  if (!view.is3D) { await set3D(true); }
+  if (!view.is3D) { await setViewMode('3d'); }
   if (!three || !view.is3D || !plan) return;
   closePopover(); closeModal(); closePalette(); if (settingsOpen()) closeSettings(); closeWin();
   if (ribbonOn() && view.ribbonTab !== 'view') { view.ribbonTab = 'view'; savePrefs(); }
@@ -14636,9 +14739,9 @@ function wire() {
   const vdm = $('#v3dims'); vdm.checked = v3.dims !== false; vdm.addEventListener('change', () => { v3.dims = vdm.checked; build3D(false); savePrefs(); });
   upSeg();
   new ResizeObserver(() => resize()).observe(vp);
-  const retheme = () => { readTheme(); requestDraw(); if (plan && view.tab === 'objects') renderPanel(); if (three && view.is3D) build3D(false); };
+  const retheme = () => { readTheme(); requestDraw(); if (plan && view.tab === 'objects') renderPanel(); if (three && show3D()) build3D(false); };
   matchMedia('(prefers-color-scheme: dark)').addEventListener('change', retheme);
-  matchMedia('(max-width: 820px)').addEventListener('change', () => { if (pov.on && isMobile()) povExit(); buildRail(); applyUiMode(); if (plan) { renderOptbar(); renderSelbar(); } if (settingsOpen()) renderSettings(); });
+  matchMedia('(max-width: 820px)').addEventListener('change', () => { if (pov.on && isMobile()) povExit(); if (view.split && !splitOK()) setViewMode('3d'); buildRail(); applyUiMode(); if (plan) { renderOptbar(); renderSelbar(); } if (settingsOpen()) renderSettings(); });
   new MutationObserver(retheme).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme', 'class', 'style'] });
   document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') flushNow(); });
   window.addEventListener('pagehide', () => { if (prefPending) { clearTimeout(prefTimer); writePrefs(); } flushNow(); });
@@ -14882,6 +14985,7 @@ async function boot() {
     store.mode = 'local'; hideOverlay(); loadLocal();
   }
   renderRail(); setTool(view.tool);
+  if (view.wantSplit && splitOK()) setViewMode('split');
 }
 boot();
 })();
