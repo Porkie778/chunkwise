@@ -16108,13 +16108,13 @@ function openAccount() {
   };
   const render = () => {
     pw.hidden = mode === 'reset'; pw.autocomplete = mode === 'up' ? 'new-password' : 'current-password';
-    box.replaceChildren(
+    box.replaceChildren(...[   // skip the parts this mode doesn't have, or the page prints them as "null"
       el('p', { text: 'Sign in to keep your plans, settings and texture packs in sync across your devices. Plans already in this browser move into your account the first time.' }),
       mode === 'up' ? name : null, email, pw, msg,
       el('div', { class: 'exact' }, el('button', { class: 'btn primary', onclick: go }, mode === 'in' ? 'Log in' : mode === 'up' ? 'Create account' : 'Send reset link')),
       el('div', { class: 'sblinks' },
         mode !== 'in' ? el('button', { class: 'btn ghost sm', onclick: () => { mode = 'in'; say(''); render(); } }, 'I have an account') : el('button', { class: 'btn ghost sm', onclick: () => { mode = 'up'; say(''); render(); } }, 'Create an account'),
-        mode !== 'reset' ? el('button', { class: 'btn ghost sm', onclick: () => { mode = 'reset'; say(''); render(); } }, 'Forgot password?') : null));
+        mode !== 'reset' ? el('button', { class: 'btn ghost sm', onclick: () => { mode = 'reset'; say(''); render(); } }, 'Forgot password?') : null)].filter(Boolean));
   };
   for (const n of [name, email, pw]) n.addEventListener('keydown', ev => { if (ev.key === 'Enter') go(); });
   render(); openModal('Log in', [box]); setTimeout(() => email.focus(), 50);
