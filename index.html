@@ -11,7 +11,7 @@
 <title>Chunkwise</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&family=Silkscreen&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Atkinson+Hyperlegible:wght@400;700&family=JetBrains+Mono:wght@400;600&family=Silkscreen&family=Spectral:ital,wght@0,400;0,600;1,400&family=Spectral+SC:wght@600&family=Chakra+Petch:wght@500;600;700&family=Nunito:wght@600;700;800&family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
 :root{
   /* Layout: full-bleed graph-paper canvas framed by a slim tool rail, a contextual option strip and a floors/blocks panel */
@@ -1736,9 +1736,104 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 .bpline{position:absolute;height:1px;background:#9aa3ad}
 .bptag{position:absolute;transform:translateY(-50%);display:flex;gap:6px;align-items:baseline;padding:5px 10px;border-radius:8px;background:#fff;border:1px solid #dde0e5;color:#171a1f;font-size:12px;white-space:nowrap}
 .bptag small{font:600 11px var(--f-mono);color:#5a6370}.bptag.on{background:#171a1f;border-color:#171a1f;color:#fff}.bptag.on small{color:#cfd4db}
-.v3bpn{display:none}:root[data-skin="blueprint"] .v3bpn{display:inline}:root[data-skin="blueprint"] :is(.v3orb,.v3alt){display:none}
+.v3bpn{display:none}:root[data-skin="blueprint"][data-bp3] .v3bpn{display:inline}:root[data-skin="blueprint"][data-bp3] :is(.v3orb,.v3alt){display:none}
 :root[data-skin] :is(.seg button[aria-pressed="true"],.tool[aria-pressed="true"],.vopt[aria-pressed="true"],.btn.primary,.ts-t[aria-pressed="true"],#viewSeg button.vs[aria-pressed="true"]){background:var(--accent)!important;color:var(--on-accent)!important}
 :root[data-skin="blueprint"] :is(.olbl,.rgrp span,.rtab,.dk-h h3,.insp-kind,.qhead,.mlabel,.acc-lbl,.ts-lbl){font-family:var(--f-mono);letter-spacing:.08em}
+/* the look picker in Settings */
+.setrow:has(>.setctl>.lookgrid){grid-template-columns:1fr}.setrow:has(>.setctl>.lookgrid) .setctl{justify-content:stretch}
+:root[data-skin]:is([data-skin="nether"],[data-skin="cherry"],[data-skin="parchment"]) #app.cs #exportBtn{background:var(--accent);border-color:var(--accent);color:var(--on-accent)}
+.lookgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(118px,1fr));gap:8px;width:100%}
+.looktile{display:flex;align-items:center;gap:8px;min-height:44px;padding:6px 10px 6px 6px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font-weight:700;font-size:12.5px;text-align:left;cursor:pointer}
+.looktile[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 0 1px var(--accent)}
+.looktile .lk-sw{flex:none;width:30px;height:30px;border-radius:6px;border:1px solid rgba(0,0,0,.25);display:flex;align-items:flex-end;justify-content:flex-end;gap:2px;padding:3px;box-sizing:border-box}
+.looktile .lk-sw i{width:7px;height:7px;border-radius:2px}
+.looktile .lab{min-width:0;line-height:1.2}
+
+/* ---- Parchment: ink on an explorer's map. Square stamped buttons, serif type ---- */
+:root[data-skin="parchment"][data-skin]{color-scheme:light;
+  --paper:#efe3c8;--panel:#f6eddb;--panel-2:#efe4cc;--field:#fffaf0;--line:#b59d75;--ink:#33261a;--ink-2:#5f4b36;
+  --accent:#8a3b1c;--accent-soft:rgba(138,59,28,.14);--on-accent:#fbf3e2;--cv-accent:#8a3b1c;
+  --anchor:#b5651d;--mirror:#2f6f8f;--multi:#4f7f8f;--danger:#a3261c;--star:#b8860b;
+  --grid:rgba(51,38,26,.10);--chunk:rgba(51,38,26,.24);--axis:rgba(138,59,28,.7);
+  --mid-fill:rgba(51,38,26,.12);--mid-line:#5f4b36;--mid-case:rgba(255,250,240,.6);
+  --shadow:2px 2px 0 rgba(51,38,26,.28);--capbg:#33261a;--capline:#33261a;
+  --f-ui:"Spectral",Georgia,serif;--f-display:"Spectral SC","Spectral",Georgia,serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace}
+:root[data-skin="parchment"] body{background:#e9dcbf}
+:root[data-skin="parchment"] :is(.btn,.dk-btn,.ib.tg,.qchip,.acc-tog,.ddrop,.wdrop,.blockpick,.v3pin,.campill,.oblock,.prpick,.looktile){border:1.5px solid var(--ink);border-radius:3px;background:var(--field);box-shadow:2px 2px 0 rgba(51,38,26,.28)}
+:root[data-skin="parchment"] :is(.seg,select.pick,.field,.num,input[type=search],.rbp-q){border:1.5px solid var(--ink);border-radius:3px;background:var(--field)}
+:root[data-skin="parchment"] .seg{padding:0;gap:0}
+:root[data-skin="parchment"] .seg button{border-radius:0;border-right:1px solid var(--line)}
+:root[data-skin="parchment"] .seg button:last-child{border-right:0}
+:root[data-skin="parchment"] :is(.tool,.vopt){border-radius:3px}
+:root[data-skin="parchment"] :is(.tool[aria-pressed="true"],.vopt[aria-pressed="true"],.seg button[aria-pressed="true"]){font-style:italic}
+:root[data-skin="parchment"] :is(.popover,.modal,.setdlg,.inspector,.tsheet,.mpill,.mcol,.fstrip,.optbar){border-radius:4px!important;border-color:var(--ink)!important}
+:root[data-skin="parchment"] :is(.olbl,.rgrp span,.rtab,.dk-h h3,.insp-kind,.qhead,.mlabel,.acc-lbl,.ts-lbl){font-family:var(--f-display);letter-spacing:.04em;text-transform:none;font-size:13px}
+:root[data-skin="parchment"] :is(.csw,#tbPair .tbblock,#tbPair .tbalt){border-radius:3px;border-color:var(--ink)}
+:root[data-skin="parchment"] .csw img,:root[data-skin="parchment"] #tbPair .sw img{border-radius:1px}
+
+/* ---- Nether: basalt, crimson and lava. Corners cut off every button ---- */
+:root[data-skin="nether"][data-skin]{color-scheme:dark;
+  --paper:#0d0909;--panel:#1d1517;--panel-2:#261c1d;--field:#2a1e1f;--line:#4a3133;--ink:#f3e6e2;--ink-2:#c9aea9;
+  --accent:#ff6a1a;--accent-soft:rgba(255,106,26,.16);--on-accent:#1a0e08;--cv-accent:#ff6a1a;
+  --anchor:#ffb347;--mirror:#38d9c9;--multi:#ff9f6a;--danger:#ff4d5e;--star:#ffd166;
+  --grid:rgba(255,106,26,.08);--chunk:rgba(255,106,26,.2);--axis:rgba(255,106,26,.75);
+  --mid-fill:rgba(243,230,226,.16);--mid-line:#e9cfc8;--mid-case:rgba(0,0,0,.55);
+  --shadow:0 10px 30px rgba(0,0,0,.55);--capbg:#140f10;--capline:#4a3133;
+  --f-ui:"Chakra Petch",system-ui,sans-serif;--f-display:"Chakra Petch",system-ui,sans-serif;--f-mono:"JetBrains Mono",ui-monospace,monospace;
+  --cut:polygon(8px 0,100% 0,100% calc(100% - 8px),calc(100% - 8px) 100%,0 100%,0 8px);--cut-s:polygon(5px 0,100% 0,100% calc(100% - 5px),calc(100% - 5px) 100%,0 100%,0 5px)}
+:root[data-skin="nether"] body{background:#120d0e}
+:root[data-skin="nether"] :is(.btn,.dk-btn,.ddrop,.wdrop,.blockpick,.v3pin,.campill,.prpick,.looktile,.qchip){border:0;border-radius:0;background:#2e2122;box-shadow:inset 0 0 0 1px #5a3c3e;clip-path:var(--cut)}
+:root[data-skin="nether"] :is(.btn.primary,.looktile[aria-pressed="true"]){box-shadow:none}
+:root[data-skin="nether"] .looktile[aria-pressed="true"]{background:var(--accent);color:var(--on-accent)}
+:root[data-skin="nether"] :is(.seg,select.pick,.field,.num,input[type=search],.rbp-q){border:0;border-radius:0;background:var(--field);box-shadow:inset 0 0 0 1px #5a3c3e;clip-path:var(--cut)}
+:root[data-skin="nether"] :is(.seg button,.tool,.vopt,.ib){border-radius:0}
+:root[data-skin="nether"] :is(.seg button[aria-pressed="true"],.tool[aria-pressed="true"],.vopt[aria-pressed="true"],#viewSeg button.vs[aria-pressed="true"]){clip-path:var(--cut-s)}
+:root[data-skin="nether"] :is(.popover,.modal,.setdlg,.inspector,.tsheet,.mpill,.mcol,.fstrip,.optbar){border-radius:0!important}
+:root[data-skin="nether"] :is(.olbl,.rgrp span,.rtab,.dk-h h3,.insp-kind,.qhead,.mlabel,.acc-lbl,.ts-lbl){font-family:var(--f-display);letter-spacing:.14em;text-transform:uppercase}
+:root[data-skin="nether"] :is(.csw,#tbPair .tbblock,#tbPair .tbalt){border-radius:0;clip-path:var(--cut-s)}
+:root[data-skin="nether"] .csw img,:root[data-skin="nether"] #tbPair .sw img{border-radius:0}
+
+/* ---- Cherry Grove: soft pink and cream. Everything round as a pill ---- */
+:root[data-skin="cherry"][data-skin]{color-scheme:light;
+  --paper:#fff8f3;--panel:#ffffff;--panel-2:#fdf0f3;--field:#fff6f8;--line:#f0cfd8;--ink:#3d2228;--ink-2:#7a4f5b;
+  --accent:#c4385f;--accent-soft:#fbe3ea;--on-accent:#ffffff;--cv-accent:#c4385f;
+  --anchor:#e07a2f;--mirror:#3a8fb7;--multi:#7fb5d8;--danger:#c0262d;--star:#d99a00;
+  --grid:rgba(196,56,95,.08);--chunk:rgba(196,56,95,.2);--axis:rgba(196,56,95,.7);
+  --mid-fill:rgba(61,34,40,.1);--mid-line:#7a4f5b;--mid-case:rgba(255,255,255,.6);
+  --shadow:0 10px 28px rgba(120,40,60,.14),0 2px 6px rgba(120,40,60,.08);--capbg:#5b2c35;--capline:transparent;
+  --f-ui:"Nunito",system-ui,sans-serif;--f-display:"Nunito",system-ui,sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace}
+:root[data-skin="cherry"] body{background:#f9e7ec}
+:root[data-skin="cherry"] :is(.btn,.dk-btn,.ib.tg,.qchip,.acc-tog,.ddrop,.wdrop,.blockpick,.v3pin,.campill,.prpick,.seg,.seg button,.tool,.vopt,.ib,select.pick,.field,.num,input[type=search],.rbp-q,.looktile){border-radius:999px}
+:root[data-skin="cherry"] :is(.btn,.dk-btn,.ddrop,.wdrop,.blockpick,.prpick){border-color:transparent;background:var(--accent-soft)}
+:root[data-skin="cherry"] .btn.primary{box-shadow:0 6px 16px rgba(196,56,95,.3)}
+:root[data-skin="cherry"] .seg{border-color:transparent;background:var(--accent-soft);padding:3px}
+:root:root:root[data-skin="cherry"] :is(#cwz.z.z.z,.seg button[aria-pressed="true"],#viewSeg button.vs[aria-pressed="true"]){background:#fff!important;color:var(--accent)!important;box-shadow:0 2px 8px rgba(196,56,95,.2)}
+:root[data-skin="cherry"] .tool[aria-pressed="true"]{box-shadow:0 6px 14px rgba(196,56,95,.28)}
+:root[data-skin="cherry"] :is(.popover,.modal,.setdlg,.inspector,.tsheet){border-radius:22px!important;border-color:transparent!important}
+:root[data-skin="cherry"] :is(.mpill,.mcol,.fstrip,.optbar){border-radius:26px!important;border-color:transparent!important}
+:root[data-skin="cherry"] .looktile .lk-sw{border-radius:50%}
+:root[data-skin="cherry"] :is(.olbl,.rgrp span,.rtab,.dk-h h3,.insp-kind,.qhead,.mlabel,.acc-lbl,.ts-lbl){font-weight:800;letter-spacing:.02em}
+:root[data-skin="cherry"] :is(.csw,#tbPair .tbblock,#tbPair .tbalt){border-radius:16px;border-color:#fff}
+:root[data-skin="cherry"] .csw img,:root[data-skin="cherry"] #tbPair .sw img{border-radius:12px}
+
+/* ---- Deep Dark: true black, hairline buttons, a sculk glow on what's chosen ---- */
+:root[data-skin="deep"][data-skin]{color-scheme:dark;
+  --paper:#010303;--panel:#030606;--panel-2:#071010;--field:#000000;--line:#163430;--ink:#d9f5f0;--ink-2:#86b3ad;
+  --accent:#2fd6c8;--accent-soft:rgba(47,214,200,.12);--on-accent:#001a18;--cv-accent:#2fd6c8;
+  --anchor:#ffb347;--mirror:#c78bff;--multi:#5fb8ff;--danger:#ff5f6d;--star:#ffd166;
+  --grid:rgba(47,214,200,.08);--chunk:rgba(47,214,200,.2);--axis:rgba(47,214,200,.75);
+  --mid-fill:rgba(217,245,240,.14);--mid-line:#bfe9e2;--mid-case:rgba(0,0,0,.6);
+  --shadow:0 0 0 1px #163430,0 12px 30px rgba(0,0,0,.8);--capbg:#000000;--capline:#1f4a45;
+  --f-ui:"Space Grotesk",system-ui,sans-serif;--f-display:"IBM Plex Mono",ui-monospace,monospace;--f-mono:"IBM Plex Mono",ui-monospace,monospace}
+:root[data-skin="deep"] body{background:#000}
+:root[data-skin="deep"] *,:root[data-skin="deep"] *::before,:root[data-skin="deep"] *::after{border-radius:0!important}
+:root[data-skin="deep"] :is(.btn,.dk-btn,.ib.tg,.qchip,.acc-tog,.ddrop,.wdrop,.blockpick,.v3pin,.campill,.prpick,.seg,select.pick,.field,.num,input[type=search],.rbp-q,.looktile){border:1px solid #1f4a45;background:transparent;box-shadow:none}
+:root:root:root[data-skin="deep"] :is(#cwz.z.z.z,.seg button[aria-pressed="true"],.vopt[aria-pressed="true"],.ts-t[aria-pressed="true"],#viewSeg button.vs[aria-pressed="true"]){background:var(--accent-soft)!important;color:var(--accent)!important;box-shadow:inset 0 -2px 0 var(--accent)}
+:root:root:root[data-skin="deep"] :is(.tool[aria-pressed="true"],#cwz.z.z.z){background:var(--accent-soft)!important;color:var(--accent)!important;box-shadow:inset 0 0 0 1px var(--accent),0 0 12px rgba(47,214,200,.3)}
+:root:root:root[data-skin="deep"] :is(.btn.primary,#app.cs #exportBtn,#cwz.z.z.z){background:transparent!important;color:var(--accent)!important;border-color:var(--accent);box-shadow:0 0 14px rgba(47,214,200,.35),inset 0 0 10px rgba(47,214,200,.12)}
+:root[data-skin="deep"] .looktile[aria-pressed="true"]{border-color:var(--accent);box-shadow:0 0 12px rgba(47,214,200,.3)}
+:root[data-skin="deep"] :is(.olbl,.rgrp span,.rtab,.dk-h h3,.insp-kind,.qhead,.mlabel,.acc-lbl,.ts-lbl){font-family:var(--f-mono);letter-spacing:.16em;text-transform:uppercase}
+:root[data-skin="deep"] :is(.csw,#tbPair .tbblock,#tbPair .tbalt){border:1px solid #1f4a45;background:#000}
 </style>
 </head>
 <body>
@@ -5379,7 +5474,7 @@ function syncBldTools() {
   view.altBlock = typeof p.altBlock === 'string' && BY_ID[baseOf(p.altBlock)] ? baseOf(p.altBlock) : view.block;   // the other half of the floor / wall pair
   if (['litematica', 'worldedit', 'json', 'png'].includes(p.expKind)) view.expKind = p.expKind; else if (p.expKind === 'create') view.expKind = 'litematica';
   if (p.expScope === 'floor' || p.expScope === 'all') view.expScope = p.expScope;
-  if (p.uiMode === 'ribbon' || p.uiMode === 'rail') view.uiMode = p.uiMode; if (typeof p.flat2d === 'boolean') view.flat2d = p.flat2d; if (WALL_LOOKS.some(q => q[0] === p.wallLook)) view.wallLook = p.wallLook; if (p.texWall === 'bevel' || p.texWall === 'shadow') view.texWall = p.texWall; if (typeof p.railMin === 'boolean') view.railMin = p.railMin; if (['system', 'light', 'dark'].includes(p.theme)) view.theme = p.theme; if (['studio', 'blueprint', 'mc'].includes(p.skin)) view.skin = p.skin; if (p.viewPin === 'pin' || p.viewPin === 'top') view.viewPin = p.viewPin;
+  if (p.uiMode === 'ribbon' || p.uiMode === 'rail') view.uiMode = p.uiMode; if (typeof p.flat2d === 'boolean') view.flat2d = p.flat2d; if (WALL_LOOKS.some(q => q[0] === p.wallLook)) view.wallLook = p.wallLook; if (p.texWall === 'bevel' || p.texWall === 'shadow') view.texWall = p.texWall; if (typeof p.railMin === 'boolean') view.railMin = p.railMin; if (['system', 'light', 'dark'].includes(p.theme)) view.theme = p.theme; if (['studio', 'blueprint', 'mc', 'parchment', 'nether', 'cherry', 'deep'].includes(p.skin)) view.skin = p.skin; if (typeof p.bp3d === 'boolean') view.bp3d = p.bp3d; if (p.viewPin === 'pin' || p.viewPin === 'top') view.viewPin = p.viewPin;
   if (['home', 'build', 'plan', 'view'].includes(p.ribbonTab)) view.ribbonTab = p.ribbonTab;
   if (typeof p.ribbonMin === 'boolean') view.ribbonMin = p.ribbonMin;
   if (typeof p.roofWalls === 'boolean') view.roofWalls = p.roofWalls;
@@ -5410,7 +5505,7 @@ function writePrefs() {
     prefPending = false;
     if (plan) prefs.views[plan.id] = { z: view.z, ox: view.ox, oy: view.oy, lid: curLid, w: W, h: H };
     prefs.lastPlan = plan && plan.id;
-    prefs.ui = { lightSugOpt: view.lightSugOpt || null, light: view.light || null, lightMap: view.lightMap !== false, measureHow: view.measureHow || null, flight: view.flight || null, pathOpt: view.pathOpt || null, tourDone: !!view.tourDone, stripPin: !!view.stripPin, postFit: !!view.postFit, drawPosts: view.drawPosts || null, pattern: view.pattern, patBlock: view.patBlock, penPat: view.penPat, penPatBlock: view.penPatBlock, postEvery: view.postEvery, postBlock: view.postBlock, postOut: !!view.postOut, mix: view.mix, altMix: view.altMix, tool: view.tool, selOp: view.selOp, fill: view.fill, sizeMode: view.sizeMode, block: view.block, altBlock: view.altBlock, expKind: view.expKind, expScope: view.expScope, uiMode: view.uiMode, flat2d: !!view.flat2d, wallLook: view.wallLook, texWall: view.texWall || 'bevel', railMin: !!view.railMin, theme: view.theme || 'system', skin: view.skin || 'studio', viewPin: view.viewPin || 'top', ribbonTab: view.ribbonTab, ribbonMin: !!view.ribbonMin, roofWalls: view.roofWalls !== false, cornerSw: !!view.cornerSw, fov: view.fov, povSens: view.povSens, povKeys: view.povKeys, keys: view.keys || null, cfg: view.cfg, bldTools: view.bldTools || null, doorW: view.doorW, extN: view.extN, fenceH: view.fenceH, fenceFill: view.fenceFill, wallThick: view.wallThick, wallStyle: view.wallStyle, roofStyled: !!view.roofStyled, rampOuter: !!view.rampOuter, doorType: view.doorType, archW: view.archW, archWAuto: view.archWAuto, archH: view.archH, archHAuto: view.archHAuto, doorStyle: view.doorStyle, doorTrim: view.doorTrim, winStyle: view.winStyle, winTrim: view.winTrim, winAuto: view.winAuto, winW: view.winW, winH: view.winH, winSill: view.winSill, winGlass: view.winGlass, w: view.w, h: view.h, lock: view.lock, ratio: view.ratio, layers: view.layers, originStyle: view.originStyle, zoneStyle: view.zoneStyle, zoneAlpha: view.zoneAlpha, recentColors: view.recentColors, contig: view.contig, wall: view.wall, pencil: view.pencil, showMid: view.showMid, sideOpen: view.sideOpen, shapeKind: view.shapeKind, selShape: view.selShape, eraseMode: view.eraseMode, zoneShape: view.zoneShape, zoneOp: view.zoneOp, roofTab: view.roofTab, brush: view.brush, penBrush: view.penBrush || 1, eraseT: view.eraseT, railMode: view.railMode, railW: view.railW || 56, groupLast: view.groupLast, lastBuild: view.lastBuild, net: view.net, routeOp: view.routeOp, circleKind: view.circleKind, polySides: view.polySides, polyPoint: view.polyPoint, ghostAlpha: view.ghostAlpha, favs: view.favs, recents: view.recents, blockSort: view.blockSort, blockCat: view.blockCat, blockMod: view.blockMod || '', blockDesc: !!view.blockDesc, blockIcons: view.blockIcons || 'list', dkOpen: view.dkOpen || null, flash: view.flash || 'standard', split: !!view.split, splitR: view.splitR || 0.5, splitSwap: !!view.splitSwap, homeSize: view.homeSize || 'l', blocksFloat: !!view.blocksFloat, floorsFloat: !!view.floorsFloat, expDig: view.expDig !== false, mobShadows: !!view.mobShadows, bface: view.bface, btop: view.btop, lastRoof: view.lastRoof, mirror: { x: mirror.x, z: mirror.z, radial: mirror.radial || 0, ax: mirror.ax, az: mirror.az }, povFx: view.povFx !== false, v3: pov.on && pov.saved ? { ...v3, ...pov.saved } : v3 };
+    prefs.ui = { lightSugOpt: view.lightSugOpt || null, light: view.light || null, lightMap: view.lightMap !== false, measureHow: view.measureHow || null, flight: view.flight || null, pathOpt: view.pathOpt || null, tourDone: !!view.tourDone, stripPin: !!view.stripPin, postFit: !!view.postFit, drawPosts: view.drawPosts || null, pattern: view.pattern, patBlock: view.patBlock, penPat: view.penPat, penPatBlock: view.penPatBlock, postEvery: view.postEvery, postBlock: view.postBlock, postOut: !!view.postOut, mix: view.mix, altMix: view.altMix, tool: view.tool, selOp: view.selOp, fill: view.fill, sizeMode: view.sizeMode, block: view.block, altBlock: view.altBlock, expKind: view.expKind, expScope: view.expScope, uiMode: view.uiMode, flat2d: !!view.flat2d, wallLook: view.wallLook, texWall: view.texWall || 'bevel', railMin: !!view.railMin, theme: view.theme || 'system', skin: view.skin || 'studio', bp3d: view.bp3d !== false, viewPin: view.viewPin || 'top', ribbonTab: view.ribbonTab, ribbonMin: !!view.ribbonMin, roofWalls: view.roofWalls !== false, cornerSw: !!view.cornerSw, fov: view.fov, povSens: view.povSens, povKeys: view.povKeys, keys: view.keys || null, cfg: view.cfg, bldTools: view.bldTools || null, doorW: view.doorW, extN: view.extN, fenceH: view.fenceH, fenceFill: view.fenceFill, wallThick: view.wallThick, wallStyle: view.wallStyle, roofStyled: !!view.roofStyled, rampOuter: !!view.rampOuter, doorType: view.doorType, archW: view.archW, archWAuto: view.archWAuto, archH: view.archH, archHAuto: view.archHAuto, doorStyle: view.doorStyle, doorTrim: view.doorTrim, winStyle: view.winStyle, winTrim: view.winTrim, winAuto: view.winAuto, winW: view.winW, winH: view.winH, winSill: view.winSill, winGlass: view.winGlass, w: view.w, h: view.h, lock: view.lock, ratio: view.ratio, layers: view.layers, originStyle: view.originStyle, zoneStyle: view.zoneStyle, zoneAlpha: view.zoneAlpha, recentColors: view.recentColors, contig: view.contig, wall: view.wall, pencil: view.pencil, showMid: view.showMid, sideOpen: view.sideOpen, shapeKind: view.shapeKind, selShape: view.selShape, eraseMode: view.eraseMode, zoneShape: view.zoneShape, zoneOp: view.zoneOp, roofTab: view.roofTab, brush: view.brush, penBrush: view.penBrush || 1, eraseT: view.eraseT, railMode: view.railMode, railW: view.railW || 56, groupLast: view.groupLast, lastBuild: view.lastBuild, net: view.net, routeOp: view.routeOp, circleKind: view.circleKind, polySides: view.polySides, polyPoint: view.polyPoint, ghostAlpha: view.ghostAlpha, favs: view.favs, recents: view.recents, blockSort: view.blockSort, blockCat: view.blockCat, blockMod: view.blockMod || '', blockDesc: !!view.blockDesc, blockIcons: view.blockIcons || 'list', dkOpen: view.dkOpen || null, flash: view.flash || 'standard', split: !!view.split, splitR: view.splitR || 0.5, splitSwap: !!view.splitSwap, homeSize: view.homeSize || 'l', blocksFloat: !!view.blocksFloat, floorsFloat: !!view.floorsFloat, expDig: view.expDig !== false, mobShadows: !!view.mobShadows, bface: view.bface, btop: view.btop, lastRoof: view.lastRoof, mirror: { x: mirror.x, z: mirror.z, radial: mirror.radial || 0, ax: mirror.ax, az: mirror.az }, povFx: view.povFx !== false, v3: pov.on && pov.saved ? { ...v3, ...pov.saved } : v3 };
     const keys = Object.keys(prefs.views); if (keys.length > 40) delete prefs.views[keys[0]];
     lsSet(LS_VIEW, prefs);
     syncSettings();
@@ -10736,8 +10831,11 @@ const HOST_THEME = document.documentElement.getAttribute('data-theme');
 function applyTheme() { const t = view.theme || 'system', d = document.documentElement; if (t === 'system') { if (HOST_THEME) d.setAttribute('data-theme', HOST_THEME); else d.removeAttribute('data-theme'); } else d.setAttribute('data-theme', t); }
 function setTheme(t) { view.theme = t; applyTheme(); savePrefs(); }
 /* the look of the whole app: Studio as it is, Blueprint (dark blue drafting) or Minecraft (the game's grey bevelled menus) */
-const SKINS = [['studio', 'Studio', 'Clean and neutral, light or dark'], ['blueprint', 'Blueprint', 'Dark blue drafting paper with cyan lines'], ['mc', 'Minecraft', 'The game’s grey bevelled menus and pixel type']];
-function applySkin() { const k = SKINS.some(q => q[0] === view.skin) ? view.skin : 'studio', d = document.documentElement; if (k === 'studio') d.removeAttribute('data-skin'); else d.setAttribute('data-skin', k); }
+const SKINS = [['studio', 'Studio', 'Clean and neutral, light or dark', ['#f7f8f4', '#1c2321', '#b9481a']], ['blueprint', 'Blueprint', 'Dark blue drafting paper with cyan lines', ['#0b1c33', '#e3f1ff', '#35d3f5']],
+  ['mc', 'Minecraft', 'The game’s grey bevelled menus and pixel type', ['#c6c6c6', '#262626', '#2f7a1f']], ['parchment', 'Parchment', 'Ink on an explorer’s map: stamped square buttons and serif type', ['#f6eddb', '#33261a', '#8a3b1c']],
+  ['nether', 'Nether', 'Basalt and crimson with lava orange, and buttons with their corners cut', ['#1d1517', '#f3e6e2', '#ff6a1a']], ['cherry', 'Cherry Grove', 'Soft pink and cream, everything round like a pill', ['#ffffff', '#3d2228', '#c4385f']],
+  ['deep', 'Deep Dark', 'True black with hairline buttons and a sculk-teal glow', ['#000000', '#d9f5f0', '#2fd6c8']]];
+function applySkin() { const k = SKINS.some(q => q[0] === view.skin) ? view.skin : 'studio', d = document.documentElement; if (k === 'studio') d.removeAttribute('data-skin'); else d.setAttribute('data-skin', k); d.toggleAttribute('data-bp3', k === 'blueprint' && view.bp3d !== false); }
 /* the Minecraft font's pixels are a tenth of its size: the sizes where they land on whole screen pixels, nearest above the ones we want */
 function mcFontSizes() {
   const d = window.devicePixelRatio || 1, r = document.documentElement.style, crisp = min => +(Math.ceil(min * d / 10 - 1e-6) * 10 / d).toFixed(3) + 'px';
@@ -10749,6 +10847,9 @@ mcFontSizes(); try { matchMedia(`(resolution: ${window.devicePixelRatio}dppx)`).
 function setSkin(k) { view.skin = k; applySkin(); savePrefs(); requestDraw(); if (three) { applyLighting(); if (show3D()) build3D(false); } }
 /* Blueprint draws the plan in flat colour, and 3D as flat blue solids with cyan edges, unlit, on its own navy */
 const bpSkin = () => document.documentElement.getAttribute('data-skin') === 'blueprint';
+/* Blueprint's own 3D: the fixed, flat-coloured drawing, unless Stylized 3D view is ticked off */
+const bp3d = () => bpSkin() && view.bp3d !== false;
+function setBp3d(on) { view.bp3d = !!on; applySkin(); savePrefs(); if (three) { applyLighting(); if (show3D()) { build3D(false); resetView3D(); } } }
 const flat2dOn = () => !!view.flat2d || bpSkin();
 /* the 2D / 3D button says which view you're in; it sits in the top bar, or floats at the bottom left of the view */
 function syncViewToggle() {
@@ -13528,8 +13629,11 @@ function settingsRows(cat) {
     const C = view.cfg;
     rows.push(setRow('2D / 3D button', 'In the top bar, or as a pin floating at the bottom left of the plan and the 3D view.', seg([['top', 'Top bar'], ['pin', 'Floating pin']], view.viewPin === 'pin' ? 'pin' : 'top', v => { setViewPin(v); again(); }, '2D / 3D button')));
     rows.push(setRow('Swap flash', 'How long the picture of your new Primary block stays in the middle of the plan after you swap Primary and Secondary.', seg([['slow', 'Slow'], ['standard', 'Standard'], ['quick', 'Quick']], view.flash || 'standard', v => { view.flash = v; savePrefs(); again(); swapFlashDemo(); }, 'Swap flash')));
-    rows.push(setRow('Look', 'The style of the whole app. Blueprint and Minecraft have their own colours, so Theme only changes Studio.', seg(SKINS.map(([v, n, d]) => [v, n, null, d]), view.skin || 'studio', v => { setSkin(v); again(); }, 'Look')));
-    rows.push(setRow('Theme', (view.skin || 'studio') === 'studio' ? 'Light or dark colours for the whole app, or follow your device.' : 'Only for the Studio look.', seg([['system', 'System'], ['light', 'Light'], ['dark', 'Dark']].map(x => (view.skin || 'studio') === 'studio' ? x : [...x, null, null, 'Blueprint and Minecraft have their own colours']), view.theme || 'system', v => { setTheme(v); again(); }, 'Theme')));
+    const looks = el('div', { class: 'lookgrid', role: 'group', 'aria-label': 'Look' }, ...SKINS.map(([v, n, d, c]) => el('button', { class: 'looktile', 'aria-pressed': String((view.skin || 'studio') === v), title: d, onclick: () => { setSkin(v); again(); } },
+      el('span', { class: 'lk-sw', 'aria-hidden': 'true', style: `background:${c[0]};color:${c[1]}` }, el('i', { style: `background:${c[1]}` }), el('i', { style: `background:${c[2]}` })), el('span', { class: 'lab', text: n }))));
+    rows.push(setRow('Look', 'The style of the whole app. Every look except Studio has its own colours, so Theme only changes Studio.', looks));
+    if ((view.skin || 'studio') === 'blueprint') rows.push(setChecks([['set-bp3d', 'Stylized 3D view', view.bp3d !== false, v => { setBp3d(v); again(); }, 'Draw 3D like the blueprint: one fixed view, the floors apart by your Spread setting, each part in its own flat colour. Untick for the normal textured 3D you can orbit.']]));
+    rows.push(setRow('Theme', (view.skin || 'studio') === 'studio' ? 'Light or dark colours for the whole app, or follow your device.' : 'Only for the Studio look.', seg([['system', 'System'], ['light', 'Light'], ['dark', 'Dark']].map(x => (view.skin || 'studio') === 'studio' ? x : [...x, null, null, 'This look has its own colours']), view.theme || 'system', v => { setTheme(v); again(); }, 'Theme')));
     rows.push(setChecks([['set-hovername', 'Block names on hover', C.hoverName, v => { C.hoverName = v; savePrefs(); renderCoords(); }, 'Name the block under the cursor next to its coordinates, with its mix if it has one.'],
       !isMobile() && ['set-cornersw', 'Swatches in the corner', !!view.cornerSw, v => { view.cornerSw = v; savePrefs(); renderTopTools(); if (ribbonOn()) renderRibbon(); }, 'Your Primary and Secondary blocks in the bottom-left corner of the plan, like Photoshop’s colours: Primary in front, Secondary behind. Click Secondary to swap them.']]));
     rows.push(el('h4', { class: 'setsub', text: 'Show on the plan' }));
@@ -14286,9 +14390,9 @@ function init3D() {
     if (gst.kind === 'pinch' && p3.size >= 2) { if (!three.moved) camMoved(true); const [a, b] = [...p3.values()]; const d = Math.hypot(a.x - b.x, a.y - b.y), m = { x: (a.x + b.x) / 2, y: (a.y + b.y) / 2 }; O.r = clamp(gst.r * gst.d / Math.max(d, 1), 3, 3000); pan3(m.x - gst.m.x, m.y - gst.m.y); gst.m = m; render3D(); return; }
     const dx = p.x - gst.p.x, dy = p.y - gst.p.y; gst.p = p;
     if (!three.moved && !pov.on) camMoved(true);
-    if (gst.kind === 'orbit' && bpSkin()) pan3(dx, dy);   // Blueprint's view is fixed: dragging moves it
+    if (gst.kind === 'orbit' && bp3d()) pan3(dx, dy);   // Blueprint's view is fixed: dragging moves it
     else if (gst.kind === 'orbit') { O.theta += dx * 0.008; O.phi = clamp(O.phi - dy * 0.008, 0.02, 3.0); }
-    else if (gst.kind === 'pivot' && bpSkin()) pan3(dx, dy);
+    else if (gst.kind === 'pivot' && bp3d()) pan3(dx, dy);
     else if (gst.kind === 'pivot') orbitAbout(gst.P, dx * 0.008, clamp(O.phi - dy * 0.008, 0.02, 3.0) - O.phi);
     else if (gst.kind === 'pan') pan3(dx, dy);
     render3D();
@@ -14435,7 +14539,7 @@ function render3D() {
   const { camera, renderer, scene, orbit: O, THREE } = three;
   if (pov.on && pov.stage === 'walk') povCamera(camera);
   else {
-    const bpv = bpSkin(), th = bpv ? BP3.theta : O.theta, ph = bpv ? BP3.phi : O.phi, rr = bpv ? O.r * BP3.k : O.r;   // Blueprint: one fixed view, nearly flat like a drawing
+    const bpv = bp3d(), th = bpv ? BP3.theta : O.theta, ph = bpv ? BP3.phi : O.phi, rr = bpv ? O.r * BP3.k : O.r;   // Blueprint: one fixed view, nearly flat like a drawing
     camera.position.set(O.tx + rr * Math.sin(ph) * Math.cos(th), O.ty + rr * Math.cos(ph), O.tz + rr * Math.sin(ph) * Math.sin(th));
     camera.lookAt(O.tx, O.ty, O.tz);
     const fov = three.eye ? 70 : bpv ? 20 : 45; if (bpv && camera.far < rr * 4) { camera.far = rr * 4; camera.updateProjectionMatrix(); } if (camera.fov !== fov || camera.near !== 0.1) { camera.fov = fov; camera.near = 0.1; camera.updateProjectionMatrix(); }
@@ -14444,7 +14548,7 @@ function render3D() {
   updateClouds(camera); updateCelestial(camera); updateSceneryFog(camera);
   // the orbit point marker stays the same size on screen
   if (three.pivot && three.pivot.visible) { const H3 = renderer.domElement.clientHeight || 600, d = camera.position.distanceTo(three.pivot.position); three.pivot.scale.setScalar(Math.max(0.05, d * Math.tan(camera.fov * Math.PI / 360) * 2 / H3 * 6 / 0.16)); }
-  renderer.setClearColor(bpSkin() ? new THREE.Color(BP3.sky) : three.sky || new THREE.Color(T.paper || '#e5e8e2'), 1);
+  renderer.setClearColor(bp3d() ? new THREE.Color(BP3.sky) : three.sky || new THREE.Color(T.paper || '#e5e8e2'), 1);
   renderer.render(scene, camera); bpLabels();
 }
 /* ================= clouds =================
@@ -14486,7 +14590,7 @@ function cloudMesh(i0, j0) {
   return g;
 }
 function updateClouds(camera) {
-  const on = v3.clouds !== false && !bpSkin() && !!three.scene;
+  const on = v3.clouds !== false && !bp3d() && !!three.scene;
   let K3 = three.cloud;
   if (!on) { if (K3) K3.mesh.visible = false; return; }
   const THREE = three.THREE, C = CLOUD.cell, P = 256 * C;
@@ -14524,7 +14628,7 @@ function celestialTex(kind) {
   const t = new THREE.CanvasTexture(c); t.magFilter = THREE.NearestFilter; t.minFilter = THREE.NearestFilter; t.generateMipmaps = false; return t;
 }
 function updateCelestial(camera) {
-  const on = v3.light && !bpSkin() && v3.sunMoon !== false && !!three.scene; let S = three.celest;
+  const on = v3.light && !bp3d() && v3.sunMoon !== false && !!three.scene; let S = three.celest;
   if (!on) { if (S) S.group.visible = false; return; }
   const THREE = three.THREE, D = 1500;
   if (!S) {
@@ -14763,7 +14867,7 @@ function syncScenery(core, lit) {
     three.scnPending = null; if (!three.scene) return;
     const cur = three.scenery; if (cur) { three.scene.remove(cur.group); for (const m of cur.group.children) m.geometry.dispose(); }
     const group = new three.THREE.Group(); for (const m of scnToMeshes(bufs, lit)) group.add(m);
-    three.scene.add(group); three.scenery = { key, group, R }; group.visible = !bpSkin(); render3D();
+    three.scene.add(group); three.scenery = { key, group, R }; group.visible = !bp3d(); render3D();
   };
   const W = scnWorker(), id = ++scnJob;
   if (!W) { done(scnBuffers(scnWorld(core, sc, R), lit, true, FT, ATL.S, smooth)); return; }
@@ -14816,7 +14920,7 @@ function applyLighting() {
   const { THREE, hemi, dl } = three, B = three.bounds;
   const c = B ? new THREE.Vector3((B.minX + B.maxX + 1) / 2, (B.minY + B.maxY + 1) / 2, (B.minZ + B.maxZ + 1) / 2) : new THREE.Vector3();
   const R = (B ? Math.max(8, Math.hypot(B.maxX - B.minX + 1, B.maxY - B.minY + 1, B.maxZ - B.minZ + 1) / 2 + 2) : 20) + (three.shadowPad || 0);
-  if (!v3.light || bpSkin()) {
+  if (!v3.light || bp3d()) {
     hemi.color.set(0xffffff); hemi.groundColor.set(0x8a96a0); hemi.intensity = 0.62;
     dl.color.set(0xffffff); dl.intensity = 0.42; dl.position.set(c.x + 0.5, c.y + 1, c.z + 0.3); dl.target.position.copy(c); dl.target.updateMatrixWorld(); dl.castShadow = false; three.sky = null; three.cloudCol = null; three.cloudDay = 1; return;
   }
@@ -15558,7 +15662,7 @@ function bpDress(group, track, VB, BPC) {
 /* the labels: the footprint's size along its two near sides, and each floor's name off to the right */
 function bpLabels() {
   let box = document.getElementById('bpLabels');
-  const on = bpSkin() && three && view.is3D && !pov.on && three.bpFoot;
+  const on = bp3d() && three && view.is3D && !pov.on && three.bpFoot;
   if (!on) { if (box) box.hidden = true; return; }
   const host = $('#view3d'); if (!box) { box = el('div', { id: 'bpLabels', class: 'bplabels', 'aria-hidden': 'true' }); host.append(box); }
   box.hidden = false;
@@ -15578,9 +15682,9 @@ function bpLabels() {
 }
 function build3D(refit) {
   if (!three || !plan) return;
-  const { THREE, scene, box } = three, bp = bpSkin(), lit = !!v3.light && !bp;
+  const { THREE, scene, box } = three, bp = bp3d(), lit = !!v3.light && !bp;
   // Blueprint: the floors pulled apart, and every block noted with the part of the building it is
-  const spr0 = v3.spread; if (bp) v3.spread = Math.max(spr0, 1.8);
+  const spr0 = v3.spread;   // the floors pull apart by the Spread you set, as in the other views
   const BPC = bp ? new Map() : null; let ctx = 'x';
   if (three.group) { scene.remove(three.group); for (const d of three.disposables) if (d && typeof d.dispose === 'function') d.dispose(); three.disposables = []; }
   const group = new THREE.Group(); three.group = group; scene.add(group);
