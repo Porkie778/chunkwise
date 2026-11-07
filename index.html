@@ -193,9 +193,9 @@ label.v3row,.v3row>label{cursor:pointer}
 .v3row .gpick{margin-left:auto}
 .v3panel .seg{display:flex}
 .v3panel .seg button{flex:1;justify-content:center;padding:0 6px}
-.v3bar,.v3hint,.popover{transition:opacity .12s ease}
+.v3bar,.v3help,.popover{transition:opacity .12s ease}
 /* dragging a 3D slider clears the view: the panels fade and the slider shows at the bottom centre */
-.viewport.scrubbing :is(.v3bar,.fstrip,.v3hint),.popover.scrub-hide{opacity:0}
+.viewport.scrubbing :is(.v3bar,.fstrip,.v3help),.popover.scrub-hide{opacity:0}
 .viewport.paneling .fstrip{opacity:0;pointer-events:none}
 .scrub{position:absolute;left:50%;bottom:16px;z-index:6;display:flex;align-items:center;gap:12px;width:min(440px,calc(100% - 32px));padding:10px 16px;transform:translateX(-50%);background:var(--panel);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow);pointer-events:none;font-size:13px;font-weight:700;color:var(--ink);animation:scrubin .14s ease}
 @keyframes scrubin{from{opacity:0;transform:translate(-50%,6px)}to{opacity:1;transform:translateX(-50%)}}
@@ -210,7 +210,12 @@ label.v3row,.v3row>label{cursor:pointer}
 .card{display:flex;align-items:center;gap:8px;padding:5px 8px;background:var(--panel);border:1px solid var(--line);border-radius:9px;box-shadow:var(--shadow);font-size:12.5px;font-weight:700}
 .card input[type=range]{width:96px;accent-color:var(--accent)}
 .card input[type=checkbox]{accent-color:var(--accent);width:16px;height:16px;margin:0}
-.v3hint{position:absolute;left:12px;bottom:10px;margin:0;font-size:12px;color:var(--ink-2);pointer-events:none}
+/* 3D help: a small i in the corner; pointing at it (or tapping it) shows the controls */
+.v3help{position:absolute;left:12px;bottom:12px;z-index:3}
+.v3info{width:28px;height:28px;padding:0;border:1px solid var(--line);border-radius:50%;background:var(--panel);color:var(--ink);font:700 14px/1 Georgia,serif;font-style:italic;box-shadow:var(--shadow);cursor:help;display:grid;place-items:center}
+.v3info:hover,.v3info:focus-visible{border-color:var(--accent)}
+.v3hint{position:absolute;left:0;bottom:36px;width:max-content;max-width:min(560px,70vw);margin:0;padding:8px 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);color:var(--ink);font-size:12.5px;line-height:1.45;box-shadow:var(--shadow);pointer-events:none;opacity:0;transform:translateY(4px);transition:opacity .12s ease,transform .12s ease}
+.v3help:hover .v3hint,.v3info:focus .v3hint,.v3info:focus+.v3hint,.v3info:hover+.v3hint{opacity:1;transform:none}
 #c3d.pivoting{cursor:move}
 @media (pointer:coarse){.v3alt{display:none}}
 .v3pins{position:absolute;right:12px;top:60px;z-index:4;display:flex;flex-direction:column;align-items:flex-end;gap:6px}
@@ -297,7 +302,7 @@ label.v3row,.v3row>label{cursor:pointer}
 .wprev strong{font-size:14px}.wprev p{margin:0;font-size:12.5px;line-height:1.4;color:var(--ink-2)}
 .wprev .wwhy{color:var(--danger,#b3261e);font-weight:700}
 @media (max-width:560px){.wpop{grid-template-columns:1fr}.wprev{order:-1}.wprev-pic{height:120px}}
-.viewport.pov :is(.v3bar,.v3hint,.fstrip){display:none}
+.viewport.pov :is(.v3bar,.v3help,.fstrip){display:none}
 .view3d.pov-pick #c3d{cursor:crosshair}
 .view3d.pov-walk #c3d{cursor:none}
 .view3d.pov-drag #c3d{cursor:move}
@@ -330,7 +335,7 @@ label.v3row,.v3row>label{cursor:pointer}
 .objbar.busy{opacity:0;pointer-events:none}
 .cornersw{position:absolute;left:14px;bottom:14px;z-index:4;width:88px;height:66px}
 .cornersw[hidden]{display:none}
-#app.has-corner .v3hint{left:116px}
+#app.has-corner .v3help{left:116px}
 .cornersw.dim{opacity:.6}
 .csw{position:absolute;padding:0;border:2px solid var(--panel);border-radius:6px;box-shadow:0 0 0 1px var(--line),var(--shadow);background:var(--panel);line-height:0}
 .csw img{width:100%;height:100%;image-rendering:pixelated;border-radius:3px;display:block}
@@ -1112,7 +1117,7 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
   .inspector.lift{bottom:64px}
   .selbar{bottom:10px;flex-wrap:wrap;justify-content:center;padding:6px}
   .toast{bottom:auto;top:58px;transform:translateY(-8px)}
-  .v3hint{display:none}
+  .v3help{display:none}
   .povgo{display:none}
   .v3bar{top:auto;bottom:12px;max-height:calc(100% - 72px)}
   .v3bar.open{left:12px;width:auto}
@@ -1966,7 +1971,7 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
               </section>
             </div>
           </div>
-          <p class="v3hint"><span class="v3orb">Drag to orbit · </span><span class="v3bpn">Drag to move · </span>scroll or pinch to zoom · right-drag or two fingers to pan<span class="v3alt"> · Alt-drag to orbit a block, Alt-scroll to zoom in on it · Home resets</span></p>
+          <div class="v3help"><button type="button" class="v3info" aria-label="How to move around in 3D" aria-describedby="v3hintTx">i</button><p class="v3hint" id="v3hintTx" role="tooltip"><span class="v3orb">Drag to orbit · </span><span class="v3bpn">Drag to move · </span>scroll or pinch to zoom · right-drag or two fingers to pan<span class="v3alt"> · Alt-drag to orbit a block, Alt-scroll to zoom in on it · Home resets</span></p></div>
         </div>
         <div class="fstrip" id="floorChip" role="group" aria-label="Floors"></div>
         <aside class="panel" id="panel" role="dialog" aria-labelledby="winTitle">
@@ -8123,7 +8128,8 @@ function wallColumn(L, i, k, b, put) {
   // a post stood out from the wall stops short in front of a doorway or window in the wall behind it
   let cut = null;
   if (L.oposts && L.oposts.has(k) && L.openings && L.openings.length) { const D = openingDeco(L, i).col, [x, z] = parseK(k); for (const f of DIR4) { const nk = K(x + DV4[f][0], z + DV4[f][1]), m = D.get(nk); if (m && !L.oposts.has(nk)) { if (!cut) cut = new Set(); for (const dy of m.keys()) cut.add(dy); } } }
-  for (let dy = y0; dy < y1; dy++) { if (cut && cut.has(dy)) continue; if (ov && ov.has(dy)) { const id = ov.get(dy); if (id) put(id, dy); continue; } put(mx ? mixedB(L, k, b, dy, mx[0], mx[1]) : b, dy); }
+  const fc = flightClear(L, i), fk = fc && fc.get(k);
+  for (let dy = y0; dy < y1; dy++) { if (cut && cut.has(dy)) continue; if (fk && fk.has(dy)) continue; if (ov && ov.has(dy)) { const id = ov.get(dy); if (id) put(id, dy); continue; } put(mx ? mixedB(L, k, b, dy, mx[0], mx[1]) : b, dy); }
 }
 /* where a styled wall's column starts. On the ground floor it stands on the ground, with no floor block under it; elsewhere it keeps its floor
    block, apart from the layers a styled wall on the floor below already rises through */
@@ -8378,7 +8384,9 @@ function deFlight(f) {
     cut: (Array.isArray(f.cut) ? f.cut : []).filter(q => Array.isArray(q) && typeof q[0] === 'string' && CELL_RE.test(q[0]) && BY_ID[q[1]]).slice(0, 2000).map(q => [q[0], q[1], clampInt(q[2], 1, 32, 1)]) };
 }
 /* how far it climbs: up through this floor's room and the floor above's slab, to stand on the floor above */
-function flightRise(i, k) { const up = i + 1 < plan.order.length ? i + 1 : -1, h = hAt(i, k); return { R: Math.max(1, h + (up >= 0 ? thickOf(up) : 0)), up, h, t: thickOf(i) }; }
+function flightRise(i, k) { const up = i + 1 < plan.order.length ? i + 1 : -1, h = hAt(i, k), rock = up >= 0 ? rockOf(i) : 0; return { R: Math.max(1, h + rock + (up >= 0 ? thickOf(up) : 0)), up, h, t: thickOf(i), rock }; }
+/* clear space over every step and landing: 3 blocks to walk up, and one more so you don't hit your head sprinting down */
+const FLIGHT_HEAD = 4;
 /* a spiral's way round: the square ring r out from the centre, clockwise, from the middle of the side it starts on */
 function spiralRing(cx, cz, r, dir) {
   const out = [];
@@ -8398,19 +8406,20 @@ const spiralLand = f => f.steps === 'slabs' ? 2 : 1;
 /* every block it is made of (cell → layer above the floor's base → block), the cells it stands on, and the holes it needs above:
    floor offset → cells */
 function flightGeo(i, f) {
-  const k0 = K(f.x, f.z), { R, up, h, t } = flightRise(i, k0), put = new Map(), foot = new Map(), holes = new Map();
+  const k0 = K(f.x, f.z), { R, up, h, t, rock } = flightRise(i, k0), put = new Map(), foot = new Map(), holes = new Map();
+  const Bup = up >= 0 ? baseY(up) - baseY(i) : Infinity, thUp = up >= 0 ? thickOf(up) : 0, HEAD = FLIGHT_HEAD;
   const PA = (x, z, y, id) => { const k = K(x, z); let m = put.get(k); if (!m) put.set(k, m = new Map()); if (!m.has(y) || id !== f.mat) m.set(y, id); };
   const P = (x, z, dy, id) => PA(x, z, t + dy, id);
   const hole = (rel, k) => { let s = holes.get(rel); if (!s) holes.set(rel, s = new Set()); s.add(k); };
   const st = stairsOf(f.mat) || 'stone_brick_stairs', S = (dir, top) => shapedId(st, dir, top), mat = f.mat;
   // headroom: the floor above opens over every step you'd hit your head under, and the one before it, so stepping up clears too
-  const cut = (k, j) => { if (up >= 0 && j >= h - 3) hole(1, k); };
+  const cut = (k, j) => { if (up >= 0 && t + j + HEAD >= Bup) hole(1, k); };
   const step = (x, z, j, dir) => {
     const k = K(x, z); P(x, z, j, S(dir, false));
     if (f.under === 'solid') { for (let y = 0; y < j; y++) P(x, z, y, mat); } else if (j > 0) P(x, z, j - 1, S(OPP4[dir], true));
     if (!foot.has(k)) foot.set(k, { j, dir }); cut(k, j);
   };
-  let rise = R, topRel = up >= 0 ? 1 : -1, info = null, WELL = null;
+  let rise = R, topRel = up >= 0 ? 1 : -1, info = null, WELL = null, clear = null, tunnel = null, short = 0;
   const capRow = (set, ax, az, bx, bz, w) => { for (let c = -1; c <= w; c++) set.add(K(ax + bx * c, az + bz * c)); };
   if (f.kind === 'straight' || f.kind === 'l') {
     const [dx, dz] = DV4[f.dir], px = -dz, pz = dx, n1 = f.kind === 'l' ? clamp(f.n1, 1, Math.max(1, R - 1)) : R;
@@ -8430,6 +8439,7 @@ function flightGeo(i, f) {
     if (f.kind === 'l' && R > n1) { const off = f.turn === 'r' ? f.w + (R - n1) : -1 - (R - n1); capRow(caps, f.x + dx * n1 + px * off, f.z + dz * n1 + pz * off, dx, dz, f.w); }
     else capRow(caps, f.x + dx * n1, f.z + dz * n1, px, pz, f.w);
     WELL = { caps, doors: new Set(), top: t + R };
+    ({ clear, tunnel, short } = flightPassage(i, f, { t, R, n1, dx, dz, px, pz, Bup, thUp, HEAD, up, foot, put, PA }));
   } else if (f.kind === 'spiral') {
     // a ring of steps a block wide round a solid post, climbing clockwise through every floor up to the top one it lands on;
     // each floor with a landing keeps its own floor block on the ring where you step off
@@ -8486,7 +8496,66 @@ function flightGeo(i, f) {
       for (let d = 0; d < th; d++) if (landed ? d < th - 1 : !lay.has(d)) { const m = put.get(nk); if (!m || !m.has(B + d)) PA(hx + ax, hz + az, B + d, own ? baseOf(own) : mat); }
     } }
   }
-  return { put, foot, holes, hole: holes.get(1) || new Set(), R: rise, up: topRel > 0 ? i + topRel : -1, info, walls };
+  return { put, foot, holes, hole: holes.get(1) || new Set(), R: rise, up: topRel > 0 ? i + topRel : -1, info, walls, clear, tunnel, short };
+}
+/* the way through for straight and L-shaped stairs. Over every step and both landings the space stays clear (FLIGHT_HEAD blocks):
+   this floor's walls and the rock above are cut back just that far, nothing more. Where the stairs leave this floor's footprint they
+   run (underground) in a tunnel walled and roofed in this floor's wall block, on a solid base. A flat landing at each end: the floor if there is one,
+   else a block of the stairs. If the top comes up where the floor above has nothing to step onto, `short` says how many blocks out it is */
+function flightPassage(i, f, o) {
+  const { t, R, n1, dx, dz, px, pz, Bup, thUp, HEAD, up, foot, put, PA } = o, L = lv(i), U = up >= 0 ? lv(up) : null, mat = f.mat;
+  const force = (x, z, y, id) => { const k = K(x, z); let m = put.get(k); if (!m) put.set(k, m = new Map()); m.set(y, id); };
+  // where you stand: cell → the layer of the block under your feet
+  const stand = new Map();
+  for (const [k, q] of foot) if (q.j != null) stand.set(k, t + q.j);
+  const bottom = [], top = [];
+  for (let c = 0; c < f.w; c++) bottom.push(K(f.x - dx + px * c, f.z - dz + pz * c));
+  let ex = dx, ez = dz;   // which way the last flight climbs
+  if (f.kind === 'l' && R > n1) {
+    const d2 = f.turn === 'r' ? ROT_CW[f.dir] : CCW4[f.dir], off = f.turn === 'r' ? f.w + (R - n1) : -1 - (R - n1); [ex, ez] = DV4[d2];
+    for (let c = 0; c < f.w; c++) top.push(K(f.x + dx * (n1 + c) + px * off, f.z + dz * (n1 + c) + pz * off));
+  } else for (let c = 0; c < f.w; c++) top.push(K(f.x + dx * n1 + px * c, f.z + dz * n1 + pz * c));
+  for (const k of bottom) if (!stand.has(k)) stand.set(k, t - 1);
+  const topY = up >= 0 ? Bup + thUp - 1 : t + R - 1;
+  for (const k of top) if (!stand.has(k)) stand.set(k, topY);
+  // the clear space, and the stair blocks themselves, which take a wall's place where they go through one
+  const clear = new Map();
+  for (const [k, sy] of stand) { const set = new Set(); if (foot.has(k)) set.add(sy); for (let y = sy + 1; y <= sy + HEAD; y++) set.add(y); clear.set(k, set); }
+  // the landings
+  const had = k => !!U && (U.blocks.has(k) || (f.cut || []).some(q => q[0] === k && (q[2] || 1) === 1));
+  for (const k of bottom) if (!L.blocks.has(k)) { const [x, z] = parseK(k); for (let y = 0; y < t; y++) PA(x, z, y, mat); }
+  for (const k of top) if (U && !had(k)) { const [x, z] = parseK(k); PA(x, z, topY, mat); }
+  // the tunnel, outside this floor's footprint
+  const cnt = new Map(); for (const k of L.walls) { const b = L.blocks.get(k); if (b && BY_ID[baseOf(b)] && fullBlock(BY_ID[baseOf(b)])) cnt.set(baseOf(b), (cnt.get(baseOf(b)) || 0) + 1); }
+  let wm = mat, best = 0; for (const [b, n] of cnt) if (n > best) { wm = b; best = n; }
+  const topSet = new Set(top), tunnel = new Map(), out = i < plan.ground ? [...stand].filter(([k]) => !L.blocks.has(k) && !topSet.has(k)) : [];   // underground only; the top landing is on the floor above
+  for (const [k, sy] of out) {
+    const [x, z] = parseK(k);
+    for (let y = 0; y < sy; y++) force(x, z, y, mat);   // a solid base under the steps
+    const roof = sy + HEAD + 1; if (roof < Bup) PA(x, z, roof, wm);
+    for (const [ax, az] of DV4S) {
+      const nk = K(x + ax, z + az); if (stand.has(nk) || L.blocks.has(nk)) continue;
+      const hi = Math.min(Bup - 1, roof); for (let y = 0; y <= hi; y++) PA(x + ax, z + az, y, wm);
+      tunnel.set(nk, wm);
+    }
+  }
+  // does the top come up somewhere to step off?
+  let short = 0;
+  if (U) {
+    const mid = parseK(top[Math.floor(top.length / 2)]); let [cx, cz] = mid;
+    while (!had(K(cx, cz)) && short < 64) { short++; cx -= ex; cz -= ez; }
+  }
+  return { clear, tunnel, short };
+}
+/* everything stairs on a floor need kept clear (cell → layers from the floor's base), for its walls and the rock above */
+const FCLEAR = new WeakMap();
+function flightClear(L, i) {
+  if (!L || !L.flights || !L.flights.length) return null;
+  const key = MODELVER + '|' + i + '|' + (L.rev || 0) + '|' + baseY(i) + '|' + plan.order.length, c = FCLEAR.get(L);
+  if (c && c.key === key) return c.map;
+  const map = new Map();
+  for (const f of L.flights) { const g = flightGeo(i, f); if (g.clear) for (const [k, set] of g.clear) { let m = map.get(k); if (!m) map.set(k, m = new Set()); for (const y of set) m.add(y); } }
+  FCLEAR.set(L, { key, map }); return map;
 }
 const DV4S = [[1, 0], [-1, 0], [0, 1], [0, -1]];
 /* a stairwell's walls: every cell round the stairs (corners too) bar the way in and out, from the floor up to where you step off. Each side
@@ -8588,7 +8657,8 @@ function commitFlight(f, old) {
   L.flights = old ? (L.flights || []).map(x => x.id === old.id ? nf : x) : [...(L.flights || []), nf];
   L.rev = (L.rev || 0) + 1; view.flightSel = nf.id;
   txCommit(); renderAll();
-  if (!old) toastUndo(up ? `${nf.kind === 'ladder' ? 'A ladder' : flightKindName(nf.kind) + ' stairs'} up ${g.R} to ${floorTag(g.up)}${nf.cut.length ? `, with ${nf.cut.length} block${nf.cut.length === 1 ? '' : 's'} cut away above for the way up` : ''}.` : `${nf.kind === 'ladder' ? 'A ladder' : flightKindName(nf.kind) + ' stairs'} up ${g.R}, to the top of this floor. Add a floor above and they'll climb to it.`);
+  if (g.short) toast(`These stairs come up ${g.short} block${g.short === 1 ? '' : 's'} past the edge of ${floorTag(g.up)}, with no floor there to step onto. Start them further back, or turn them.`);
+  else if (!old) toastUndo(up ? `${nf.kind === 'ladder' ? 'A ladder' : flightKindName(nf.kind) + ' stairs'} up ${g.R} to ${floorTag(g.up)}${nf.cut.length ? `, with ${nf.cut.length} block${nf.cut.length === 1 ? '' : 's'} cut away above for the way up` : ''}.` : `${nf.kind === 'ladder' ? 'A ladder' : flightKindName(nf.kind) + ' stairs'} up ${g.R}, to the top of this floor. Add a floor above and they'll climb to it.`);
 }
 function deleteFlight(id) {
   const L = curLevel(), f = L && (L.flights || []).find(x => x.id === id); if (!f || store.readOnly) return;
@@ -8608,7 +8678,7 @@ function flightHint() {
   const i = levelIndex(curLid), up = i + 1 < plan.order.length, { R } = flightRise(i, view.hover ? K(...view.hover) : K(0, 0)), sf = flightSel(), k = (sf || view.flight || {}).kind || 'straight';
   if (k === 'spiral') return (sf ? 'Picked. ' : 'Click the centre, or drag out its size. ') + spiralHint(i, sf || deFlight({ ...(view.flight || {}), mat: flightMatNow() }));
   if (sf) return `Picked. Changes go on these stairs; Delete takes them out and fills the floor above back in. Click elsewhere to put in more.`;
-  return `${FLIGHT_KINDS.find(q => q[0] === k)[3]}. ${up ? `It climbs ${R} to ${floorTag(i + 1)} and cuts the hole it needs there.` : 'There is no floor above, so it climbs to this floor’s ceiling.'} R turns it.`;
+  return `${FLIGHT_KINDS.find(q => q[0] === k)[3]}. ${up ? `It climbs ${R} to ${floorTag(i + 1)}${rockOf(i) ? `, through ${rockOf(i)} of rock,` : ''} keeps ${FLIGHT_HEAD} blocks of headroom over every step, and cuts what’s in the way: the floor above, a wall it goes through, and the rock.${i < plan.ground ? ' Past this floor’s edge it runs in a tunnel.' : ''}` : 'There is no floor above, so it climbs to this floor’s ceiling.'} R turns it.`;
 }
 /* the tool's options: the kind, its size, the underside and the block */
 function flightOptRows(rr, target) {
@@ -8666,10 +8736,17 @@ function drawFlights(c, L, X, Y, s, x0, x1, z0, z1, useTex, ghost) {
       if (useTex && TEX[m]) drawT(c, TEX[m], px, py, w, h); else { c.fillStyle = AVG[m] || T.ink; c.fillRect(px, py, w, h); }
       c.save(); c.globalAlpha = 0.35; c.fillStyle = '#000'; c.fillRect(px, py, w, h); c.restore();
     }
+    if (g.tunnel) for (const [k, m] of g.tunnel) {
+      const [x, z] = parseK(k); if (x < x0 - 1 || x > x1 + 1 || z < z0 - 1 || z > z1 + 1) continue;
+      const px = X(x), py = Y(z), w = X(x + 1) - px, h = Y(z + 1) - py;
+      if (useTex && TEX[m]) drawT(c, TEX[m], px, py, w, h); else { c.fillStyle = AVG[m] || T.ink; c.fillRect(px, py, w, h); }
+      c.save(); c.globalAlpha = 0.45; c.fillStyle = '#000'; c.fillRect(px, py, w, h); c.restore();
+    }
     c.globalAlpha = 1;
     const set = new Set(g.foot.keys()), segs = boundarySegs(set);
-    c.strokeStyle = pick ? T.accent : T.ink; c.lineWidth = (pick ? 2 : 1.2) * s; if (ghost) c.setLineDash([5 * s, 3 * s]); c.beginPath();
+    c.strokeStyle = g.short ? (T.danger || '#c0262d') : pick ? T.accent : T.ink; c.lineWidth = (pick ? 2 : 1.2) * s; if (ghost) c.setLineDash([5 * s, 3 * s]); c.beginPath();
     for (const sg of segs) { c.moveTo(X(sg[0]) + 0.5, Y(sg[1]) + 0.5); c.lineTo(X(sg[2]) + 0.5, Y(sg[3]) + 0.5); } c.stroke(); c.setLineDash([]);
+    if (g.short) pill(c, `${g.short} block${g.short === 1 ? '' : 's'} past the edge of ${floorTag(g.up)}`, X(f.x), Y(f.z), T.danger || '#c0262d', s, { above: !pick });
     if (pick) { const [x, z] = [f.x, f.z]; pill(c, `${f.kind === 'ladder' ? 'Ladder' : flightKindName(f.kind)} · up ${g.R}${g.up >= 0 ? ' to ' + floorTag(g.up) : ''}`, X(x), Y(z), T.accent, s, { above: true }); }
   }
 }
@@ -15757,7 +15834,7 @@ function build3D(refit) {
   const add = (b, x, y, z, own) => { if (!b) return; if (BPC) BPC.set(x + ',' + y + ',' + z, bpIdCls(b, ctx)); if (!own && lrep.size && lrep.has(x + ',' + y + ',' + z)) return; if (y < fullY0) fullY0 = y; if (y > fullY1) fullY1 = y; if (y >= cutY) return; let a = buckets.get(b); if (!a) { a = []; buckets.set(b, a); } a.push(x, y, z); inc(x, y, z); if (x < BB.minX) BB.minX = x; if (x > BB.maxX) BB.maxX = x; if (y < BB.minY) BB.minY = y; if (y > BB.maxY) BB.maxY = y; if (z < BB.minZ) BB.minZ = z; if (z > BB.maxZ) BB.maxZ = z; };
   const track = o => { three.disposables.push(o); return o; };
   const shade = o => { if (lit && three.canShadow) { o.castShadow = true; o.receiveShadow = true; } return o; };
-  const ys = [];
+  const ys = [], airAbs = new Set();   // the way up stairs, kept clear of rock and ground
   for (const B of plan.bldgs) withBld(B, () => { const top = topOf(); for (let i = 0; i <= top; i++) {
     const L = lv(i), y = Math.round(baseY(i) * v3.spread), t = thickOf(i), layers = slabLayers(i), rb = v3.roofs !== false ? roofOf(i) : null; ys.push([y, spanAt(i) + (rb ? rb.h : 0)]);
     const given = v3.roofs !== false && v3.spread === 1 ? slabGiven(i) : null;
@@ -15765,6 +15842,7 @@ function build3D(refit) {
     if (v3.walls) for (const D of [openingDeco(L, i).extra, rampartDeco(L, i)]) for (const [k, m] of D) { const [x, z] = parseK(k), yo = y + offNear(i, k); for (const [dy, id] of m) if (id) add(id, x, yo + dy, z); }
     ctx = 's';
     for (const [k, m] of flightDeco(L, i)) { const [x, z] = parseK(k), yo = y + offAt(i, k); for (const [dy, id] of m) if (id) add(id, x, yo + dy, z); }
+    { const fc = flightClear(L, i); if (fc) for (const [k, set] of fc) { const [x, z] = parseK(k), yo = y + offAt(i, k); for (const dy of set) airAbs.add(x + ',' + (yo + dy) + ',' + z); } }
     for (const [k, b] of L.blocks) { const [x, z] = parseK(k), yo = y + offAt(i, k); const wall = L.walls.has(k); if (BPC) ctx = wall ? 'w' : 'f' + (bpRC.get(k) || ''); const mx = L.mix && L.mix.size && L.mix.has(k); if (v3.walls && wall) { wallColumn(L, i, k, b, (id, dy) => add(id, x, yo + dy, z)); } else if (wall) { for (let dy = 0; dy < t; dy++) add(mx ? mixedB(L, k, b, dy, x, z) : b, x, yo + dy, z); } else { const fb = i > 0 ? fillFromBelow(i, k) : 0; for (const d of cellLayers(L, i, k, layers)) { if ((!d && given && given.has(k)) || d < fb) continue; add(mx ? mixedB(L, k, b, d, x, z) : b, x, yo + d, z); } } }
     for (const m of L.multis) {
       const st = stampById(m.stamp); if (!st) continue; const fp = footprint(st, m.rot);
@@ -15793,7 +15871,7 @@ function build3D(refit) {
       const r = rockOf(i); if (!r) continue;
       if (!occ) { occ = new Set(); for (const a of buckets.values()) for (let j = 0; j < a.length; j += 3) occ.add(a[j] + ',' + a[j + 1] + ',' + a[j + 2]); }
       const L = lv(i), ry = Math.round(baseY(i) * v3.spread) + L.height + 1;
-      for (const k of L.blocks.keys()) { const [x, z] = parseK(k); for (let dy = 0; dy < r; dy++) { const kk = x + ',' + (ry + dy) + ',' + z; if (!occ.has(kk)) add('stone', x, ry + dy, z); } }
+      for (const k of L.blocks.keys()) { const [x, z] = parseK(k); for (let dy = 0; dy < r; dy++) { const kk = x + ',' + (ry + dy) + ',' + z; if (!occ.has(kk) && !airAbs.has(kk)) add('stone', x, ry + dy, z); } }
     } });
   }
   // the ground fills Y 0 around the build, except where a floor block already is
@@ -15803,7 +15881,7 @@ function build3D(refit) {
     const M = TR.margin, has = minX !== Infinity;
     const gx0 = (has ? Math.floor(minX) : 0) - M, gx1 = (has ? Math.ceil(maxX) : 0) + M, gz0 = (has ? Math.floor(minZ) : 0) - M, gz1 = (has ? Math.ceil(maxZ) : 0) + M;
     const occ = new Set(); for (const a of buckets.values()) for (let j = 1; j < a.length; j += 3) if (a[j] === 0) occ.add(a[j - 1] + ',' + a[j + 1]);
-    const cells = []; for (let x = gx0; x <= gx1; x++) for (let z = gz0; z <= gz1; z++) if (!occ.has(x + ',' + z)) cells.push(x, 0, z);
+    const cells = []; for (let x = gx0; x <= gx1; x++) for (let z = gz0; z <= gz1; z++) if (!occ.has(x + ',' + z) && !airAbs.has(x + ',0,' + z)) cells.push(x, 0, z);
     ground = { id: TR.block, cells }; ground.core = { x0: gx0, x1: gx1, z0: gz0, z1: gz1 };
     VB = BB.minX === Infinity ? { minX: gx0, maxX: gx1, minY: 0, maxY: 0, minZ: gz0, maxZ: gz1 } : { minX: Math.min(BB.minX, gx0), maxX: Math.max(BB.maxX, gx1), minY: Math.min(BB.minY, 0), maxY: Math.max(BB.maxY, 0), minZ: Math.min(BB.minZ, gz0), maxZ: Math.max(BB.maxZ, gz1) };
   }
