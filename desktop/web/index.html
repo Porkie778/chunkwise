@@ -1962,7 +1962,7 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
               </section>
               <section class="v3sec v3s-ground">
                 <div class="gcard" id="groundCard" role="group" aria-labelledby="groundLbl"></div>
-                <label class="v3row" for="v3rock" id="rockCard" hidden title="Rock between underground floors"><input type="checkbox" id="v3rock"> Show rock</label>
+                <label class="v3row" for="v3rock" id="rockCard" title="Rock between underground floors (Distance to ground on a basement floor)"><input type="checkbox" id="v3rock"> Show rock</label>
               </section>
               <section class="v3sec" aria-labelledby="v3hCam"><h3 class="v3h" id="v3hCam">Camera</h3>
                 <div class="seg cams" id="camSeg" role="group" aria-label="Camera"></div>
@@ -6212,6 +6212,9 @@ function bldNameInput(b, cls) {
 function moveGround(d) { const g = clamp(plan.ground + d, 0, plan.order.length); if (g === plan.ground) return; txBegin('Moved ground level'); plan.ground = g; txCommit(); renderAll(); }
 function setThick(l, v) { v = clamp(v, 1, 15); if (v === (l.thick || 1)) return; txBegin(`Set ${l.name} floor thickness to ${v}`); l.thick = v; txCommit(); }
 function setFloorFlag(l, key, on, label) { if (!!l[key] === on) return; txBegin(label); l[key] = on; txCommit(); }
+/* the solid rock (or just a gap, if Show rock is off) between an underground floor's ceiling and the floor above it */
+const rockLabel = i => i === plan.ground - 1 ? 'Distance to ground' : 'Distance to floor above';
+const rockTip = 'Blocks of solid rock between this floor’s ceiling and the floor above. Floors below move down with it; stairs climb through it.';
 function setRock(l, v) { v = clamp(v, 0, 256); if (v === (l.rock || 0)) return; txBegin(`Set ${v} rock above ${l.name}`); l.rock = v; txCommit(); }
 function setHeight(l, v) { v = clamp(v, 1, 64); if (v === l.height) return; txBegin(`Set ${l.name} height to ${v}`); l.height = v; txCommit(); }
 function renamePlan(v) { v = v.trim().slice(0, 60); if (!v || v === plan.name) return; plan.name = v; touch([], true); renderPlanName(); }
@@ -11396,6 +11399,7 @@ function dockFloors() {
     ro ? null : el('div', { class: 'dk-pair dk-addrow' }, el('button', { class: 'dk-btn', title: 'Add a floor above this one', onclick: () => addLevel('above') }, icon('plus'), 'Floor above'), el('button', { class: 'dk-btn', title: 'Add a floor below this one', onclick: () => addLevel('below') }, icon('plus'), 'Floor below')),
     L && !onR ? el('div', { class: 'dk-steps' }, step('Height', L.height, () => setHeight(L, L.height - 1), () => setHeight(L, L.height + 1), roofF, 'Blocks of space above the floor block'),
       step('Thickness', t, () => setThick(L, t - 1), () => setThick(L, t + 1), under || roofF, 'How many blocks deep the floor is')) : null,
+    L && !onR && under ? el('div', { class: 'dk-steps' }, step(rockLabel(i), rockOf(i), () => setRock(L, rockOf(i) - 1), () => setRock(L, rockOf(i) + 1), false, rockTip)) : null,
     L && !onR ? el('label', { class: 'dk-chk' + (cavOK ? '' : ' dis'), title: cavOK ? 'Leave the blocks between the top and bottom layers empty' : 'A cavity needs a floor 3 or more blocks thick' },
       el('input', { type: 'checkbox', checked: cavOK && L.cavity ? true : null, disabled: ro || !cavOK ? true : null, onchange: ev => { setFloorFlag(L, 'cavity', ev.target.checked, `${ev.target.checked ? 'Hollowed' : 'Filled'} the ${L.name} floor cavity`); renderAll(); } }), 'Cavity between floors') : null,
     dockSize(B, ro));
@@ -12951,7 +12955,7 @@ function floorCard(i, ro) {
   const rows = [], chips = [];
   if (!roofF) rows.push(step('Height', l.height, () => setHeight(l, l.height - 1), () => setHeight(l, l.height + 1), 'Blocks of space above the floor block (the floor itself is not counted)'));
   if (!under && !roofF) rows.push(step('Floor thickness', t, () => setThick(l, t - 1), () => setThick(l, t + 1), 'How many blocks deep the floor is'));
-  if (under) rows.push(step('Rock above', rock, () => setRock(l, rock - 1), () => setRock(l, rock + 1), 'Solid rock between this floor’s ceiling and the floor above. Floors below move down with it.'));
+  if (under) rows.push(step(rockLabel(i), rock, () => setRock(l, rock - 1), () => setRock(l, rock + 1), 'Solid rock between this floor’s ceiling and the floor above. Floors below move down with it.'));
   if (!under && !roofF && odd) chips.push(
     chip('Cavity', l.cavity, () => setFloorFlag(l, 'cavity', !l.cavity, `${l.cavity ? 'Filled' : 'Hollowed'} the ${l.name} floor cavity`), `Leave the ${h} block${h === 1 ? '' : 's'} between the top and bottom layers empty`),
     chip('Cable runs', l.cables, () => setFloorFlag(l, 'cables', !l.cables, `${l.cables ? 'Unmarked' : 'Marked'} the ${l.name} cavity for cables`), 'Mark the cavity as space for cable and pipe runs', !l.cavity));
@@ -15096,7 +15100,7 @@ function setLighting(on) {
 /* ground around the build in 3D */
 function renderGroundUI() {
   renderSceneryUI();
-  const rc = $('#rockCard'); if (rc) { rc.hidden = !plan || !plan.bldgs.some(b => withBld(b, () => plan.order.some((_, i) => rockOf(i) > 0))); const cb = $('#v3rock'); if (cb) cb.checked = v3.rock; }
+  const rc = $('#rockCard'); if (rc) { rc.hidden = false; const cb = $('#v3rock'); if (cb) cb.checked = v3.rock; }
   const box = $('#groundCard'); if (!box) return;
   const T = deTerrain(plan && plan.terrain), ro = store.readOnly || !plan, cap = id => id && BY_ID[id] ? BY_ID[id].name : 'None';
   const lbl = el('span', { class: 'glbl', id: 'groundLbl' }, el('span', { text: 'Ground' }), el('b', { text: cap(T.block) }));
