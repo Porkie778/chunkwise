@@ -8422,7 +8422,7 @@ function flightGeo(i, f) {
     if (f.under === 'solid') { for (let y = 0; y < j; y++) P(x, z, y, mat); } else if (j > 0) P(x, z, j - 1, S(OPP4[dir], true));
     if (!foot.has(k)) foot.set(k, { j, dir }); cut(k, j);
   };
-  let rise = R, topRel = up >= 0 ? 1 : -1, info = null, WELL = null, clear = null, tunnel = null, short = 0;
+  let rise = R, topRel = up >= 0 ? 1 : -1, info = null, WELL = null, clear = null, tunnel = null, short = 0, notch = null, tight = 0;
   const capRow = (set, ax, az, bx, bz, w) => { for (let c = -1; c <= w; c++) set.add(K(ax + bx * c, az + bz * c)); };
   if (f.kind === 'straight' || f.kind === 'l') {
     const [dx, dz] = DV4[f.dir], px = -dz, pz = dx, n1 = f.kind === 'l' ? clamp(f.n1, 1, Math.max(1, R - 1)) : R;
@@ -8442,7 +8442,7 @@ function flightGeo(i, f) {
     if (f.kind === 'l' && R > n1) { const off = f.turn === 'r' ? f.w + (R - n1) : -1 - (R - n1); capRow(caps, f.x + dx * n1 + px * off, f.z + dz * n1 + pz * off, dx, dz, f.w); }
     else capRow(caps, f.x + dx * n1, f.z + dz * n1, px, pz, f.w);
     WELL = { caps, doors: new Set(), top: t + R };
-    ({ clear, tunnel, short } = flightPassage(i, f, { t, R, n1, dx, dz, px, pz, Bup, thUp, HEAD, up, foot, put, PA }));
+    ({ clear, tunnel, short, notch, tight } = flightPassage(i, f, { t, R, n1, dx, dz, px, pz, Bup, thUp, HEAD, up, foot, put, PA, hole }));
   } else if (f.kind === 'spiral') {
     // a ring of steps a block wide round a solid post, climbing clockwise through every floor up to the top one it lands on;
     // each floor with a landing keeps its own floor block on the ring where you step off
@@ -8499,14 +8499,14 @@ function flightGeo(i, f) {
       for (let d = 0; d < th; d++) if (landed ? d < th - 1 : !lay.has(d)) { const m = put.get(nk); if (!m || !m.has(B + d)) PA(hx + ax, hz + az, B + d, own ? baseOf(own) : mat); }
     } }
   }
-  return { put, foot, holes, hole: holes.get(1) || new Set(), R: rise, up: topRel > 0 ? i + topRel : -1, info, walls, clear, tunnel, short };
+  return { put, foot, holes, hole: holes.get(1) || new Set(), R: rise, up: topRel > 0 ? i + topRel : -1, info, walls, clear, tunnel, short, notch, tight };
 }
 /* the way through for straight and L-shaped stairs. Over every step and both landings the space stays clear (FLIGHT_HEAD blocks):
    this floor's walls and the rock above are cut back just that far, nothing more. Where the stairs leave this floor's footprint they
    run (underground) in a tunnel walled and roofed in this floor's wall block, on a solid base. A flat landing at each end: the floor if there is one,
    else a block of the stairs. If the top comes up where the floor above has nothing to step onto, `short` says how many blocks out it is */
 function flightPassage(i, f, o) {
-  const { t, R, n1, dx, dz, px, pz, Bup, thUp, HEAD, up, foot, put, PA } = o, L = lv(i), U = up >= 0 ? lv(up) : null, mat = f.mat;
+  const { t, R, n1, dx, dz, px, pz, Bup, thUp, HEAD, up, foot, put, PA, hole } = o, L = lv(i), U = up >= 0 ? lv(up) : null, mat = f.mat;
   const force = (x, z, y, id) => { const k = K(x, z); let m = put.get(k); if (!m) put.set(k, m = new Map()); m.set(y, id); };
   // where you stand: cell → the layer of the block under your feet
   const stand = new Map();
@@ -8522,10 +8522,22 @@ function flightPassage(i, f, o) {
   const topY = up >= 0 ? Bup + thUp - 1 : t + R - 1;
   for (const k of top) if (!stand.has(k)) stand.set(k, topY);
   // the clear space, and the stair blocks themselves, which take a wall's place where they go through one
-  const clear = new Map();
-  for (const [k, sy] of stand) { const set = new Set(); if (foot.has(k)) set.add(sy); for (let y = sy + 1; y <= sy + HEAD; y++) set.add(y); clear.set(k, set); }
-  // the landings
   const had = k => !!U && (U.blocks.has(k) || (f.cut || []).some(q => q[0] === k && (q[2] || 1) === 1));
+  // the ceiling slopes with the stairs: over each step there's room for the next step up, so a sprint or a jump on the way down clears it
+  const clear = new Map(), airTop = new Map();
+  for (const [k, sy] of stand) { const q = foot.get(k), lift = sy < topY ? 1 : 0, at = sy + HEAD + lift; airTop.set(k, at);
+    const set = new Set(); if (q) set.add(sy); for (let y = sy + 1; y <= at; y++) set.add(y); clear.set(k, set); }
+  // the floor above opens wherever that room reaches into it. Its walls aren't cut through: a wall two or more thick loses a notch
+  // from the bottom of its inner layer, as high as the headroom needs; a wall with outside right behind it stays whole, and counts as tight
+  const notch = new Map(); let tight = 0;
+  if (U) for (const [k, at] of airTop) {
+    if (at < Bup || stand.get(k) >= topY) continue;
+    if (!(U.walls.has(k) && U.blocks.has(k))) { if (foot.has(k)) hole(1, k); continue; }
+    const [x, z] = parseK(k), outside = DV4S.some(([ax, az]) => { const nk = K(x + ax, z + az); return !U.blocks.has(nk) && !had(nk) && !foot.has(nk) && !(airTop.get(nk) >= Bup); });   // the stairwell itself isn't outside
+    if (outside) { tight++; continue; }
+    const set = new Set(); for (let y = Bup; y <= at; y++) set.add(y - Bup); notch.set(k, set);
+  }
+  // the landings
   for (const k of bottom) if (!L.blocks.has(k)) { const [x, z] = parseK(k); for (let y = 0; y < t; y++) PA(x, z, y, mat); }
   for (const k of top) if (U && !had(k)) { const [x, z] = parseK(k); PA(x, z, topY, mat); }
   // the tunnel, outside this floor's footprint
@@ -8548,16 +8560,19 @@ function flightPassage(i, f, o) {
     const mid = parseK(top[Math.floor(top.length / 2)]); let [cx, cz] = mid;
     while (!had(K(cx, cz)) && short < 64) { short++; cx -= ex; cz -= ez; }
   }
-  return { clear, tunnel, short };
+  return { clear, tunnel, short, notch, tight };
 }
 /* everything stairs on a floor need kept clear (cell → layers from the floor's base), for its walls and the rock above */
 const FCLEAR = new WeakMap();
 function flightClear(L, i) {
-  if (!L || !L.flights || !L.flights.length) return null;
-  const key = MODELVER + '|' + i + '|' + (L.rev || 0) + '|' + baseY(i) + '|' + plan.order.length, c = FCLEAR.get(L);
+  if (!L) return null; const D = i > 0 ? lv(i - 1) : null;
+  if (!(L.flights && L.flights.length) && !(D && D.flights && D.flights.length)) return null;
+  const key = MODELVER + '|' + i + '|' + (L.rev || 0) + '|' + (D ? D.rev || 0 : '') + '|' + baseY(i) + '|' + plan.order.length, c = FCLEAR.get(L);
   if (c && c.key === key) return c.map;
-  const map = new Map();
-  for (const f of L.flights) { const g = flightGeo(i, f); if (g.clear) for (const [k, set] of g.clear) { let m = map.get(k); if (!m) map.set(k, m = new Set()); for (const y of set) m.add(y); } }
+  const map = new Map(), addTo = (k, set) => { let m = map.get(k); if (!m) map.set(k, m = new Set()); for (const y of set) m.add(y); };
+  for (const f of L.flights || []) { const g = flightGeo(i, f); if (g.clear) for (const [k, set] of g.clear) addTo(k, set); }
+  // notches in this floor's walls, from stairs coming up from the floor below
+  if (D && D.flights) for (const f of D.flights) { const g = flightGeo(i - 1, f); if (g.notch) for (const [k, set] of g.notch) addTo(k, set); }
   FCLEAR.set(L, { key, map }); return map;
 }
 const DV4S = [[1, 0], [-1, 0], [0, 1], [0, -1]];
@@ -8661,6 +8676,7 @@ function commitFlight(f, old) {
   L.rev = (L.rev || 0) + 1; view.flightSel = nf.id;
   txCommit(); renderAll();
   if (g.short) toast(`These stairs come up ${g.short} block${g.short === 1 ? '' : 's'} past the edge of ${floorTag(g.up)}, with no floor there to step onto. Start them further back, or turn them.`);
+  else if (g.tight) toast(`These stairs pass under ${floorTag(g.up)}’s outer wall, which isn’t cut so the room stays closed in: there’s less headroom there. Thicken that wall to two blocks and the inner layer gets a notch, or move the stairs in.`);
   else if (!old) toastUndo(up ? `${nf.kind === 'ladder' ? 'A ladder' : flightKindName(nf.kind) + ' stairs'} up ${g.R} to ${floorTag(g.up)}${nf.cut.length ? `, with ${nf.cut.length} block${nf.cut.length === 1 ? '' : 's'} cut away above for the way up` : ''}.` : `${nf.kind === 'ladder' ? 'A ladder' : flightKindName(nf.kind) + ' stairs'} up ${g.R}, to the top of this floor. Add a floor above and they'll climb to it.`);
 }
 function deleteFlight(id) {
@@ -8750,6 +8766,7 @@ function drawFlights(c, L, X, Y, s, x0, x1, z0, z1, useTex, ghost) {
     c.strokeStyle = g.short ? (T.danger || '#c0262d') : pick ? T.accent : T.ink; c.lineWidth = (pick ? 2 : 1.2) * s; if (ghost) c.setLineDash([5 * s, 3 * s]); c.beginPath();
     for (const sg of segs) { c.moveTo(X(sg[0]) + 0.5, Y(sg[1]) + 0.5); c.lineTo(X(sg[2]) + 0.5, Y(sg[3]) + 0.5); } c.stroke(); c.setLineDash([]);
     if (g.short) pill(c, `${g.short} block${g.short === 1 ? '' : 's'} past the edge of ${floorTag(g.up)}`, X(f.x), Y(f.z), T.danger || '#c0262d', s, { above: !pick });
+    else if (g.tight) pill(c, `Low under ${floorTag(g.up)}’s outer wall`, X(f.x), Y(f.z), T.danger || '#c0262d', s, { above: !pick });
     if (pick) { const [x, z] = [f.x, f.z]; pill(c, `${f.kind === 'ladder' ? 'Ladder' : flightKindName(f.kind)} · up ${g.R}${g.up >= 0 ? ' to ' + floorTag(g.up) : ''}`, X(x), Y(z), T.accent, s, { above: true }); }
   }
 }
