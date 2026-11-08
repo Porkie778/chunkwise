@@ -1743,6 +1743,10 @@ kbd{font-family:var(--f-mono);font-size:11.5px;padding:2px 6px;border:1px solid 
 .v3bpn{display:none}:root[data-skin="blueprint"][data-bp3] .v3bpn{display:inline}:root[data-skin="blueprint"][data-bp3] :is(.v3orb,.v3alt){display:none}
 :root[data-skin] :is(.seg button[aria-pressed="true"],.tool[aria-pressed="true"],.vopt[aria-pressed="true"],.btn.primary,.ts-t[aria-pressed="true"],#viewSeg button.vs[aria-pressed="true"]){background:var(--accent)!important;color:var(--on-accent)!important}
 :root[data-skin="blueprint"] :is(.olbl,.rgrp span,.rtab,.dk-h h3,.insp-kind,.qhead,.mlabel,.acc-lbl,.ts-lbl){font-family:var(--f-mono);letter-spacing:.08em}
+.conncards{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px}
+.conncard{display:grid;gap:8px;align-content:start;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel-2)}
+.conncard.no{opacity:.75}.connh{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}.connpic{width:100%;height:auto;border-radius:6px;background:var(--paper);image-rendering:pixelated}
+.conn select.pick{max-width:100%}
 /* the look picker in Settings */
 /* Studio's accent colour: everywhere the orange was, the plan, the logo, and on phones the buttons too */
 :root:not([data-skin])[data-accent="red"]{--cv-accent:#c0392b;--logo:#c0392b;--axis:rgba(192,57,43,.55)}
@@ -6210,13 +6214,21 @@ function bldNameInput(b, cls) {
   return inp;
 }
 function moveGround(d) { const g = clamp(plan.ground + d, 0, plan.order.length); if (g === plan.ground) return; txBegin('Moved ground level'); plan.ground = g; txCommit(); renderAll(); }
-function setThick(l, v) { v = clamp(v, 1, 15); if (v === (l.thick || 1)) return; txBegin(`Set ${l.name} floor thickness to ${v}`); l.thick = v; txCommit(); }
+function setThick(l, v) { v = clamp(v, 1, 15); if (v === (l.thick || 1)) return; txBegin(`Set ${l.name} floor thickness to ${v}`); l.thick = v; recutFlights(); txCommit(); }
+/* a floor got taller, thicker or further down: every staircase in the building works out its climb again, and the holes it cut above
+   are put back and cut afresh for the new height */
+function recutFlights() {
+  if (!plan) return; const n = plan.order.length, has = [];
+  for (let i = 0; i < n; i++) { const L = lv(i); if (L && L.flights && L.flights.length) has.push(i); }
+  for (const i of has) for (const f of lv(i).flights) restoreCut(i, f);
+  for (const i of has) { const L = lv(i); for (const f of L.flights) cutHoles(i, f, flightGeo(i, f)); L.rev = (L.rev || 0) + 1; }
+}
 function setFloorFlag(l, key, on, label) { if (!!l[key] === on) return; txBegin(label); l[key] = on; txCommit(); }
 /* the solid rock (or just a gap, if Show rock is off) between an underground floor's ceiling and the floor above it */
 const rockLabel = i => i === plan.ground - 1 ? 'Distance to ground' : 'Distance to floor above';
 const rockTip = 'Blocks of solid rock between this floor’s ceiling and the floor above. Floors below move down with it; stairs climb through it.';
-function setRock(l, v) { v = clamp(v, 0, 256); if (v === (l.rock || 0)) return; txBegin(`Set ${v} rock above ${l.name}`); l.rock = v; txCommit(); }
-function setHeight(l, v) { v = clamp(v, 1, 64); if (v === l.height) return; txBegin(`Set ${l.name} height to ${v}`); l.height = v; txCommit(); }
+function setRock(l, v) { v = clamp(v, 0, 256); if (v === (l.rock || 0)) return; txBegin(`Set ${l.name}’s distance to the floor above to ${v}`); l.rock = v; recutFlights(); txCommit(); }
+function setHeight(l, v) { v = clamp(v, 1, 64); if (v === l.height) return; txBegin(`Set ${l.name} height to ${v}`); l.height = v; recutFlights(); txCommit(); }
 function renamePlan(v) { v = v.trim().slice(0, 60); if (!v || v === plan.name) return; plan.name = v; touch([], true); renderPlanName(); }
 function duplicatePlan() {
   const data = serPlan(plan), from = plan; flushNow();
@@ -8385,6 +8397,8 @@ function deFlight(f) {
     mat: typeof f.mat === 'string' && flightBlockOK(BY_ID[f.mat]) ? f.mat : 'stone_bricks', under: f.under === 'solid' ? 'solid' : 'open',
     // spirals climb in half slabs (whole stairs were too steep to walk round a ring), and the floors above that get a landing (the top one is where it ends)
     steps: 'slabs', ups: ups.length ? ups : [1],
+    // straight and L stairs can climb in half slabs too: twice as long, half as steep
+    half: !!f.half && (kind === 'straight' || kind === 'l'),
     // a stairwell: walls round it from this floor up to where you step off
     walls: f.walls === 'well' && kind !== 'ladder' ? 'well' : 'off',
     cut: (Array.isArray(f.cut) ? f.cut : []).filter(q => Array.isArray(q) && typeof q[0] === 'string' && CELL_RE.test(q[0]) && BY_ID[q[1]]).slice(0, 2000).map(q => [q[0], q[1], clampInt(q[2], 1, 32, 1)]) };
@@ -8428,24 +8442,33 @@ function flightGeo(i, f) {
   let rise = R, topRel = up >= 0 ? 1 : -1, info = null, WELL = null, clear = null, tunnel = null, short = 0, notch = null, tight = 0;
   const capRow = (set, ax, az, bx, bz, w) => { for (let c = -1; c <= w; c++) set.add(K(ax + bx * c, az + bz * c)); };
   if (f.kind === 'straight' || f.kind === 'l') {
-    const [dx, dz] = DV4[f.dir], px = -dz, pz = dx, n1 = f.kind === 'l' ? clamp(f.n1, 1, Math.max(1, R - 1)) : R;
-    for (let j = 0; j < n1; j++) for (let c = 0; c < f.w; c++) step(f.x + dx * j + px * c, f.z + dz * j + pz * c, j, f.dir);
-    if (f.kind === 'l' && R > n1) {
-      const d2 = f.turn === 'r' ? ROT_CW[f.dir] : CCW4[f.dir];
+    // N steps in all: a block each, or half a block each in slabs. Step n stands on layer lay(n)
+    const N = f.half ? 2 * R : R, lay = n => f.half ? Math.ceil((n + 1) / 2) - 1 : n, slab = slabOf(mat) || 'stone_brick_slab';
+    const stepN = (x, z, n, dir) => {
+      if (!f.half) return step(x, z, n, dir);
+      const k = K(x, z), y = lay(n); P(x, z, y, n % 2 ? slab + '~t' : slab);
+      if (f.under === 'solid') for (let q = 0; q < y; q++) P(x, z, q, mat);
+      if (!foot.has(k)) foot.set(k, { j: y, dir, half: true }); cut(k, y);
+    };
+    const [dx, dz] = DV4[f.dir], px = -dz, pz = dx;
+    let n1 = f.kind === 'l' ? clamp(f.n1, 1, Math.max(1, N - 1)) : N; if (f.half && f.kind === 'l' && n1 % 2) n1 = Math.min(n1 + 1, N);   // turn on a whole block
+    for (let j = 0; j < n1; j++) for (let c = 0; c < f.w; c++) stepN(f.x + dx * j + px * c, f.z + dz * j + pz * c, j, f.dir);
+    if (f.kind === 'l' && N > n1) {
+      const d2 = f.turn === 'r' ? ROT_CW[f.dir] : CCW4[f.dir], ly = lay(n1 - 1);
       // the landing on the turn: full blocks level with the last stair, so you walk straight off it, then the second flight climbs on
       for (let a = 0; a < f.w; a++) for (let c = 0; c < f.w; c++) {
         const x = f.x + dx * (n1 + a) + px * c, z = f.z + dz * (n1 + a) + pz * c, k = K(x, z);
-        P(x, z, n1 - 1, mat); if (f.under === 'solid') for (let y = 0; y < n1 - 1; y++) P(x, z, y, mat);
-        foot.set(k, { j: n1 - 1, land: true }); cut(k, n1 - 1);
+        P(x, z, ly, mat); if (f.under === 'solid') for (let y = 0; y < ly; y++) P(x, z, y, mat);
+        foot.set(k, { j: ly, land: true }); cut(k, ly);
       }
-      for (let s2 = 0; s2 < R - n1; s2++) for (let c = 0; c < f.w; c++) { const off = f.turn === 'r' ? f.w + s2 : -1 - s2; step(f.x + dx * (n1 + c) + px * off, f.z + dz * (n1 + c) + pz * off, n1 + s2, d2); }
+      for (let s2 = 0; s2 < N - n1; s2++) for (let c = 0; c < f.w; c++) { const off = f.turn === 'r' ? f.w + s2 : -1 - s2; stepN(f.x + dx * (n1 + c) + px * off, f.z + dz * (n1 + c) + pz * off, n1 + s2, d2); }
     }
     // the way in and the way out stay open: the row in front of the first step and the row past the last
     const caps = new Set(); capRow(caps, f.x - dx, f.z - dz, px, pz, f.w);
-    if (f.kind === 'l' && R > n1) { const off = f.turn === 'r' ? f.w + (R - n1) : -1 - (R - n1); capRow(caps, f.x + dx * n1 + px * off, f.z + dz * n1 + pz * off, dx, dz, f.w); }
+    if (f.kind === 'l' && N > n1) { const off = f.turn === 'r' ? f.w + (N - n1) : -1 - (N - n1); capRow(caps, f.x + dx * n1 + px * off, f.z + dz * n1 + pz * off, dx, dz, f.w); }
     else capRow(caps, f.x + dx * n1, f.z + dz * n1, px, pz, f.w);
     WELL = { caps, doors: new Set(), top: t + R };
-    ({ clear, tunnel, short, notch, tight } = flightPassage(i, f, { t, R, n1, dx, dz, px, pz, Bup, thUp, HEAD, up, foot, put, PA, hole }));
+    ({ clear, tunnel, short, notch, tight } = flightPassage(i, f, { t, R, N, n1, dx, dz, px, pz, Bup, thUp, HEAD, up, foot, put, PA, hole }));
   } else if (f.kind === 'spiral') {
     // a ring of steps a block wide round a solid post, climbing clockwise through every floor up to the top one it lands on;
     // each floor with a landing keeps its own floor block on the ring where you step off
@@ -8509,7 +8532,7 @@ function flightGeo(i, f) {
    run (underground) in a tunnel walled and roofed in this floor's wall block, on a solid base. A flat landing at each end: the floor if there is one,
    else a block of the stairs. If the top comes up where the floor above has nothing to step onto, `short` says how many blocks out it is */
 function flightPassage(i, f, o) {
-  const { t, R, n1, dx, dz, px, pz, Bup, thUp, HEAD, up, foot, put, PA, hole } = o, L = lv(i), U = up >= 0 ? lv(up) : null, mat = f.mat;
+  const { t, R, N, n1, dx, dz, px, pz, Bup, thUp, HEAD, up, foot, put, PA, hole } = o, L = lv(i), U = up >= 0 ? lv(up) : null, mat = f.mat;
   const force = (x, z, y, id) => { const k = K(x, z); let m = put.get(k); if (!m) put.set(k, m = new Map()); m.set(y, id); };
   // where you stand: cell → the layer of the block under your feet
   const stand = new Map();
@@ -8517,8 +8540,8 @@ function flightPassage(i, f, o) {
   const bottom = [], top = [];
   for (let c = 0; c < f.w; c++) bottom.push(K(f.x - dx + px * c, f.z - dz + pz * c));
   let ex = dx, ez = dz;   // which way the last flight climbs
-  if (f.kind === 'l' && R > n1) {
-    const d2 = f.turn === 'r' ? ROT_CW[f.dir] : CCW4[f.dir], off = f.turn === 'r' ? f.w + (R - n1) : -1 - (R - n1); [ex, ez] = DV4[d2];
+  if (f.kind === 'l' && N > n1) {
+    const d2 = f.turn === 'r' ? ROT_CW[f.dir] : CCW4[f.dir], off = f.turn === 'r' ? f.w + (N - n1) : -1 - (N - n1); [ex, ez] = DV4[d2];
     for (let c = 0; c < f.w; c++) top.push(K(f.x + dx * (n1 + c) + px * off, f.z + dz * (n1 + c) + pz * off));
   } else for (let c = 0; c < f.w; c++) top.push(K(f.x + dx * n1 + px * c, f.z + dz * n1 + pz * c));
   for (const k of bottom) if (!stand.has(k)) stand.set(k, t - 1);
@@ -8606,6 +8629,149 @@ function flightWalls(i, f, foot, W, PA) {
     }
   }
   return cells;
+}
+/* ================= connecting two rooms =================
+   Pick a room on one floor and a room on another, and it works out stairs between them: a flight per floor, stacked one over the next with a
+   landing on each floor between. Each flight runs against a wall where it can, keeps inside its room (it may go through the room's own wall,
+   and underground on into a tunnel), and comes up inside the room above without cutting into any other room. Stairs and half slabs are both
+   worked out, so you can see which fits before you build it */
+function roomsOf(i) {
+  const L = lv(i); if (!L || roofLevel(L)) return [];
+  // a stairwell cut in the floor is still part of the room it's in
+  const cut = new Set(); if (i > 0) for (const f of lv(i - 1).flights || []) for (const q of f.cut || []) if ((q[2] || 1) === 1) cut.add(q[0]);
+  const has = k => L.blocks.has(k) || cut.has(k), open = k => has(k) && !L.walls.has(k), seen = new Set(), found = [];
+  for (const k0 of [...L.blocks.keys(), ...cut]) {
+    if (!open(k0) || seen.has(k0)) continue;
+    const cells = [], st = [k0]; let outdoor = false; seen.add(k0);
+    while (st.length) { const k = st.pop(); cells.push(k); const [x, z] = parseK(k);
+      for (const d of DIR4) { const nk = K(x + DV4[d][0], z + DV4[d][1]); if (!has(nk)) { outdoor = true; continue; } if (open(nk) && !seen.has(nk)) { seen.add(nk); st.push(nk); } } }
+    if (!outdoor) found.push(cells);
+  }
+  return found.map((cells, n) => {
+    const set = new Set(cells); let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity;
+    for (const k of cells) { const [x, z] = parseK(k); x0 = Math.min(x0, x); x1 = Math.max(x1, x); z0 = Math.min(z0, z); z1 = Math.max(z1, z); }
+    // a room zone covering most of it gives it its name
+    let name = null, best = 0; for (const zn of L.zones || []) { let c = 0; for (const k of zn.cells) if (set.has(k)) c++; if (c > best && c >= cells.length * 0.4) { best = c; name = zn.name; } }
+    return { i, n, cells: set, name: name || `Room ${n + 1}`, size: `${x1 - x0 + 1}×${z1 - z0 + 1}`, id: L.id + ':' + n };
+  });
+}
+/* the cells a straight or L flight stands on, as flightGeo lays them, and its bottom and top landing rows: quick, for the search */
+function flightShape(f, R) {
+  const N = f.half ? 2 * R : R, [dx, dz] = DV4[f.dir], px = -dz, pz = dx, cells = [];
+  let n1 = f.kind === 'l' ? clamp(f.n1, 1, Math.max(1, N - 1)) : N; if (f.half && f.kind === 'l' && n1 % 2) n1 = Math.min(n1 + 1, N);
+  for (let j = 0; j < n1; j++) for (let c = 0; c < f.w; c++) cells.push(K(f.x + dx * j + px * c, f.z + dz * j + pz * c));
+  const bottom = []; for (let c = 0; c < f.w; c++) bottom.push(K(f.x - dx + px * c, f.z - dz + pz * c));
+  const top = [];
+  if (f.kind === 'l' && N > n1) {
+    for (let a = 0; a < f.w; a++) for (let c = 0; c < f.w; c++) cells.push(K(f.x + dx * (n1 + a) + px * c, f.z + dz * (n1 + a) + pz * c));
+    for (let s2 = 0; s2 < N - n1; s2++) for (let c = 0; c < f.w; c++) { const off = f.turn === 'r' ? f.w + s2 : -1 - s2; cells.push(K(f.x + dx * (n1 + c) + px * off, f.z + dz * (n1 + c) + pz * off)); }
+    const off = f.turn === 'r' ? f.w + (N - n1) : -1 - (N - n1); for (let c = 0; c < f.w; c++) top.push(K(f.x + dx * (n1 + c) + px * off, f.z + dz * (n1 + c) + pz * off));
+  } else for (let c = 0; c < f.w; c++) top.push(K(f.x + dx * n1 + px * c, f.z + dz * n1 + pz * c));
+  return { cells, bottom, top };
+}
+/* the best flight up from floor i, starting in `from` (cells) and landing in `to` (cells on the floor above, or any floor there if null),
+   near `near` if given. Returns { f, g, score } or null */
+function bestHop(i, from, to, o, near, taken) {
+  const L = lv(i), U = lv(i + 1), R = flightRise(i, from.values().next().value).R, under = i < plan.ground;
+  const roomsHere = new Set(); for (const r of roomsOf(i)) for (const k of r.cells) if (!from.has(k)) roomsHere.add(k);
+  const used = new Set(taken || []); for (const f of L.flights || []) for (const k of flightGeo(i, f).foot.keys()) used.add(k);
+  const okStep = k => !used.has(k) && !roomsHere.has(k) && (from.has(k) || (L.walls.has(k) && L.blocks.has(k)) || (under && !L.blocks.has(k)));
+  const okTop = k => to ? to.has(k) : U.blocks.has(k) && !U.walls.has(k);
+  const isWall = k => L.walls.has(k) && L.blocks.has(k);
+  const nearK = near ? parseK(near) : null;
+  let best = null;
+  const tryF = f => {
+    const sh = flightShape(f, R);
+    if (!sh.cells.every(okStep) || !sh.bottom.every(k => from.has(k) && !used.has(k)) || !sh.top.every(okTop)) return;
+    const g = flightGeo(i, f); if (g.short) return;
+    for (const k of g.hole) if (U.blocks.has(k) && !U.walls.has(k) && !(to ? to.has(k) : true)) return;   // never cut into another room above
+    // the score: short and straight, against a wall, inside the room, and (on a stack) close to where the last flight came up
+    let sc = sh.cells.length + (f.kind === 'l' ? 4 : 0) + g.tight * 6;
+    const [dx, dz] = DV4[f.dir], px = -dz, pz = dx; let hug = 0;
+    for (const k of sh.cells) { if (!from.has(k)) sc += 0.5; const [x, z] = parseK(k); if (isWall(K(x + px, z + pz)) || isWall(K(x - px, z - pz))) hug++; }
+    sc -= Math.min(hug, sh.cells.length) * 0.6;
+    if (nearK) { const [bx, bz] = parseK(sh.bottom[0]); sc += (Math.abs(bx - nearK[0]) + Math.abs(bz - nearK[1])) * 1.5; }
+    if (!best || sc < best.score) best = { f, g, score: sc, top: sh.top, cells: sh.cells };
+  };
+  const base = { id: 'conn', kind: 'straight', w: o.w, half: o.half, mat: o.mat, under: under ? 'solid' : 'open', walls: 'off', n1: 3, turn: 'r', r: 1 };
+  for (const k of from) { const [x, z] = parseK(k); for (const dir of DIR4) tryF(deFlight({ ...base, x, z, dir })); }
+  if (!best) {
+    const N = o.half ? 2 * R : R;
+    for (const k of from) { const [x, z] = parseK(k); for (const dir of DIR4) for (const turn of ['l', 'r']) for (let n1 = o.half ? 2 : 1; n1 < N; n1 += o.half ? 2 : 1) tryF(deFlight({ ...base, kind: 'l', x, z, dir, turn, n1 })); }
+  }
+  return best;
+}
+/* the whole way from room A to room B: one flight per floor between them */
+function planConnection(A, B, o) {
+  if (A.i === B.i) return { why: 'Both rooms are on the same floor. Pick rooms on two different floors.' };
+  if (A.i > B.i) [A, B] = [B, A];
+  const hops = []; let from = A.cells, near = null;
+  for (let i = A.i; i < B.i; i++) {
+    const last = i === B.i - 1, h = bestHop(i, from, last ? B.cells : null, o, near);
+    if (!h) return { why: i === A.i && last ? `There isn’t room for ${o.half ? 'slab' : ''} stairs ${o.w} wide inside ${A.name} that come up inside ${B.name}.` : `No way up from ${floorTag(i)} to ${floorTag(i + 1)} fits.`, hops };
+    hops.push({ i, f: h.f, g: h.g });
+    if (!last) {
+      // the next flight starts in the room it came up into (or anywhere on that floor, outside other stairs)
+      const U = lv(i + 1), room = roomsOf(i + 1).find(r => h.top.some(k => r.cells.has(k)));
+      from = room ? room.cells : new Set([...U.blocks.keys()].filter(k => !U.walls.has(k)));
+      near = h.top[0];
+    }
+  }
+  const steps = hops.reduce((a, h) => a + (h.f.half ? 2 : 1) * h.g.R, 0), cells = hops.reduce((a, h) => a + h.g.foot.size, 0);
+  return { hops, steps, cells, A, B };
+}
+function buildConnection(P) {
+  if (!P || !P.hops || !P.hops.length || store.readOnly) return;
+  txBegin(`Connected ${floorTag(P.A.i)} ${P.A.name} to ${floorTag(P.B.i)} ${P.B.name}`);
+  for (const h of P.hops) { const L = lv(h.i), nf = deFlight({ ...h.f, id: uid('f') }); cutHoles(h.i, nf, flightGeo(h.i, nf)); L.flights = [...(L.flights || []), nf]; L.rev = (L.rev || 0) + 1; }
+  txCommit(); closeModal(); setLevel(plan.order[P.hops[0].i]); renderAll();
+  toastUndo(`${P.hops[0].f.half ? 'Slab stairs' : 'Stairs'} from ${floorTag(P.A.i)} ${P.A.name} up to ${floorTag(P.B.i)} ${P.B.name}: ${P.steps} steps${P.hops.length > 1 ? `, in ${P.hops.length} flights` : ''}.`);
+}
+/* a small top-down picture of a route: the two rooms, the floors' walls round them, and the stairs */
+function connPicture(P, A, B) {
+  const cv = el('canvas', { class: 'connpic', width: 220, height: 150, 'aria-hidden': 'true' }), c = cv.getContext('2d');
+  const all = [...A.cells, ...B.cells]; if (P && P.hops) for (const h of P.hops) all.push(...h.g.foot.keys());
+  let x0 = Infinity, x1 = -Infinity, z0 = Infinity, z1 = -Infinity; for (const k of all) { const [x, z] = parseK(k); x0 = Math.min(x0, x); x1 = Math.max(x1, x); z0 = Math.min(z0, z); z1 = Math.max(z1, z); }
+  x0 -= 1; z0 -= 1; x1 += 1; z1 += 1;
+  const s = Math.max(2, Math.floor(Math.min(210 / (x1 - x0 + 1), 140 / (z1 - z0 + 1)))), ox = (220 - s * (x1 - x0 + 1)) / 2, oz = (150 - s * (z1 - z0 + 1)) / 2;
+  const box = (k, col) => { const [x, z] = parseK(k); c.fillStyle = col; c.fillRect(ox + (x - x0) * s, oz + (z - z0) * s, s, s); };
+  for (const k of A.cells) box(k, 'rgba(120,140,160,.35)');
+  for (const k of B.cells) box(k, 'rgba(120,160,120,.35)');
+  for (const k of lv(A.i).walls) { const [x, z] = parseK(k); if (x >= x0 && x <= x1 && z >= z0 && z <= z1) box(k, 'rgba(60,60,60,.55)'); }
+  if (P && P.hops) for (const h of P.hops) for (const [k, q] of h.g.foot) box(k, q.land ? T.ink : T.accent);
+  return cv;
+}
+function openConnect() {
+  if (!plan || store.readOnly) return;
+  const rooms = []; for (let i = 0; i < plan.order.length; i++) rooms.push(...roomsOf(i));
+  if (rooms.length < 2) { toast('Connecting needs closed-in rooms on two floors: walls all round, with a floor inside.'); return; }
+  const cur = levelIndex(curLid), byId = id => rooms.find(r => r.id === id);
+  let a = (rooms.find(r => r.i === cur) || rooms[0]).id, b = (rooms.find(r => r.i !== byId(a).i && Math.abs(r.i - byId(a).i) === 1) || rooms.find(r => r.i !== byId(a).i) || rooms[1]).id, w = 2;
+  const body = el('div', { class: 'swp conn' });
+  const pick = (val, onCh, label) => { const s = el('select', { class: 'pick', 'aria-label': label, onchange: ev => onCh(ev.target.value) });
+    for (let i = plan.order.length - 1; i >= 0; i--) { const rs = rooms.filter(r => r.i === i); if (!rs.length) continue; const g = el('optgroup', { label: `${floorTag(i)} ${lv(i).name}` });
+      for (const r of rs) g.append(el('option', { value: r.id, selected: r.id === val ? true : null, text: `${floorTag(i)} · ${r.name} · ${r.size}` })); s.append(g); }
+    return s; };
+  const render = () => {
+    const A = byId(a), B = byId(b), mat = flightMatNow();
+    const opts = [false, true].map(half => ({ half, P: A.i === B.i ? { why: 'Pick rooms on two different floors.' } : planConnection(A, B, { w, half, mat }) }));
+    const card = ({ half, P }) => {
+      const ok = P && P.hops && !P.why, lo = A.i < B.i ? A : B;
+      const what = ok ? P.hops.map(h => `${floorTag(h.i)}: ${h.f.kind === 'l' ? 'L-shaped' : 'straight'}, ${(half ? 2 : 1) * h.g.R} ${half ? 'slabs' : 'steps'}${h.g.tunnel && h.g.tunnel.size ? ', partly in a tunnel' : ''}${h.g.tight ? ', low under an outer wall' : ''}`).join(' · ') : P.why;
+      return el('div', { class: 'conncard' + (ok ? '' : ' no') },
+        el('div', { class: 'connh' }, el('b', { text: half ? 'Slabs' : 'Stairs' }), el('span', { class: 'ometa2', text: half ? 'half a block a step, gentler and longer' : 'a block a step, steeper and shorter' })),
+        connPicture(ok ? P : null, lo, lo === A ? B : A),
+        el('p', { class: 'ometa2', text: ok ? `${P.steps} steps over ${P.cells} cells. ${what}.` : what }),
+        ok ? el('button', { class: 'btn primary', onclick: () => buildConnection(P) }, icon('stairs'), `Build ${half ? 'slab stairs' : 'stairs'}`) : null);
+    };
+    body.replaceChildren(
+      el('div', { class: 'exrow' }, el('span', { class: 'qhead', text: 'From' }), pick(a, v => { a = v; render(); }, 'From room')),
+      el('div', { class: 'exrow' }, el('span', { class: 'qhead', text: 'To' }), pick(b, v => { b = v; render(); }, 'To room')),
+      el('div', { class: 'exrow' }, el('span', { class: 'qhead', text: 'Width' }), stepBox('Width', w, 1, 4, v => { w = v; render(); })),
+      el('div', { class: 'conncards' }, ...opts.map(card)),
+      el('p', { class: 'exnote', text: 'Each flight runs along a wall where it can and comes up inside the room above. Skipping floors, it lands on each floor between. Rooms are spaces closed in by walls. In the pictures, blue is the lower room, green the upper, and the stairs are in your accent colour.' }));
+  };
+  render(); openModal('Connect two rooms', [body]); $('#modal .modal').classList.add('wide');
 }
 /* all of a floor's stairs as extra blocks: cell → layer → block */
 function flightDeco(L, i) {
@@ -8718,6 +8884,7 @@ function flightOptRows(rr, target) {
       return el('button', { class: 'btn sm tog', 'aria-pressed': String(on), title: `${on ? 'No landing' : 'A landing'} on ${floorTag(i + j)} ${Lj.name}`, onclick: () => { const ups = on ? o.ups.filter(v => v !== j) : [...o.ups, j]; if (ups.length) setFlightOpt({ ups }); } }, floorTag(i + j));
     })) : el('span', { class: 'ometa2', text: 'Add a floor above first' })]);
   }
+  if (o.kind === 'straight' || o.kind === 'l') rows.push(['Steps', seg([['stairs', 'Stairs', null, 'A block a step'], ['slabs', 'Slabs', null, 'Half a block a step: gentler, twice as long']], o.half ? 'slabs' : 'stairs', v => setFlightOpt({ half: v === 'slabs' }), 'Steps')]);
   if (o.kind !== 'ladder' && o.kind !== 'spiral') rows.push(['Under', seg([['open', 'Open'], ['solid', 'Solid']], o.under, v => setFlightOpt({ under: v }), 'Underneath the steps')]);
   if (o.kind !== 'ladder') rows.push(['Walls', seg([['off', 'None'], ['well', 'Stairwell']], o.walls || 'off', v => setFlightOpt({ walls: v }), 'Walls round the stairs'), o.walls === 'well' ? el('span', { class: 'ometa2', text: o.kind === 'spiral' ? 'a 2 × 3 doorway at the bottom and each landing' : 'open at the bottom and top' }) : null]);
   if (o.kind !== 'ladder') rows.push(['Block', blockBtn({ value: sf ? sf.mat : (view.flight && view.flight.mat) || null, auto: sf ? null : { id: flightMatNow(), label: `Your block · ${BY_ID[flightMatNow()].name}` }, filter: flightBlockOK, aria: 'Stairs block', onPick: v => setFlightOpt({ mat: v || null }) })]);
@@ -8733,6 +8900,7 @@ function flightSideGroups() {
   if (sf) out.push(vgroup('Picked', null, el('p', { class: 'ometa2', text: `${flightKindName(sf.kind)}${sf.kind === 'ladder' ? '' : ' stairs'}${sf.kind === 'straight' || sf.kind === 'l' ? `, ${sf.w} wide` : sf.kind === 'spiral' ? `, ${2 * sf.r + 1} across` : ''}` }),
     vaction('Take them out', 'trash', () => deleteFlight(sf.id), 'Del'), vaction('Done', 'x', () => { view.flightSel = null; renderOptbar(); requestDraw(); }, 'Esc')));
   for (const [lab, ...kids] of flightOptRows(rr)) out.push(vgroup(lab, null, el('div', { class: 'oddrow' }, ...kids)));
+  if (!sf && !store.readOnly) out.push(vgroup('Automatic', null, vaction('Connect two rooms…', 'stairs', openConnect)));
   out.push(ohint(flightHint()));
   return out;
 }
@@ -8747,7 +8915,7 @@ function drawFlights(c, L, X, Y, s, x0, x1, z0, z1, useTex, ghost) {
       const [x, z] = parseK(k); if (x < x0 - 1 || x > x1 + 1 || z < z0 - 1 || z > z1 + 1) continue;
       const px = X(x), py = Y(z), w = X(x + 1) - px, h = Y(z + 1) - py;
       if (q.gap) { c.globalAlpha = 0.25; c.fillStyle = T.paper; c.fillRect(px, py, w, h); c.globalAlpha = ghost ? 0.7 : 0.92; continue; }
-      const id = q.post || q.land ? f.mat : q.ladder ? shapedId('ladder', q.dir, false) : shapedId(stairsOf(f.mat) || 'stone_brick_stairs', q.dir, false);
+      const id = q.post || q.land ? f.mat : q.ladder ? shapedId('ladder', q.dir, false) : q.half ? (slabOf(f.mat) || 'stone_brick_slab') : shapedId(stairsOf(f.mat) || 'stone_brick_stairs', q.dir, false);
       if (useTex && TEX[id]) { drawT(c, TEX[id], px, py, w, h); const B = BY_ID[id]; if (B && B.shape) shapeMark(c, B, px, py, w, h); } else { c.fillStyle = AVG[id] || T.ink; c.fillRect(px, py, w, h); }
       // how high each step is, when there's room to say
       if (w >= 22 && q.j != null && !q.post) { c.font = `700 ${Math.round(9 * s)}px ui-monospace, monospace`; c.fillStyle = 'rgba(0,0,0,.55)'; c.fillText(String(q.j + 1), px + 2 * s, py + h - 3 * s); }
@@ -14078,6 +14246,7 @@ function paletteSource() {
   A('Manage networks', openNetworksModal, { icon: 'route', edit: 1, kw: 'power me fluid gas cable pipe routes' });
   A('Add a resource pack', () => pickPack(), { icon: 'image', kw: 'textures zip texture pack' });
   A('Texture packs…', () => openSettings('packs'), { icon: 'image', kw: 'textures resource pack order remove' });
+  A('Connect two rooms…', openConnect, { icon: 'stairs', kw: 'stairs slabs link rooms floors basement route auto' });
   A('Keyboard shortcuts', showShortcuts, { icon: 'keys', kw: 'keys help ?' });
   A('Hide or show the panels', () => toggleBare(), { icon: 'focus', key: '\\', kw: 'zen clean bare hide tools rail dock sidebar distraction' });
   A('New plan', async () => { await flushNow(); startNewPlan(); toast('New plan started.'); }, { icon: 'plus', edit: 1, kw: 'base' });
